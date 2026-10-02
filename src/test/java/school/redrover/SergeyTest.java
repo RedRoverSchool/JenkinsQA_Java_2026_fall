@@ -33,4 +33,24 @@ public class SergeyTest {
 
         driver.quit();
     }
+
+    @Test
+    public void testWiki() {
+        WebDriver driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
+
+        driver.get("https://www.wikipedia.org/");
+
+        WebElement textBox = driver.findElement(By.id("searchInput"));
+        WebElement submitButton = driver.findElement(By.className("pure-button-primary-progressive"));
+
+        textBox.sendKeys("Selenium");
+        submitButton.click();
+
+        WebElement head = driver.findElement(By.id("firstHeading"));
+
+        Assert.assertEquals(head.getText(), "Selenium");
+
+        driver.quit();
+    }
 }
