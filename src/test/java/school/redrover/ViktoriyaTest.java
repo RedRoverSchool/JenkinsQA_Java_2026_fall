@@ -69,7 +69,7 @@ public class ViktoriyaTest {
 
         Assert.assertEquals(head.getText(), "Selenium");
 
-        driver.quit();
+        
     }
 
 
