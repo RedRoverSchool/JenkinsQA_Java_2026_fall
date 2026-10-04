@@ -50,8 +50,6 @@ public class ViktoriyaTest {
     }
 
 
-
-
     @Test
     public void testWiki() {
         WebDriver driver = new ChromeDriver();
@@ -73,5 +71,30 @@ public class ViktoriyaTest {
     }
 
 
+    public class SergeyTest {
 
+        @Test
+        public void testSelenium() {
+            WebDriver driver = new ChromeDriver();
+
+            driver.get("https://www.selenium.dev/selenium/web/web-form.html");
+
+            IO.println(driver.getTitle());
+
+            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
+
+            WebElement textBox = driver.findElement(By.name("my-text"));
+            WebElement submitButton = driver.findElement(By.cssSelector("button"));
+
+            textBox.sendKeys("Selenium");
+            submitButton.click();
+
+            WebElement message = driver.findElement(By.id("message"));
+
+            Assert.assertEquals(message.getText(), "Received!");
+
+            driver.quit();
+        }
+
+    }
 }
