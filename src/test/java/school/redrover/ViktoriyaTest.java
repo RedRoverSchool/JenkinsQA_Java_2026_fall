@@ -50,8 +50,6 @@ public class ViktoriyaTest {
     }
 
 
-
-
     @Test
     public void testWiki() {
         WebDriver driver = new ChromeDriver();
@@ -71,7 +69,6 @@ public class ViktoriyaTest {
 
         driver.quit();
     }
-
 
 
     public class SergeyTest {
@@ -99,4 +96,5 @@ public class ViktoriyaTest {
             driver.quit();
         }
 
+    }
 }
