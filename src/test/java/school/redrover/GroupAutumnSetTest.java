@@ -11,7 +11,7 @@ import java.time.Duration;
 
 public class GroupAutumnSetTest {
     @Test
-    public void formErrorTest() {
+    public void testFormErrorMassage() {
         WebDriver driver = new ChromeDriver();
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
         try {
