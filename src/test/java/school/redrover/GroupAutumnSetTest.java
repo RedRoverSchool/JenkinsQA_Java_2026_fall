@@ -24,7 +24,6 @@ public class GroupAutumnSetTest {
 
             Assert.assertEquals(massage.getText(),"Одно или несколько полей содержат ошибочные данные. Пожалуйста, проверьте их и попробуйте ещё раз.");
         } finally {
-            IO.print("Тест завершен! ");
             driver.quit();
         }
     }
