@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import java.time.Duration;
 
 public class GroupAutumnSetTest {
+
     @Test
     public void testFormErrorMassage() {
         WebDriver driver = new ChromeDriver();
@@ -23,6 +24,23 @@ public class GroupAutumnSetTest {
             WebElement massage = driver.findElement(By.xpath("/html/body/div[5]/div/div/div/section/div/div/div/div/div[5]/div/form/div"));
 
             Assert.assertEquals(massage.getText(),"Одно или несколько полей содержат ошибочные данные. Пожалуйста, проверьте их и попробуйте ещё раз.");
+        } finally {
+            driver.quit();
+        }
+    }
+
+    @Test
+    public void testFindResult() {
+        WebDriver driver = new ChromeDriver();
+        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
+        try {
+            driver.get("https://ooo-promtorg.ru/");
+            driver.findElement(By.xpath("//*[@id=\"fn_search\"]/input")).sendKeys("Насос");
+            driver.findElement(By.xpath("//*[@id=\"fn_search\"]/button")).click();
+
+            WebElement massage = driver.findElement(By.xpath("//h1[@class=\"h1\"]"));
+
+            Assert.assertEquals(massage.getText(),"Поиск Насос");
         } finally {
             driver.quit();
         }
