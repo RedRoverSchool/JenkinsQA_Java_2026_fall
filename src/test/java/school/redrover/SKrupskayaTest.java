@@ -21,8 +21,8 @@ public class SKrupskayaTest {
 
         WebElement sound = driver.findElement(By.id("demo"));
 
-        Assert.assertEquals("Click Events | Practice Automation", driver.getTitle());
-        Assert.assertEquals("Meow!", sound.getText());
+        Assert.assertEquals(driver.getTitle(), "Click Events | Practice Automation");
+        Assert.assertEquals(sound.getText(), "Meow!");
 
 
         driver.quit();
