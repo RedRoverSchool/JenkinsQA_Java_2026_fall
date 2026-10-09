@@ -10,24 +10,24 @@ import org.testng.annotations.Test;
 
 @Ignore
 public class NikaTest {
-    WebDriver driver = new ChromeDriver();
+//    WebDriver driver = new ChromeDriver();
 
 
-    @Test
-    public void testLogin(){
-        try {
-            driver.get("https://www.saucedemo.com/");
-            WebElement username = driver.findElement(By.xpath("//*[@aria-label='Username']"));
-            username.sendKeys("standard_user");
-            WebElement pass = driver.findElement(By.xpath("//*[@type='password']"));
-            pass.sendKeys("secret_sauce");
-            WebElement button = driver.findElement(By.xpath("//*[@id='login-button']"));
-            button.click();
-            Assert.assertEquals(driver.getTitle(),"Swag Labs");
-        }
-        finally {
-            driver.quit();
-        }
-
-    }
+//    @Test
+//    public void testLogin(){
+//        try {
+//            driver.get("https://www.saucedemo.com/");
+//            WebElement username = driver.findElement(By.xpath("//*[@aria-label='Username']"));
+//            username.sendKeys("standard_user");
+//            WebElement pass = driver.findElement(By.xpath("//*[@type='password']"));
+//            pass.sendKeys("secret_sauce");
+//            WebElement button = driver.findElement(By.xpath("//*[@id='login-button']"));
+//            button.click();
+//            Assert.assertEquals(driver.getTitle(),"Swag Labs");
+//        }
+//        finally {
+//            driver.quit();
+//        }
+//
+//    }
 }
