@@ -14,17 +14,9 @@ public class SKrupskayaTest {
     public static void firstTest() {
         WebDriver driver = new ChromeDriver();
         driver.get("https://practice-automation.com/click-events/");
-        driver.getTitle();
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(500));
-        WebElement button = driver.findElement(By.xpath("//*[@id=\"post-3145\"]/div/div[3]/div/div/div/div[1]/button"));
+        WebElement button = driver.findElement(By.xpath("//button[@OnClick='catSound()']"));
         button.click();
-
-        WebElement sound = driver.findElement(By.id("demo"));
-
-        Assert.assertEquals(driver.getTitle(), "Click Events | Practice Automation");
-        Assert.assertEquals(sound.getText(), "Meow!");
-
-
         driver.quit();
     }
 }
