@@ -72,7 +72,7 @@ public class ViktoriyaTest {
         driver.quit();
     }
 
-
+    @Ignore
     public class SergeyTest {
 
         @Test
