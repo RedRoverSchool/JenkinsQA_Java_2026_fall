@@ -4,6 +4,10 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
+
 
 public class VikVolkTest extends BaseTest {
 
@@ -16,7 +20,8 @@ public class VikVolkTest extends BaseTest {
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        getDriver().findElement(By.id("jenkins-head-icon")).click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(),
