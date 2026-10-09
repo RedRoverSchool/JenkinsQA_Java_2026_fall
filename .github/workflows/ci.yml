@@ -41,8 +41,7 @@ jobs:
 # tar -cvf jenkins_backup.tar ./jenkins_backup
 # split -b 95m -d jenkins_backup.tar jenkins_backup
 
-# git submodule update --init --recursive
-# git submodule update --remote _jenkins_data
+# git subtree add --prefix=_jenkins_data https://github.com/RedRoverSchool/JenkinsQA_Data_2026_fall.git main --squash
 
       - name: Prepare Jenkins data
         run: |
@@ -63,13 +62,13 @@ jobs:
       - name: Wait for the Jenkins
         run: ./.github/wait-for-jenkins.sh
 
-#      - name: Maven test
-#        run: mvn test
-#        env:
-#          JENKINS_USERNAME: ${{ secrets.ADMIN_USERNAME }}
-#          JENKINS_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-#          JENKINS_HOST: localhost
-#          JENKINS_PORT: 8080
-#          BROWSER_NAME: chrome
-#          BROWSER_OPTIONS_CHROME: --remote-allow-origins=*;--disable-gpu;--no-sandbox;--disable-dev-shm-usage;--headless=new;--window-size=1920,1080
-#          RUN_CI: true
+      - name: Maven test
+        run: mvn test
+        env:
+          JENKINS_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          JENKINS_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          JENKINS_HOST: localhost
+          JENKINS_PORT: 8080
+          BROWSER_NAME: chrome
+          BROWSER_OPTIONS_CHROME: --remote-allow-origins=*;--disable-gpu;--no-sandbox;--disable-dev-shm-usage;--headless=new;--window-size=1920,1080
+          RUN_CI: true
