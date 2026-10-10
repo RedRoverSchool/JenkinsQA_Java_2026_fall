@@ -8,8 +8,8 @@ import school.redrover.common.BaseTest;
 public class KrupSashaTest extends BaseTest {
     @Test
     public void testAddDescriptionTurnsToEditDescription() {
-        String testInput = "test";
-        String label = "Edit description";
+        final String testInput = "test";
+        final String label = "Edit description";
         getDriver().findElement(By.id("description-link")).click();
         getDriver().findElement(By.id("description-textarea")).sendKeys(testInput);
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.jenkins-button--primary")).click();
@@ -18,7 +18,7 @@ public class KrupSashaTest extends BaseTest {
     }
     @Test
     public void testNavigationByLinkRestAPI() {
-        String title = "Remote API - Jenkins";
+        final String title = "Remote API - Jenkins";
         getDriver().findElement(By.cssSelector("#jenkins > footer > div > div.page-footer__links > a")).click();
         Assert.assertEquals(getDriver().getTitle(), title);
     }
