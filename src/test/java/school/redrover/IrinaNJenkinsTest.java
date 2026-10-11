@@ -29,7 +29,7 @@ public class IrinaNJenkinsTest extends BaseTest {
         getDriver().findElement(By.className("textarea-hide-preview")).click();
         getDriver().findElement(By.className("jenkins-button--primary")).click();
 
-        getDriver().findElement(By.id("jenkins-head-icon")).click();
+
 
 
     }
