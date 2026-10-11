@@ -12,6 +12,7 @@ import java.time.Duration;
 public class ElizavetaJenkinsTest extends BaseTest {
     @Test
     public void testElizavetaJenkins () {
+
         getDriver().findElement(By.className("jenkins-avatar")).click();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
