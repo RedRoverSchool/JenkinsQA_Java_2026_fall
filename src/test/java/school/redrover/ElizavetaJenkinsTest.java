@@ -9,7 +9,7 @@ public class ElizavetaJenkinsTest extends BaseTest {
     @Test
     public void testElizavetaJenkins () {
         getDriver().findElement(By.className("jenkins-avatar")).click();
-        getDriver().findElement(By.cssSelector("a[href='/user/admin/account']")).click();
+        getDriver().findElement(By.linkText("Account")).click();
         getDriver().findElement(By.name("_.description")).clear();
         getDriver().findElement(By.name("_.description")).sendKeys("I'm a student");
         getDriver().findElement(By.name("Submit")).click();
