@@ -27,8 +27,8 @@ public class FolderTest extends BaseTest {
         getDriver().findElement(By.name("Submit")).click();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h1")));
-        Assert.assertEquals(getDriver().findElement(By.cssSelector("h1")).getText(), folderName);
+        wait.until(ExpectedConditions.urlContains("/job/" + jobName + "/"));
+        Assert.assertTrue(getDriver().getCurrentUrl().contains("/job/" + jobName + "/"));
         Assert.assertEquals(getDriver().findElement(By.id("view-message")).getText(), description);
     }
 
