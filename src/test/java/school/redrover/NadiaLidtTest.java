@@ -28,9 +28,8 @@ public class NadiaLidtTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//button[@value='Save']")).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        WebElement menu = wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
-        menu.click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
         String actualResult = getDriver().findElement(By.className("jenkins-table__link")).getAttribute("href");
 
         Assert.assertTrue(actualResult.contains(expectedResult));
