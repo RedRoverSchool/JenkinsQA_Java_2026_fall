@@ -3,6 +3,7 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -27,9 +28,9 @@ public class NadiaLidtTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//button[@value='Save']")).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(3));
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
-        getDriver().findElement(By.xpath("//div[@class='jenkins-header__navigation']//span[contains(text(), 'Jenkins')]")).click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        WebElement menu = wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
+        menu.click();
         String actualResult = getDriver().findElement(By.className("jenkins-table__link")).getAttribute("href");
 
         Assert.assertTrue(actualResult.contains(expectedResult));
