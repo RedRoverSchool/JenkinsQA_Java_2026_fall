@@ -2,9 +2,13 @@ package school.redrover;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+
+import java.time.Duration;
 
 public class AddDescriptionTest extends BaseTest {
 
@@ -25,6 +29,8 @@ public class AddDescriptionTest extends BaseTest {
         textArea.sendKeys(description);
         getDriver().findElement(By.className("jenkins-button--primary")).click();
 
-        Assert.assertEquals(getDriver().findElement(By.id("description-content")).getText(), description);
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        String actualDescription = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content"))).getText();
+        Assert.assertEquals(actualDescription, description);
     }
 }
