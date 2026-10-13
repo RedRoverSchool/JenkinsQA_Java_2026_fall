@@ -24,7 +24,7 @@ public class VictoriaTest extends BaseTest {
         wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String[] createdNames = createItemsAndReturnNames();
 
-        expectedMatching = countMatching(createdNames, targetWord);
+        expectedMatching = countMatching(createdNames);
     }
 
     @Test
@@ -85,11 +85,11 @@ public class VictoriaTest extends BaseTest {
                 By.cssSelector("#tasks")));
     }
 
-    private int countMatching(String[] names, String word) {
+    private int countMatching(String[] names) {
         int count = 0;
 
         for (String name : names) {
-            if (name.toLowerCase(Locale.ROOT).contains(word)) {
+            if (name.toLowerCase(Locale.ROOT).contains(targetWord)) {
                 count++;
             }
         }
