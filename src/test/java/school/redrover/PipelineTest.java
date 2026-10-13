@@ -1,6 +1,7 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
@@ -42,7 +43,7 @@ public class PipelineTest extends BaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[@class='jenkins-dropdown__item' and contains(normalize-space(.), 'Delete Pipeline')]")))
+                        By.xpath("//button[@class='jenkins-dropdown__item' and contains(normalize-space(.), 'Delete Pipeline')]")))
                 .click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//dialog[@class='jenkins-dialog']")));
@@ -50,5 +51,33 @@ public class PipelineTest extends BaseTest {
 
         Assert.assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(),
                 "Welcome to Jenkins!");
+    }
+
+    @Test
+    public void testRenamePipeline() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(3));
+        final String projectName = "testName";
+        final String newProjectName = "testNewName";
+
+        getDriver().findElement(By.xpath("//a[@href='newJob']")).click();
+        getDriver().findElement(By.id("name")).sendKeys(projectName);
+        getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
+        getDriver().findElement((By.id("ok-button"))).click();
+
+        getDriver().findElement(By.name("Submit")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated((By.id("jenkins-head-icon")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.partialLinkText("Rename"))).click();
+
+        WebElement newNameBtn = getDriver().findElement(By.name("newName"));
+        newNameBtn.clear();
+        newNameBtn.sendKeys(newProjectName);
+        getDriver().findElement(By.xpath("//button[@value='Rename']")).click();
+
+        String actualProjectName = wait.until(ExpectedConditions.visibilityOfElementLocated((By.tagName("h1")))).getText();
+
+        Assert.assertEquals(actualProjectName, newProjectName);
     }
 }
