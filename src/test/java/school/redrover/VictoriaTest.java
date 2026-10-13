@@ -5,7 +5,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -15,20 +14,15 @@ import java.util.Locale;
 
 public class VictoriaTest extends BaseTest {
 
-    private WebDriverWait wait;
-    private int expectedMatching;
     private final String targetWord = "item";
-
-    @BeforeMethod
-    public void setUp() {
-        wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        String[] createdNames = createItemsAndReturnNames();
-
-        expectedMatching = countMatching(createdNames);
-    }
 
     @Test
     public void testSearchReturnsMatchingItems() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
+        String[] createdNames = createItemsAndReturnNames(wait);
+        int expectedMatching = countMatching(createdNames);
+
         getDriver().findElement(By.id("root-action-SearchAction")).click();
         getDriver().findElement(By.id("command-bar")).sendKeys(targetWord);
 
@@ -51,7 +45,7 @@ public class VictoriaTest extends BaseTest {
         }
     }
 
-    public String[] createItemsAndReturnNames() {
+    public String[] createItemsAndReturnNames(WebDriverWait wait) {
         String[] names = {
                 "name item 1",
                 "test item",
@@ -59,18 +53,18 @@ public class VictoriaTest extends BaseTest {
         };
 
         for (String name : names) {
-            createElement(name);
+            createItem(name, wait);
         }
         return names;
     }
 
-    public void createElement(String nameItem) {
+    public void createItem(String name, WebDriverWait wait) {
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#tasks :first-child"))).click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("#createItem input.jenkins-input"))).sendKeys(nameItem);
+                By.cssSelector("#createItem input.jenkins-input"))).sendKeys(name);
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#items :first-child"))).click();
