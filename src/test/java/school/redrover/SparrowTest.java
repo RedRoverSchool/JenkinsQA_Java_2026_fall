@@ -17,11 +17,9 @@ public class SparrowTest extends BaseTest {
         getDriver().findElement(By.className("jenkins-choice-list__item__icon")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-
         getDriver().findElement(By.id(("jenkins-head-icon"))).click();
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector("#job_firstMultiProject > td:nth-child(3) > a > span")).getText(), projectName);
-
 
     }
 }
