@@ -9,7 +9,6 @@ public class SimaJenkinsFirstTest extends BaseTest {
     @Test
 
     public void testCreatProject(){
-
         final String projectName="project";
 
         getDriver().findElement(By.className("task-icon-link")).click();
