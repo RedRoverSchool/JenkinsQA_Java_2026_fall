@@ -1,12 +1,19 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import java.time.Duration;
 
 public class IlyaVorobyevJenkinsTest extends BaseTest {
 
+
+    private WebDriverWait getWait() {
+        return new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+    }
 
     private void createItemFolder(String folderName) {
 
@@ -19,11 +26,14 @@ public class IlyaVorobyevJenkinsTest extends BaseTest {
 
         getDriver().findElement(By.cssSelector("#ok-button")).click();
 
+        getWait().until(ExpectedConditions.urlContains("configure"));
+
     }
 
 
     private void returnToMainPage() {
         getDriver().findElement(By.cssSelector("#page-header > div.jenkins-header__main > div > a > span")).click();
+        getWait().until(ExpectedConditions.not(ExpectedConditions.urlContains("configure")));
     }
 
 
