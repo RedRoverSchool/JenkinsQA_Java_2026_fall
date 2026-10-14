@@ -17,7 +17,6 @@ public class SimaJenkinsFirstTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.id("jenkins-head-icon")).click();
         Assert.assertEquals(
-
                 getDriver().findElement(By.cssSelector(".jenkins-table__link>span:first-child")).getText(),
                 "project");
 
