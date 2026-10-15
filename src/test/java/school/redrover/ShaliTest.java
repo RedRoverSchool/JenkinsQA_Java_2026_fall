@@ -44,7 +44,7 @@ public class ShaliTest extends BaseTest {
         getDriver().findElement(By.xpath("//*[@data-title = 'Add description']")).click();
         getDriver().findElement(By.id("description-textarea")).sendKeys("New test");
         getDriver().findElement(By.xpath("//*[contains(@class, 'jenkins-button--primary')]")).click();
-        getDriver().findElement(By.xpath("//*[@data-edit-label = 'Edit description']")).click();
+        getDriver().findElement(By.xpath("//span[text()='Edit description']")).click();
 
         Assert.assertEquals(getDriver().findElement(By.id("description-textarea")).
                 getAttribute("value"), "New test");
