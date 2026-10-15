@@ -19,7 +19,7 @@ public void testCreatePipline() throws InterruptedException {
 
     Assert.assertEquals(
             getDriver().findElement(By.name("description")).getAttribute("value"),
-            "Hello World");
-        Thread.sleep(2000);
+            "Hello World!");
+        Thread.sleep(3000);
 }
 }
