@@ -14,7 +14,7 @@ public void testCreatePipline() throws InterruptedException {
     getDriver().findElement(By.id("name")).sendKeys(projectName);
     getDriver().findElement(By.className("icon-xlg")).click();
     getDriver().findElement(By.id("ok-button")).click();
-    getDriver().findElement(By.name("description")).sendKeys("Hello World");
+    getDriver().findElement(By.name("description")).sendKeys("Hello World!!!");
 
 
     Assert.assertEquals(
