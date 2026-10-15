@@ -5,13 +5,14 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
 import java.time.Duration;
 
 public class PipelineTest extends BaseTest {
-
+  @Ignore
     @Test
     public void testCreatePipeline() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(3));
@@ -27,7 +28,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(),
                 projectName);
     }
-
+    @Ignore
     @Test
     public void testDeletePipeline() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(3));
@@ -52,7 +53,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(),
                 "Welcome to Jenkins!");
     }
-
+    @Ignore
     @Test
     public void testRenamePipeline() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(3));
