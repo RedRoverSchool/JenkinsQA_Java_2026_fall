@@ -16,7 +16,7 @@ public class ShaliTest extends BaseTest {
     @Test
     public void createFolderTest() {
 
-        getDriver().findElement(By.xpath("//*[@it= 'hudson.model.Hudson@72153652']")).click();
+        getDriver().findElement(By.xpath("//span[@class='task-link-text' and text()='New Item']/..")).click();
         getDriver().findElement(By.id("name")).sendKeys(textTest);
         getDriver().findElement(By.xpath("//*[text()= 'Folder']")).click();
         getDriver().findElement(By.id("ok-button")).click();
@@ -30,7 +30,7 @@ public class ShaliTest extends BaseTest {
 
     @Test
     public void createPipeline() {
-        getDriver().findElement(By.xpath("//*[@it= 'hudson.model.Hudson@72153652']")).click();
+        getDriver().findElement(By.xpath("//span[@class='task-link-text' and text()='New Item']/..")).click();
         getDriver().findElement(By.id("name")).sendKeys(textTest);
         getDriver().findElement(By.xpath("//*[text() = 'Pipeline']")).click();
         getDriver().findElement(By.id("ok-button")).click();
