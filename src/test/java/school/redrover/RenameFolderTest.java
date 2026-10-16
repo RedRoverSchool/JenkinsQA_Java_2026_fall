@@ -15,28 +15,30 @@ public class RenameFolderTest extends BaseTest {
 
     @Test
     public void renameFolderTest(){
+        String folderName = "First";
+        String newFolderName = "Second";
 
-        String newName = "Second";
-
-        createdFolder();
+        createdFolder(folderName);
 
         //  Найти созданную папку
         getDriver().findElement(By.id("root-action-SearchAction")).click();
-        getDriver().findElement(By.id("command-bar")).sendKeys("First");
-        getDriver().findElement(By.className("jenkins-command-palette__results__item")).click();
+        getDriver().findElement(By.id("command-bar")).sendKeys(folderName);
+        getDriver().findElement(By.xpath("//a[contains(@href, '/job/First')]")).click();
         waitForClickabilityAndClick(getDriver(), By.xpath("//a[contains(@href, '/confirm-rename')]"));
+
+
 
 
         //Меняем название
         getDriver().findElement(By.cssSelector("div.setting-main > input")).clear();
-        getDriver().findElement(By.cssSelector("div.setting-main > input")).sendKeys(newName);
+        getDriver().findElement(By.cssSelector("div.setting-main > input")).sendKeys(newFolderName);
         waitForClickabilityAndClick(getDriver(), By.className("jenkins-submit-button"));
 
 
         // Проверка названия в заголовке
         Assert.assertEquals(
                 getDriver().findElement(By.className("job-index-headline")).getText(),
-                newName,
+                newFolderName,
                 "Проверка названия в заголовке");
 
         //Возврат на Главную
@@ -44,7 +46,7 @@ public class RenameFolderTest extends BaseTest {
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector(".jenkins-table__link> span:first-child")).getText(),
-                newName,
+                newFolderName,
                 "Проверка названия на главной странице");
     }
 
@@ -53,9 +55,9 @@ public class RenameFolderTest extends BaseTest {
         waitForClickabilityAndClick(getDriver(),By.className("app-jenkins-logo"));
     }
 
-    private void createdFolder(){
+    private void createdFolder(String name){
         getDriver().findElement(By.cssSelector("a.task-link")).click();
-        getDriver().findElement(By.id("name")).sendKeys("First");
+        getDriver().findElement(By.id("name")).sendKeys(name);
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
