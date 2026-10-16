@@ -2,9 +2,13 @@ package school.redrover;
 
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import java.time.Duration;
 
 public class RenameFolderTest extends BaseTest {
 
@@ -18,12 +22,13 @@ public class RenameFolderTest extends BaseTest {
 
         //Открыть настройки папки
         getDriver().findElement(By.cssSelector("a.jenkins-table__link")).click();
-        getDriver().findElement(By.cssSelector("div.tippy-content > div > a:nth-child(5)")).click();
+        waitForClickabilityAndClick(getDriver(),By.cssSelector("div.tippy-content > div > a:nth-child(5)"));
 
         //Меняем название
         getDriver().findElement(By.cssSelector("div.setting-main > input")).clear();
         getDriver().findElement(By.cssSelector("div.setting-main > input")).sendKeys(newName);
-        getDriver().findElement(By.className("jenkins-submit-button")).click();
+        waitForClickabilityAndClick(getDriver(), By.className("jenkins-submit-button"));
+
 
         // Проверка названия в заголовке
         Assert.assertEquals(
@@ -62,6 +67,12 @@ public class RenameFolderTest extends BaseTest {
 
         //Возврат на Главную
         backToMainPage();
+    }
+
+    private void waitForClickabilityAndClick (WebDriver driver, By locator){
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(locator))
+                .click();
     }
 
 }
