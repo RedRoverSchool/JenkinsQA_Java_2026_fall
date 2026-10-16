@@ -20,9 +20,12 @@ public class RenameFolderTest extends BaseTest {
 
         createdFolder();
 
-        //Открыть настройки папки
-        getDriver().findElement(By.cssSelector("a.model-link")).click();
-        waitForClickabilityAndClick(getDriver(),By.xpath("//*[@id=\"tippy-4\"]/div/div/div/a[4]"));
+        //  Найти созданную папку
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getDriver().findElement(By.id("command-bar")).sendKeys("First");
+        getDriver().findElement(By.className("jenkins-command-palette__results__item")).click();
+        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[6]/span/a")).click();
+
 
         //Меняем название
         getDriver().findElement(By.cssSelector("div.setting-main > input")).clear();
