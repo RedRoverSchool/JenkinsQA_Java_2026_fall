@@ -24,7 +24,7 @@ public class RenameFolderTest extends BaseTest {
         getDriver().findElement(By.id("root-action-SearchAction")).click();
         getDriver().findElement(By.id("command-bar")).sendKeys("First");
         getDriver().findElement(By.className("jenkins-command-palette__results__item")).click();
-        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[6]/span/a")).click();
+        waitForClickabilityAndClick(getDriver(), By.xpath("//a[contains(@href, '/confirm-rename')]"));
 
 
         //Меняем название
@@ -46,29 +46,19 @@ public class RenameFolderTest extends BaseTest {
                 getDriver().findElement(By.cssSelector(".jenkins-table__link> span:first-child")).getText(),
                 newName,
                 "Проверка названия на главной странице");
-
-
-
     }
 
 
     private void backToMainPage(){
-        //Не успевает находить элемент, поэтому сделал через try-catch
-        try {
-            getDriver().findElement(By.className("app-jenkins-logo")).click();
-        } catch (org.openqa.selenium.StaleElementReferenceException e) {
-            getDriver().findElement(By.className("app-jenkins-logo")).click();
-        }
+        waitForClickabilityAndClick(getDriver(),By.className("app-jenkins-logo"));
     }
 
     private void createdFolder(){
-        //Предусловие: Создать папку
         getDriver().findElement(By.cssSelector("a.task-link")).click();
         getDriver().findElement(By.id("name")).sendKeys("First");
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        //Возврат на Главную
         backToMainPage();
     }
 
