@@ -11,7 +11,7 @@ public class AnnaKTest extends BaseTest {
     @Test
 
     public void testCreateNewJob(){
-        String prjName = "FirstPipeline";
+        final String prjName = "FirstPipeline";
 
         getDriver().findElement(By.className("task-icon-link")).click();
         getDriver().findElement(By.id("name")).sendKeys(prjName);
