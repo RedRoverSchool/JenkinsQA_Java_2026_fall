@@ -22,7 +22,7 @@ public class RenameFolderTest extends BaseTest {
 
         //Открыть настройки папки
         getDriver().findElement(By.cssSelector("a.jenkins-table__link")).click();
-        waitForClickabilityAndClick(getDriver(),By.cssSelector("div.tippy-content > div > a:nth-child(5)"));
+        waitForClickabilityAndClick(getDriver(),By.xpath("//*[@id=\"tippy-4\"]/div/div/div/a[4]"));
 
         //Меняем название
         getDriver().findElement(By.cssSelector("div.setting-main > input")).clear();
