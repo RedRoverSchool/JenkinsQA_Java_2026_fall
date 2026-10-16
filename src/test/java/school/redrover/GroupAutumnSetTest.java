@@ -1,6 +1,8 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -21,6 +23,24 @@ public class GroupAutumnSetTest extends BaseTest {
         getDriver().findElement(By.cssSelector("button[data-id='ok']")).click();
 
         Assert.assertEquals(getDriver().findElement(By.cssSelector("span.jenkins-mobile-hide")).getText(),"Jenkins");
+    }
+
+    @Test
+    public void testCreateFolder() {
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(20));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".jenkins-form, .app-page-body, form")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#name"))).sendKeys("My new folder");
+
+        WebElement folderRadio = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("input[value='com.cloudbees.hudson.plugins.folder.Folder']")));
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", folderRadio);
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#ok-button"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
+        WebElement itemLink = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a.jenkins-table__link[href^='job/']")));
+
+        Assert.assertTrue(itemLink.getText().contains("My new folder"));
     }
 
     @Test
