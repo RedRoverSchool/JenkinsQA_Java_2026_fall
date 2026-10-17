@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 import school.redrover.common.BaseTest;
 
-public class PugachTest extends BaseTest {
+public class DashboardTest extends BaseTest {
 
     private static final By DASHBOARD_DESCRIPTION_BUTTON = By.id("description-link");
     private static final By DASHBOARD_DESCRIPTION_TEXTAREA = By.id("description-textarea");
@@ -21,14 +21,14 @@ public class PugachTest extends BaseTest {
     private static final String ADD_DASHBOARD_DESCRIPTION_BUTTON_NAME = "Add description";
     private static final String EDIT_DASHBOARD_DESCRIPTION_BUTTON_NAME = "Edit description";
 
-    @Test(description = "Проверка версии Jenkins")
-    public void testDisplayedVersion() {
+    @Test
+    public void testCheckJenkinsVersion() {
 
         Assert.assertEquals(getDriver().findElement(JENKINS_VERSION_LABEL).getText(),
             JENKINS_VERSION_TEXT, "Версия Jenkins отличается от версии рекомендованной для курса");
     }
 
-    @Test(description = "Добавление и отображение добавленного dashboard description")
+    @Test
     public void testAddDashboardDescription() {
 
         putDashboardDescription(DASHBOARD_DESCRIPTION_TEXT);
@@ -37,7 +37,7 @@ public class PugachTest extends BaseTest {
             DASHBOARD_DESCRIPTION_TEXT);
     }
 
-    @Test(description = "Изменение и отображение измененного dashboard description")
+    @Test
     public void testEditDashboardDescription() {
 
         putDashboardDescription(DASHBOARD_DESCRIPTION_TEXT);
@@ -47,7 +47,7 @@ public class PugachTest extends BaseTest {
             DASHBOARD_NEW_DESCRIPTION_TEXT);
     }
 
-    @Test(description = "Удаление dashboard description")
+    @Test
     public void testDeleteDashboardDescription() {
 
         putDashboardDescription(DASHBOARD_DESCRIPTION_TEXT);
@@ -58,7 +58,7 @@ public class PugachTest extends BaseTest {
             "Ожидалось пустое описание, но было получено: '" + actualDescription + "'");
     }
 
-    @Test(description = "Наименование кнопки редактирования dashboard description в зависимости от заполненности dashboard description")
+    @Test
     public void testAddOrEditDashboardDescriptionButtonDisplayedName() {
 
         String actualDescriptionButtonTextWithoutDescription =
@@ -94,11 +94,13 @@ public class PugachTest extends BaseTest {
     }
 
     private void openAndClearDashboardDescriptionEditor() {
+
         getDriver().findElement(DASHBOARD_DESCRIPTION_BUTTON).click();
         getDriver().findElement(DASHBOARD_DESCRIPTION_TEXTAREA).clear();
     }
 
     private void saveOpenedDashboardDescriptionEditor() {
+
         getDriver().findElement(DESCRIPTION_SAVE_BUTTON).click();
         getDriver().findElement(JENKINS_HEAD_ICON).click();
     }
