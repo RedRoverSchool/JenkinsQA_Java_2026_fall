@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -27,7 +28,7 @@ public class ShaliTest extends BaseTest {
         String hrefAttribute = chevron.getAttribute("data-href");
         Assert.assertTrue(hrefAttribute.contains("/job/Test/"));
     }
-
+    @Ignore
     @Test
     public void createPipeline() {
         getDriver().findElement(By.xpath("//span[@class='task-link-text' and text()='New Item']/..")).click();

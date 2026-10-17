@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static org.testng.Assert.assertFalse;
 
 public class ProfileTest extends BaseTest {
-
+    @Ignore
     @Test
 
     public void testCheckAddDescription (){

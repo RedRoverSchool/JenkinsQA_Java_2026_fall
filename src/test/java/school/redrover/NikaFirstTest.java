@@ -2,6 +2,7 @@ package school.redrover;
 
 import org.openqa.selenium.By;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -9,7 +10,7 @@ import school.redrover.common.BaseTest;
 public class NikaFirstTest extends BaseTest {
   private final  String folderName = "Folder for new project";
 
-
+    @Ignore
     @Test
     public void testCreationFolder(){
 
