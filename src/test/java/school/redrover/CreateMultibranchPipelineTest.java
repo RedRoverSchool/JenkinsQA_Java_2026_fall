@@ -28,8 +28,9 @@ public class CreateMultibranchPipelineTest extends BaseTest {
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.urlContains("/job/" + pipelineName + "/"));
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(
+                By.xpath("//h1"), pipelineDisplayName));
         Assert.assertTrue(getDriver().getCurrentUrl().contains("/job/" + pipelineName + "/"));
-        Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(), pipelineDisplayName);
         Assert.assertEquals(getDriver().findElement(By.id("view-message")).getText(), description);
 
     }
