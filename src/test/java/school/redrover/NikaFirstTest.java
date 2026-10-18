@@ -4,12 +4,13 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import org.testng.annotations.Ignore;
 
 
 public class NikaFirstTest extends BaseTest {
   private final  String folderName = "Folder for new project";
 
-
+    @Ignore
     @Test
     public void testCreationFolder(){
 

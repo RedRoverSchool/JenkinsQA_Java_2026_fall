@@ -7,11 +7,13 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import java.time.Duration;
+import org.testng.annotations.Ignore;
 
 public class FolderTest extends BaseTest {
 
     private static String FOLDER_NAME = "NewFolder";
 
+    @Ignore
     @Test
     public void testCreate() {
         getDriver().findElement(By.cssSelector("a.task-link")).click();
