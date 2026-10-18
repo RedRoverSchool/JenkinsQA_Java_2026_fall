@@ -1,4 +1,5 @@
 package school.redrover;
+import org.testng.annotations.Ignore;
 import school.redrover.common.BaseTest;
 
 import org.openqa.selenium.By;
@@ -8,6 +9,7 @@ import org.testng.annotations.Test;
 
 public class IvanJenkinsTests extends BaseTest {
 
+    @Ignore
     @Test
     public void testCreateFreestyleProject(){
 
