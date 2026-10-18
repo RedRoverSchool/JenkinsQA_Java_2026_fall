@@ -25,4 +25,21 @@ public class ElenaTTest extends BaseTest {
                 titleDescription);
 
     }
+
+    @Test
+    public void newItemFreestyleProject(){
+
+        String itemName = "Elena Freestyle project";
+
+        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[1]/span/a")).click();
+        getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(itemName);
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+        getDriver().findElement(By.id("jenkins-head-icon")).click();
+
+        Assert.assertEquals(getDriver().findElement(By.xpath("//*[@id=\"job_Elena Freestyle project\"]/td[3]/a")).getText(),
+                itemName);
+    }
+
+
 }
