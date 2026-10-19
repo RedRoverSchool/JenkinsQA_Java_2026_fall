@@ -7,7 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import java.time.Duration;
-import org.testng.annotations.Ignore;
 
 public class FolderTest extends BaseTest {
 
