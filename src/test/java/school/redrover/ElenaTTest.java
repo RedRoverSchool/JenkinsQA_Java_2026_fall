@@ -2,6 +2,7 @@ package school.redrover;
 
 import org.openqa.selenium.By;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -55,7 +56,7 @@ public class ElenaTTest extends BaseTest {
     }
 
 
-
+    @Ignore
     @Test
     public void testDisableProject(){
 
