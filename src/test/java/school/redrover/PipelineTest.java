@@ -107,4 +107,25 @@ public class PipelineTest extends BaseTest {
         WebElement okButton = getDriver().findElement(By.id("ok-button"));
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
+
+    @Test
+    public void testSkipConfigurationAndReturnToDashboard() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        final String projectName = "SkipConfigPipeline";
+
+        getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
+
+        getDriver().findElement(By.id("name")).sendKeys(projectName);
+
+        getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+
+        WebElement itemInList = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector(".jenkins-table__link > span:first-child")));
+
+        Assert.assertEquals(itemInList.getText(), projectName, "Созданный проект не отображается на Dashboard!");
+    }
 }
