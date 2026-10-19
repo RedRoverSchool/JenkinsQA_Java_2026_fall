@@ -20,14 +20,11 @@ public class NewItemTest extends BaseTest {
 
         getDriver().findElement(By.cssSelector("a[href*='newJob']")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(project_name);
-
         wait.until(ExpectedConditions.textToBePresentInElementLocated
                 ((By.xpath("//*[@id='createItem']/div[1]/div/div/div")), expectedErrorText));
         WebElement okButton = getDriver().findElement(By.id("ok-button"));
         boolean isEnabled = okButton.isEnabled();
 
         Assert.assertFalse(isEnabled, "Кнопка 'ОК' должна быть неактивной!");
-
-
     }
 }
