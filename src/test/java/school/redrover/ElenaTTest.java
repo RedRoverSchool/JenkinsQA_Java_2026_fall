@@ -4,6 +4,10 @@ import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import java.time.Duration;
+import org.openqa.selenium.WebElement;
 
 public class ElenaTTest extends BaseTest {
 
@@ -45,7 +49,9 @@ public class ElenaTTest extends BaseTest {
         getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(itemName);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        getDriver().get("http://localhost:8081/");
+        WebElement headIcon = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
+        headIcon.click();
     }
 
 
