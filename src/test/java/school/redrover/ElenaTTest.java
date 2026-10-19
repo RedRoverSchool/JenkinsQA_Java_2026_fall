@@ -45,7 +45,7 @@ public class ElenaTTest extends BaseTest {
         getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(itemName);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        getDriver().findElement(By.id("jenkins-head-icon")).click();
+        getDriver().get("http://localhost:8081/");
     }
 
 
