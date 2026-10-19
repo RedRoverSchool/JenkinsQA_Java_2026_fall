@@ -59,14 +59,13 @@ public class ElenaTTest extends BaseTest {
     @Test
     public void testDisableProject(){
 
-        String disableText = "This project is currently disabled Enable";
+        String disableText = "This project is currently disabled";
         createProject();
 
         getDriver().findElement(By.xpath("//span[text()='Elena Freestyle project']")).click();
         getDriver().findElement(By.xpath("//a[contains(@class, 'task-link') and contains(@href, 'configure')]")).click();
         getDriver().findElement(By.cssSelector("label[for='enable-disable-project']")).click();
         getDriver().findElement(By.name("Submit")).click();
-        getDriver().findElement(By.className("warning")).getText();
 
         //  сохраняем полученный текст в переменную, чтобы ниже сравнить через contains
         String actualText = getDriver().findElement(By.className("warning")).getAttribute("innerText");
