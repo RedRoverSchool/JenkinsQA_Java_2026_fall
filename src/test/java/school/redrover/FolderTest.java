@@ -32,4 +32,16 @@ public class FolderTest extends BaseTest {
                 wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(FOLDER_NAME))).isDisplayed()
         );
     }
+
+        @Test
+        public void testCreateEmptyField(){
+
+            getDriver().findElement(By.cssSelector("a[href='/view/all/newJob']")).click();
+            getDriver().findElement(By.cssSelector(".jenkins-choice-list__item__icon")).click();
+
+            Assert.assertFalse(
+                    getDriver().findElement(By.cssSelector("#ok-button")).isEnabled());
+
+        }
+
 }
