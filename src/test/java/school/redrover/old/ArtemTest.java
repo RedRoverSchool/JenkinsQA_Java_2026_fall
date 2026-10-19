@@ -8,7 +8,7 @@ import org.testng.annotations.Test;
 
 import java.time.Duration;
 
-public class Artemtest {
+public class ArtemTest {
     @Test
     public void main() {
         WebDriver driver = new ChromeDriver();
