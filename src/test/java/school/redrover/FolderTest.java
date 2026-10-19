@@ -13,7 +13,6 @@ public class FolderTest extends BaseTest {
 
     private static String FOLDER_NAME = "NewFolder";
 
-    @Ignore
     @Test
     public void testCreate() {
         getDriver().findElement(By.cssSelector("a.task-link")).click();
@@ -25,7 +24,7 @@ public class FolderTest extends BaseTest {
         getDriver().findElement(By.name("Submit")).click();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.urlContains("/job/" + FOLDER_NAME + "/"));
+        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
 
         Assert.assertTrue(
@@ -41,7 +40,5 @@ public class FolderTest extends BaseTest {
 
             Assert.assertFalse(
                     getDriver().findElement(By.cssSelector("#ok-button")).isEnabled());
-
         }
-
 }
