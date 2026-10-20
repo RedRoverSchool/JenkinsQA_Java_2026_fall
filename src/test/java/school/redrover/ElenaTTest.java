@@ -28,20 +28,16 @@ public class ElenaTTest extends BaseTest {
         Assert.assertEquals(
                 getDriver().findElement(By.id("description-content")).getText(),
                 titleDescription);
-
     }
 
     @Test
     public void newItemFreestyleProject(){
-
         String itemName = "Elena Freestyle project";
-
         createProject();
 
         Assert.assertEquals(getDriver().findElement(By.xpath("//*[@id=\"job_Elena Freestyle project\"]/td[3]/a")).getText(),
                 itemName);
     }
-
 
     private void createProject(){
         String itemName = "Elena Freestyle project";
@@ -55,8 +51,6 @@ public class ElenaTTest extends BaseTest {
         headIcon.click();
     }
 
-
-
     @Test
     public void testDisableProject(){
 
@@ -68,7 +62,6 @@ public class ElenaTTest extends BaseTest {
 
         Assert.assertTrue(actualText.contains(disableText));
     }
-
 
     public void disableProject(){
         getDriver().findElement(By.xpath("//span[text()='Elena Freestyle project']")).click();
@@ -86,14 +79,9 @@ public class ElenaTTest extends BaseTest {
         disableProject();
 
         getDriver().findElement(By.name("Submit")).click();
-
         boolean isWarningGone = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
                 .until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
 
-
         Assert.assertTrue(isWarningGone);
     }
-
-
-
 }
