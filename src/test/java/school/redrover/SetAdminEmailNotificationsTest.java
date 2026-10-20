@@ -10,7 +10,7 @@ import school.redrover.common.BaseTest;
 
 import java.time.Duration;
 
-public class ProzSetAdminEmailNotificationsTest extends BaseTest {
+public class SetAdminEmailNotificationsTest extends BaseTest {
 
     @Test
     public void testSettingAdminEmail() {
@@ -23,16 +23,10 @@ public class ProzSetAdminEmailNotificationsTest extends BaseTest {
         adminEmail.clear();
         adminEmail.sendKeys(mail);
         getDriver().findElement(By.cssSelector("button[name='Apply']")).click();
-
-        // Locally works 5/5 but fails 2/2 in CI/Run tests. For this reason "WebDriverWait" is used.
-        //Assert.assertEquals(getDriver().findElement(By.className("jenkins-notification--visible")).getText(), "Saved");
-
         WebElement successPopup = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-notification--visible")));
         Assert.assertEquals(successPopup.getText().trim(), "Saved");
-
         getDriver().navigate().refresh();
 
         Assert.assertEquals(getDriver().findElement(By.cssSelector("input[checkurl$='checkAdminAddress']")).getAttribute("value"), mail);
-
     }
 }
