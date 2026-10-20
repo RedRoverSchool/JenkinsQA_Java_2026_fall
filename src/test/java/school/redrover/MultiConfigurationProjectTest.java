@@ -27,4 +27,43 @@ public class MultiConfigurationProjectTest extends BaseTest {
 
         Assert.assertTrue(itemLink.getText().contains("MultiConfigurationProject"));
     }
+
+    @Test
+    public void testEnableOrDisableProject() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".jenkins-form, .app-page-body, form")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#name"))).sendKeys("MultiConfigurationProject");
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//label[input[@value='hudson.matrix.MatrixProject']]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#ok-button"))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("label[for='enable-disable-project']"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[name='Submit']"))).click();
+
+        WebElement alertForm = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("form#enable-project")));
+
+        Assert.assertTrue(alertForm.getText().contains("This project is currently disabled"));
+
+    }
+
+    @Test
+    public void testSetProjectDescription() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        final String projectName = "MultiConfigDescProject";
+        final String descriptionText = "This is an automated test description.";
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(projectName);
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//label[input[@value='hudson.matrix.MatrixProject']]"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+
+        WebElement descriptionField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("description")));
+        descriptionField.sendKeys(descriptionText);
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[name='Submit']"))).click();
+
+        WebElement actualDescription = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description")));
+
+        Assert.assertTrue(actualDescription.getText().contains(descriptionText),
+                "Описание проекта не отобразилось!");
+    }
 }
