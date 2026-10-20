@@ -62,19 +62,38 @@ public class ElenaTTest extends BaseTest {
 
         String disableText = "This project is currently disabled";
         createProject();
+        disableProject();
 
+        String actualText =  getDriver().findElement(By.className("warning")).getAttribute("innerText");
+
+        Assert.assertTrue(actualText.contains(disableText));
+    }
+
+
+    public void disableProject(){
         getDriver().findElement(By.xpath("//span[text()='Elena Freestyle project']")).click();
         getDriver().findElement(By.xpath("//a[contains(@class, 'task-link') and contains(@href, 'configure')]")).click();
         getDriver().findElement(By.cssSelector("label[for='enable-disable-project']")).click();
         getDriver().findElement(By.name("Submit")).click();
 
-        WebElement warningBlock = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+        new WebDriverWait(getDriver(), Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.className("warning")));
-
-
-        String actualText = warningBlock.getAttribute("innerText");
-
-        Assert.assertTrue(actualText.contains(disableText));
     }
+
+    @Test
+    public void testEnableProject(){
+        createProject();
+        disableProject();
+
+        getDriver().findElement(By.name("Submit")).click();
+
+        boolean isWarningGone = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
+
+
+        Assert.assertTrue(isWarningGone);
+    }
+
+
 
 }
