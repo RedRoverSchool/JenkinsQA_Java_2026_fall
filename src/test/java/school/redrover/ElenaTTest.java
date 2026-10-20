@@ -56,7 +56,7 @@ public class ElenaTTest extends BaseTest {
     }
 
 
-    @Ignore
+
     @Test
     public void testDisableProject(){
 
@@ -68,8 +68,11 @@ public class ElenaTTest extends BaseTest {
         getDriver().findElement(By.cssSelector("label[for='enable-disable-project']")).click();
         getDriver().findElement(By.name("Submit")).click();
 
-        //  сохраняем полученный текст в переменную, чтобы ниже сравнить через contains
-        String actualText = getDriver().findElement(By.className("warning")).getAttribute("innerText");
+        WebElement warningBlock = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.className("warning")));
+
+
+        String actualText = warningBlock.getAttribute("innerText");
 
         Assert.assertTrue(actualText.contains(disableText));
     }
