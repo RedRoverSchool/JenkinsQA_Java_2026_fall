@@ -32,6 +32,28 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         }
     }
 
+@Test(description = "TC_02.002.03")
+    public void testSaveDescriptionAndVerifyOnStatusPage() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
+        String projectName = "DescSave_" + System.currentTimeMillis();
+        String descText = "This is my test";
+
+        try {
+            createFreestyleProject(wait, projectName);
+
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href$='/configure']"))).click();
+            WebElement descField = wait.until(ExpectedConditions.elementToBeClickable(By.name("description")));
+            descField.sendKeys(descText);
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
+
+            WebElement descStatus = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content")));
+            Assert.assertEquals(descStatus.getText(), descText, "Текст на странице не совпал");
+        } finally {
+            deleteProject(projectName);
+        }
+    }
+
+    @Test
     private void createFreestyleProject(WebDriverWait wait, String name) {
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*='newJob']"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("name"))).sendKeys(name);
