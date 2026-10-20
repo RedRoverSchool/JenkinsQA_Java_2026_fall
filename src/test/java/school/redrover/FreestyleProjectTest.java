@@ -1,5 +1,4 @@
 package school.redrover;
-import org.testng.annotations.Ignore;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -13,7 +12,6 @@ public class FreestyleProjectTest extends BaseTest {
     final String itemName = "test";
     final String description = "test description";
 
-    @Ignore
     @Test
     public void testCreateFreestyleProject(){
 
@@ -23,7 +21,8 @@ public class FreestyleProjectTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/div[2]/div/div[2]/textarea")).sendKeys(description);
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.jenkins-submit-button.jenkins-button--primary")).click();
-        getDriver().findElement(By.cssSelector("#page-header > div.jenkins-header__main > div > a > span")).click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#page-header > div.jenkins-header__main > div > a > span"))).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector("#job_test > td:nth-child(3) > a > span")).getText(),
@@ -41,5 +40,4 @@ public class FreestyleProjectTest extends BaseTest {
 
         Assert.assertEquals(notification.getText(), "Saved");
     }
-
 }
