@@ -16,7 +16,8 @@ public class AidaJenkinsTest extends BaseTest {
 
         getDriver().findElement(By.id("root-action-UserAction")).click();
         getDriver().findElement(By.id("tasks")).click();
-        getDriver().findElement(By.xpath("//label[@for='radio-block-1']//span")).click();
+        getDriver().findElement(By.cssSelector("label[for='radio-block-1']")).click();
+
         getDriver().findElement(By.name(input)).click();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
