@@ -15,7 +15,7 @@ public class FolderTest extends BaseTest {
     private static String FOLDER_NAME = "NewFolder";
 
     @Test
-    public void testCreate(){
+    public void testCreate() {
         createFolder();
     }
 
@@ -81,7 +81,7 @@ public class FolderTest extends BaseTest {
     }
 
     @Test
-    public void testApplyChanges(){
+    public void testApplyChanges() {
         createFolder();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));

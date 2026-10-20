@@ -32,7 +32,7 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         }
     }
 
-@Test(description = "TC_02.002.03")
+    @Test(description = "TC_02.002.03")
     public void testSaveDescriptionAndVerifyOnStatusPage() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
         String projectName = "DescSave_" + System.currentTimeMillis();
@@ -52,7 +52,6 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
             deleteProject(projectName);
         }
     }
-
 
     private void createFreestyleProject(WebDriverWait wait, String name) {
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*='newJob']"))).click();

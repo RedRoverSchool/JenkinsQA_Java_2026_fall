@@ -31,6 +31,7 @@ public class AddDescriptionTest extends BaseTest {
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String actualDescription = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content"))).getText();
+
         Assert.assertEquals(actualDescription, description);
     }
 }

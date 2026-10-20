@@ -15,7 +15,7 @@ import java.time.Duration;
 public class ChangeThemeTest extends BaseTest {
 
     @Test
-    public void testChangeThemeFromHomePage(){
+    public void testChangeThemeFromHomePage() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
@@ -31,7 +31,7 @@ public class ChangeThemeTest extends BaseTest {
         darkThemeIcon.click();
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-        Assert.assertTrue(isDarkTheme);
 
+        Assert.assertTrue(isDarkTheme);
     }
 }
