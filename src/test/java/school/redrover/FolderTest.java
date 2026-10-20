@@ -67,18 +67,12 @@ public class FolderTest extends BaseTest {
                 By.xpath("//textarea[contains(@name, 'description')]")));
         descriptionField.clear();
         descriptionField.sendKeys(descriptionText);
-
-        wait.until(ExpectedConditions.textToBePresentInElementValue(descriptionField, descriptionText));
+        displayNameField.click();
         wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
-        wait.until(ExpectedConditions.urlContains("job/ConfigTestFolder"));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
-        WebElement pageHeader = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
-
-        Assert.assertTrue(pageHeader.getText().contains(newDisplayName), "Новое имя папки не отобразилось!");
-
-        WebElement actualDescription = wait.until(ExpectedConditions.visibilityOfElementLocated(
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), newDisplayName));
+        WebElement actualDescriptionElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//*[contains(text(), '" + descriptionText + "')]")));
 
-        Assert.assertTrue(actualDescription.isDisplayed(), "Описание не отобразилось на странице!");
+        Assert.assertTrue(actualDescriptionElement.isDisplayed(), "Описание не отобразилось на странице!");
     }
 }
