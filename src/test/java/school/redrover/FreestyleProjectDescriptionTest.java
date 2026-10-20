@@ -53,7 +53,7 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         }
     }
 
-    @Test
+
     private void createFreestyleProject(WebDriverWait wait, String name) {
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*='newJob']"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("name"))).sendKeys(name);
