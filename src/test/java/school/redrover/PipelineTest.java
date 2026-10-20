@@ -55,7 +55,6 @@ public class PipelineTest extends BaseTest {
                 "Welcome to Jenkins!");
     }
 
-    @Ignore
     @Test
     public void testRenamePipeline() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(3));
@@ -65,10 +64,8 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.xpath("//a[@href='newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-        getDriver().findElement((By.id("ok-button"))).click();
-
-        getDriver().findElement(By.name("Submit")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated((By.id("jenkins-head-icon")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(
