@@ -100,13 +100,14 @@ public class FolderTest extends BaseTest {
         getDriver().findElement(By.cssSelector("label.attach-previous")).click();
         getDriver().findElement(By.cssSelector("button.jenkins-button.apply-button")).click();
 
-        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(
-                        By.cssSelector(".jenkins-notification--success"))).isDisplayed(), "Success notification should be displayed");
         Assert.assertTrue(
                 wait.until(ExpectedConditions.urlMatches(
                         ".*/job/" + FOLDER_NAME + "/configure/?$")),
                 "User should remain on the folder configuration page"
         );
-
+        Assert.assertFalse(
+                getDriver().findElement(By.cssSelector("input[name='_.recursive']")).isSelected(),
+                "Recursive checkbox should not be selected"
+        );
     }
 }
