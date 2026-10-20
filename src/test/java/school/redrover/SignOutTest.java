@@ -14,22 +14,19 @@ import java.util.List;
 
 public class SignOutTest extends BaseTest {
 
-    // ТЕСТ ДЛЯ (TC_08.002.001)
     @Test
     public void testSignOutRedirectsToLoginPage() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        Actions actions = new Actions(getDriver());
-
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-head-icon")));
 
         WebElement userMenuButton = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.id("root-action-UserAction")));
 
+        Actions actions = new Actions(getDriver());
         actions.moveToElement(userMenuButton).perform();
 
         WebElement signOutLink = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector("a[href='/logout']")));
-
         signOutLink.click();
 
         wait.until(ExpectedConditions.urlContains("login"));
@@ -41,16 +38,15 @@ public class SignOutTest extends BaseTest {
         Assert.assertEquals(passwordField.getAttribute("value"), "", "Поле Password не пустое!");
     }
 
-    // ТЕСТ ДЛЯ  (TC_08.002.002)
     @Test
     public void testSignOutHasNoConfirmationDialog() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        Actions actions = new Actions(getDriver());
-
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-head-icon")));
 
         WebElement userMenuButton = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.id("root-action-UserAction")));
+
+        Actions actions = new Actions(getDriver());
         actions.moveToElement(userMenuButton).perform();
 
         WebElement signOutLink = wait.until(ExpectedConditions.visibilityOfElementLocated(
@@ -58,7 +54,6 @@ public class SignOutTest extends BaseTest {
         signOutLink.click();
 
         wait.until(ExpectedConditions.urlContains("login"));
-
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("j_username")));
 
         List<WebElement> dialogs = getDriver().findElements(By.cssSelector(".jenkins-dialog, .modal"));
