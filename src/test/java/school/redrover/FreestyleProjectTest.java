@@ -21,9 +21,7 @@ public class FreestyleProjectTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/div[2]/div/div[2]/textarea")).sendKeys(description);
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.jenkins-submit-button.jenkins-button--primary")).click();
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10)).until(
-                ExpectedConditions.elementToBeClickable(By.cssSelector("#page-header > div.jenkins-header__main > div > a > span"))
-        ).click();
+        getDriver().findElement(By.cssSelector("#page-header > div.jenkins-header__main > div > a > span")).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector("#job_test > td:nth-child(3) > a > span")).getText(),
