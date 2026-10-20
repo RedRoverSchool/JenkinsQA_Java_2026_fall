@@ -29,8 +29,6 @@ public class DescriptionTest extends BaseTest {
         createDescription();
 
         Assert.assertEquals(getDriver().findElement(By.id(DESCRIPTION_CONTENT)).getText(), DESCRIPTION_TEXT);
-
-
     }
 
     @Test
@@ -48,8 +46,6 @@ public class DescriptionTest extends BaseTest {
                 By.id(DESCRIPTION_CONTENT), DESCRIPTION_TEXT_NEW));
 
         Assert.assertEquals(getDriver().findElement(By.id(DESCRIPTION_CONTENT)).getText(), DESCRIPTION_TEXT_NEW);
-
-
     }
 
     private void createDescription() {
@@ -57,26 +53,20 @@ public class DescriptionTest extends BaseTest {
         modalWindow().sendKeys((DESCRIPTION_TEXT));
         saveClick();
         getDriver().findElement(By.id(SIDE_PANEL)).click();
-
     }
 
     private WebElement modalWindow() {
 
         return getDriver().findElement(By.id(MODAL_WINDOW));
-
     }
 
     private void descriptionClick() {
 
         getDriver().findElement(By.xpath(DESCRIPTION_CLICK)).click();
-
     }
 
     private void saveClick() {
 
         getDriver().findElement(By.xpath(SAVE_CLICK)).click();
-
     }
-
-
 }
