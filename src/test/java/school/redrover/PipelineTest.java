@@ -3,10 +3,10 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -15,6 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PipelineTest extends BaseTest {
+    public final By NEW_ITEM_ICON = By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]");
+    public final By ITEM_NAME_FIELD = By.id("name");
+    public final By JOB_ITEM_TYPE = By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob");
+    public final By SUBMIT_BUTTON = By.id("ok-button");
+    public final By CONFIGURE_PIPELINE_LINK = By.xpath("//span[normalize-space(.)='Pipeline']");
 
     @Test
     public void testCreatePipeline() {
@@ -40,6 +45,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated((By.id("jenkins-head-icon"))));
         wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(
@@ -139,16 +145,54 @@ public class PipelineTest extends BaseTest {
 
     @Test(dataProvider = "unsupportedCharacters")
     public void testCreatePipelineWithUnsupportedCharacters(String invalidPipelineName) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(7));
         String expectedErrorMsg = String.format("‘%s’ is an unsafe character", invalidPipelineName);
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys("test" + invalidPipelineName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
-        WebElement errorElement = wait.until(
-                ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']"))));
+        String errorElementText = wait.until(
+                ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']")))).getText();
 
-        Assert.assertEquals(errorElement.getText(), expectedErrorMsg);
+        Assert.assertEquals(errorElementText, expectedErrorMsg);
+    }
+
+    @Test
+    public void testDefinePipelineScriptFromSample() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        String projectName = "testPipeline";
+
+        clickNewItemIcon();
+        inputItemName(projectName);
+        selectJobItemType();
+        clickSubmitButton();
+        clickConfigurePipelineLink();
+        WebElement samples = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
+        Select select = new Select(samples);
+        select.selectByValue("hello");
+
+        Assert.assertEquals(getDriver().findElement(By.xpath("//span[@class='ace_identifier']")).getText(), "pipeline");
+    }
+
+    public void clickNewItemIcon() {
+        getDriver().findElement(NEW_ITEM_ICON).click();
+    }
+
+    public void inputItemName(String projectName) {
+        getDriver().findElement(ITEM_NAME_FIELD).sendKeys(projectName);
+    }
+
+    public void selectJobItemType() {
+        getDriver().findElement(JOB_ITEM_TYPE).click();
+    }
+
+    public void clickSubmitButton() {
+        getDriver().findElement(SUBMIT_BUTTON).click();
+    }
+
+    public void clickConfigurePipelineLink() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(CONFIGURE_PIPELINE_LINK)).click();
     }
 }
