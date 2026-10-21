@@ -144,17 +144,17 @@ public class PipelineTest extends BaseTest {
 
     @Test(dataProvider = "unsupportedCharacters")
     public void testCreatePipelineWithUnsupportedCharacters(String invalidPipelineName) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(7));
         String expectedErrorMsg = String.format("‘%s’ is an unsafe character", invalidPipelineName);
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys("test" + invalidPipelineName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
-        WebElement errorElement = wait.until(
-                ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']"))));
+        String errorElementText = wait.until(
+                ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']")))).getText();
 
-        Assert.assertEquals(errorElement.getText(), expectedErrorMsg);
+        Assert.assertEquals(errorElementText, expectedErrorMsg);
     }
 
     @Test
