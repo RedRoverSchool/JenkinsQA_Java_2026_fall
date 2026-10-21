@@ -15,6 +15,7 @@ import java.util.Locale;
 public class GlobalSearchTest extends BaseTest {
 
     private static final String SEARCH_WORD = "item";
+    private static final String MODIFY_SEARCH_WORD = "ends";
     private static final String[] ITEMS_TO_CREATE = {
             "has item inside",
             "ends with item",
@@ -49,11 +50,11 @@ public class GlobalSearchTest extends BaseTest {
         }
     }
 
-    private int countMatchingItems(String[] itemNames) {
+    private int countMatchingItems(String[] itemNames, String searchWord) {
         int count = 0;
 
         for (String name : itemNames) {
-            if (name.toLowerCase(Locale.ROOT).contains(SEARCH_WORD)) {
+            if (name.toLowerCase(Locale.ROOT).contains(searchWord)) {
                 count++;
             }
         }
@@ -65,7 +66,7 @@ public class GlobalSearchTest extends BaseTest {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         createItems(ITEMS_TO_CREATE);
-        int expectedMatching = countMatchingItems(ITEMS_TO_CREATE);
+        int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
 
         getDriver().findElement(By.id("root-action-SearchAction")).click();
         getDriver().findElement(By.id("command-bar")).sendKeys(SEARCH_WORD);
@@ -89,5 +90,45 @@ public class GlobalSearchTest extends BaseTest {
 
         Assert.assertTrue(
                 getDriver().findElement(By.cssSelector("#main-panel h1")).getText().contains(clickedItemText));
+    }
+
+    @Test
+    public void testModifySearch() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
+        createItems(ITEMS_TO_CREATE);
+        int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
+
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getDriver().findElement(By.id("command-bar")).sendKeys(SEARCH_WORD);
+
+        wait.until(ExpectedConditions.numberOfElementsToBe(
+                By.cssSelector("#search-results a"), expectedMatching));
+
+        List<WebElement> searchResults = getDriver().findElements(By.cssSelector("#search-results a"));
+
+        Assert.assertEquals(searchResults.size(), expectedMatching);
+
+        for (WebElement result : searchResults) {
+            Assert.assertTrue(
+                    result.getText().toLowerCase(Locale.ROOT).contains(SEARCH_WORD));
+        }
+
+        getDriver().findElement(By.id("command-bar")).clear();
+        getDriver().findElement(By.id("command-bar")).sendKeys(MODIFY_SEARCH_WORD);
+
+        expectedMatching = countMatchingItems(ITEMS_TO_CREATE, MODIFY_SEARCH_WORD);
+
+        wait.until(ExpectedConditions.numberOfElementsToBe(
+                By.cssSelector("#search-results a"), expectedMatching));
+
+        List<WebElement> modifySearchResults = getDriver().findElements(By.cssSelector("#search-results a"));
+
+        Assert.assertEquals(modifySearchResults.size(), expectedMatching);
+
+        for (WebElement result : modifySearchResults) {
+            Assert.assertTrue(
+                    result.getText().toLowerCase(Locale.ROOT).contains(MODIFY_SEARCH_WORD));
+        }
     }
 }
