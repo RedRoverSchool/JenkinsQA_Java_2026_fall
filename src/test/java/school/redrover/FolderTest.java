@@ -20,15 +20,17 @@ public class FolderTest extends BaseTest {
     }
 
     public void createFolder() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
         getDriver().findElement(By.cssSelector("a.task-link")).click();
         getDriver().findElement(By.id("name")).sendKeys(FOLDER_NAME);
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
 
+        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/configure/?$"));
         getDriver().findElement(By.name("_.displayNameOrNull")).sendKeys(FOLDER_NAME);
         getDriver().findElement(By.name("Submit")).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
 
@@ -58,7 +60,8 @@ public class FolderTest extends BaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(folderName);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//label[input[@value='com.cloudbees.hudson.plugins.folder.Folder']]"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        wait.until(ExpectedConditions.urlMatches(".*/job/" + folderName + "/configure/?$"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.linkText(folderName))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Configure"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
@@ -109,5 +112,28 @@ public class FolderTest extends BaseTest {
                 getDriver().findElement(By.cssSelector("input[name='_.recursive']")).isSelected(),
                 "Recursive checkbox should not be selected"
         );
+    }
+
+    @Test
+    public void testCreateNestedFolder () {
+        final String childFolder = "childFolder";
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
+        createFolder();
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText(FOLDER_NAME))).click();
+        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
+        getDriver().findElement(By.cssSelector("a[href$='/job/" + FOLDER_NAME + "/newJob']")).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(childFolder);
+        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/job/" + childFolder + "/configure"));
+        wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
+        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/job/" + childFolder + "/?$"));
+        getDriver().findElement(By.cssSelector("a[href$='/job/" + FOLDER_NAME + "/']")).click();
+
+        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(childFolder))).isDisplayed(),"childFolder should be listed inside " + FOLDER_NAME);
     }
 }
