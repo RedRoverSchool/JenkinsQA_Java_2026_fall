@@ -191,6 +191,7 @@ public class PipelineTest extends BaseTest {
     }
 
     public void clickConfigurePipelineLink() {
-        getDriver().findElement(CONFIGURE_PIPELINE_LINK).click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(CONFIGURE_PIPELINE_LINK)).click();
     }
 }
