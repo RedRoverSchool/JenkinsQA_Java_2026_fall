@@ -16,7 +16,8 @@ import java.util.Locale;
 public class VictoriaTest extends BaseTest {
 
     private final String targetWord = "item";
-   @Ignore
+
+    @Ignore
     @Test
     public void testSearchReturnsMatchingItems() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));

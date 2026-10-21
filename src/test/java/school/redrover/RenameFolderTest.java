@@ -8,13 +8,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+
 import java.time.Duration;
 
 public class RenameFolderTest extends BaseTest {
 
 
     @Test
-    public void renameFolderTest(){
+    public void renameFolderTest() {
         String folderName = "First";
         String newFolderName = "Second";
 
@@ -25,8 +26,6 @@ public class RenameFolderTest extends BaseTest {
         getDriver().findElement(By.id("command-bar")).sendKeys(folderName);
         getDriver().findElement(By.xpath("//a[contains(@href, '/job/First')]")).click();
         waitForClickabilityAndClick(getDriver(), By.xpath("//a[contains(@href, '/confirm-rename')]"));
-
-
 
 
         //Меняем название
@@ -51,11 +50,11 @@ public class RenameFolderTest extends BaseTest {
     }
 
 
-    private void backToMainPage(){
-        waitForClickabilityAndClick(getDriver(),By.className("app-jenkins-logo"));
+    private void backToMainPage() {
+        waitForClickabilityAndClick(getDriver(), By.className("app-jenkins-logo"));
     }
 
-    private void createdFolder(String name){
+    private void createdFolder(String name) {
         getDriver().findElement(By.cssSelector("a.task-link")).click();
         getDriver().findElement(By.id("name")).sendKeys(name);
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
@@ -64,10 +63,9 @@ public class RenameFolderTest extends BaseTest {
         backToMainPage();
     }
 
-    private void waitForClickabilityAndClick (WebDriver driver, By locator){
+    private void waitForClickabilityAndClick(WebDriver driver, By locator) {
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(locator))
                 .click();
     }
-
 }

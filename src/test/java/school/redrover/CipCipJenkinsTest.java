@@ -19,21 +19,23 @@ public class CipCipJenkinsTest extends BaseTest {
 
     private final String TEST_NAME = "New test Job";
     private final By JOB_NAME = By.linkText(TEST_NAME);
+
     @Test
-    public void testClickButtonCreateJob(){
+    public void testClickButtonCreateJob() {
         clickButtonCreateJob();
         Assert.assertEquals(getDriver().getTitle(), "New Item - Jenkins");
     }
 
     @Test
-    public void testChooseItemType(){
+    public void testChooseItemType() {
         clickButtonCreateJob();
         chooseItemType();
         WebElement checkButton = getDriver().findElement(TYPE_CHOSEN);
         Assert.assertTrue(checkButton.isSelected());
     }
+
     @Test
-    public void testClickOKButton(){
+    public void testClickOKButton() {
         createJob();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
@@ -41,31 +43,33 @@ public class CipCipJenkinsTest extends BaseTest {
         wait.until(ExpectedConditions.titleIs(expectedTitle));
         Assert.assertEquals(getDriver().getTitle(), expectedTitle);
     }
+
     @Test
-    public void testCheckJobName(){
+    public void testCheckJobName() {
         createJob();
         String actualJobName = getDriver().findElement(JOB_NAME).getText();
-        Assert.assertEquals(actualJobName,TEST_NAME);
+        Assert.assertEquals(actualJobName, TEST_NAME);
     }
 
-    public void createJob(){
+    public void createJob() {
         clickButtonCreateJob();
         fillItemName();
         chooseItemType();
         getDriver().findElement(OK_BUTTON).click();
     }
-    public void clickButtonCreateJob(){
+
+    public void clickButtonCreateJob() {
         getDriver().findElement(CREATE_JOB_BUTTON).click();
     }
-    public void fillItemName(){
-        WebElement field =  getDriver().findElement(ITEM_FIELD);
+
+    public void fillItemName() {
+        WebElement field = getDriver().findElement(ITEM_FIELD);
         field.click();
         field.sendKeys(TEST_NAME);
     }
-    public void chooseItemType(){
-        WebElement type =  getDriver().findElement(PIPELINE_TYPE);
+
+    public void chooseItemType() {
+        WebElement type = getDriver().findElement(PIPELINE_TYPE);
         type.click();
     }
-
-
 }

@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+
 import java.time.Duration;
 
 public class IlyaVorobyevJenkinsTest extends BaseTest {
@@ -30,17 +31,14 @@ public class IlyaVorobyevJenkinsTest extends BaseTest {
 
     }
 
-
     private void returnToMainPage() {
         getDriver().findElement(By.cssSelector("#page-header > div.jenkins-header__main > div > a > span")).click();
         getWait().until(ExpectedConditions.not(ExpectedConditions.urlContains("configure")));
     }
 
-
     private String getElementText(By locator) {
         return getDriver().findElement(locator).getText();
     }
-
 
     @Test
     public void testMainPageTexts() {
@@ -65,9 +63,7 @@ public class IlyaVorobyevJenkinsTest extends BaseTest {
                 "Проверка текста заголовка");
         Assert.assertEquals(getElementText(headerBodyTextLocator), expectedHeaderBodyText,
                 "Проверка текста тела заголовка");
-
     }
-
 
     @Test
     public void testCreateTwoFolders() {
@@ -82,8 +78,5 @@ public class IlyaVorobyevJenkinsTest extends BaseTest {
 
         Assert.assertTrue(getDriver().findElement(By.id("job_" + folderOneName)).isDisplayed());
         Assert.assertTrue(getDriver().findElement(By.id("job_" + folderTwoName)).isDisplayed());
-
     }
-
-
 }

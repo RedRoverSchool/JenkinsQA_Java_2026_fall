@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+
 import java.time.Duration;
 
 
@@ -42,7 +43,6 @@ public class MultiConfigurationProjectTest extends BaseTest {
         WebElement alertForm = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("form#enable-project")));
 
         Assert.assertTrue(alertForm.getText().contains("This project is currently disabled"));
-
     }
 
     @Test

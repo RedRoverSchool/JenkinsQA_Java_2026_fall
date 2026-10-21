@@ -23,5 +23,4 @@ public class NikaFirstTest extends BaseTest {
         getDriver().findElement(By.id("jenkins-head-icon")).click();
         Assert.assertEquals(getDriver().findElement(By.xpath("(//*[@class='jenkins-table__link model-link inside'])[1]/span")).getText(),folderName);
     }
-
 }

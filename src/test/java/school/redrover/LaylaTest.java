@@ -14,7 +14,7 @@ import java.time.Duration;
 public class LaylaTest extends BaseTest {
 
     @Test
-    public void testLayla(){
+    public void testLayla() {
         final String folderName = "MyFirstFolder";
 
         getDriver().findElement(By.className("content-block__link")).click();

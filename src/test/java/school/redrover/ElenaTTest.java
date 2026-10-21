@@ -7,7 +7,9 @@ import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
+
 import org.openqa.selenium.WebElement;
 
 public class ElenaTTest extends BaseTest {
@@ -31,7 +33,7 @@ public class ElenaTTest extends BaseTest {
     }
 
     @Test
-    public void newItemFreestyleProject(){
+    public void newItemFreestyleProject() {
         String itemName = "Elena Freestyle project";
         createProject();
 
@@ -39,7 +41,7 @@ public class ElenaTTest extends BaseTest {
                 itemName);
     }
 
-    private void createProject(){
+    private void createProject() {
         String itemName = "Elena Freestyle project";
 
         getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[1]/span/a")).click();
@@ -52,18 +54,18 @@ public class ElenaTTest extends BaseTest {
     }
 
     @Test
-    public void testDisableProject(){
+    public void testDisableProject() {
 
         String disableText = "This project is currently disabled";
         createProject();
         disableProject();
 
-        String actualText =  getDriver().findElement(By.className("warning")).getAttribute("innerText");
+        String actualText = getDriver().findElement(By.className("warning")).getAttribute("innerText");
 
         Assert.assertTrue(actualText.contains(disableText));
     }
 
-    public void disableProject(){
+    public void disableProject() {
         getDriver().findElement(By.xpath("//span[text()='Elena Freestyle project']")).click();
         getDriver().findElement(By.xpath("//a[contains(@class, 'task-link') and contains(@href, 'configure')]")).click();
         getDriver().findElement(By.cssSelector("label[for='enable-disable-project']")).click();
@@ -74,7 +76,7 @@ public class ElenaTTest extends BaseTest {
     }
 
     @Test
-    public void testEnableProject(){
+    public void testEnableProject() {
         createProject();
         disableProject();
 
