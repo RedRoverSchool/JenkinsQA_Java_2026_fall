@@ -32,7 +32,7 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         }
     }
 
-    @Test(description = "TC_02.002.03")
+@Test(description = "TC_02.002.03")
     public void testSaveDescriptionAndVerifyOnStatusPage() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
         String projectName = "DescSave_" + System.currentTimeMillis();
@@ -48,6 +48,31 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
 
             WebElement descStatus = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content")));
             Assert.assertEquals(descStatus.getText(), descText, "Текст на странице не совпал");
+        } finally {
+            deleteProject(projectName);
+        }
+    }
+@Test(description = "TC_02_002_04")
+    public void testAddNewDescription(){
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
+        String projectName = "Desc_" + System.currentTimeMillis();
+        String descAddText = "A new text for description";
+
+        try {
+            createFreestyleProject(wait, projectName);
+
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.linkText(projectName))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-link"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-textarea"))).sendKeys(descAddText);
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
+
+            WebElement descNew = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content")));
+            Assert.assertTrue(descNew.isDisplayed(), "Мы не на странице Status");
+            Assert.assertEquals(descNew.getText(), descAddText, "Текст не совпал");
+            WebElement linkEdit = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-link")));
+            Assert.assertTrue(linkEdit.getText().contains("Edit description"), "Текст ссылки не изменился на 'Edit description'");
+
         } finally {
             deleteProject(projectName);
         }
