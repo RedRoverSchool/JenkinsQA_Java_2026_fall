@@ -29,8 +29,9 @@ public class SignInTest extends BaseTest {
     }
     @Test
     public void testCorrectLogin(){
+        String password = System.getProperty("jenkins.password", "admin");
         getDriver().findElement(By.cssSelector("#j_username")).sendKeys("admin");
-        getDriver().findElement(By.cssSelector("#j_password")).sendKeys("admin");
+        getDriver().findElement(By.cssSelector("#j_password")).sendKeys(password);
         getDriver().findElement(By.xpath("//*[@id='main-panel']/div/form/button")).click();
 
         String expectedUrl = "http://localhost:8080/";
