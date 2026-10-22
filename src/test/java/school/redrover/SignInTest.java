@@ -49,14 +49,17 @@ public class SignInTest extends BaseTest {
     }
 
     public String getJenkinsPassword() {
-        // Путь к секретному паролю Jenkins по умолчанию
-        Path tokenPath = Paths.get(System.getProperty("user.home"), ".jenkins", "secrets", "initialAdminPassword");
+        Path warPasswordPath = Paths.get(System.getProperty("user.home"), ".jenkins", "secrets", "initialAdminPassword");
+        Path customPasswordPath = Paths.get("/var/jenkins_home/secrets/initialAdminPassword");
+
         try {
-            if (Files.exists(tokenPath)) {
-                return Files.readString(tokenPath).trim();
+            if (Files.exists(warPasswordPath)) {
+                return Files.readString(warPasswordPath).trim();
+            } else if (Files.exists(customPasswordPath)) {
+                return Files.readString(customPasswordPath).trim();
             }
         } catch (Exception e) {
-            // Если не удалось прочитать, используем дефолтный
+            System.out.println("Не удалось прочитать файл пароля: " + e.getMessage());
         }
         return "admin";
 
