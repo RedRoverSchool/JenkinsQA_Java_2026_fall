@@ -16,7 +16,7 @@ public class ElizavetaJenkinsTest extends BaseTest {
 
     @Ignore("Падает в CI: Timeout и StaleElement")
     @Test
-    public void testElizavetaJenkins () {
+    public void testElizavetaJenkins() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         getDriver().get(ProjectUtils.getUrl() + "user/" + ProjectUtils.getUserName() + "/account/");

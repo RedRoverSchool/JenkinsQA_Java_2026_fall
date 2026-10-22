@@ -22,61 +22,35 @@ public class DescriptionTest extends BaseTest {
     private static final String SIDE_PANEL = "side-panel";
     private static final String MODAL_WINDOW = "description-textarea";
 
-
     @Test
     public void testCreateDescription() {
 
         createDescription();
 
         Assert.assertEquals(getDriver().findElement(By.id(DESCRIPTION_CONTENT)).getText(), DESCRIPTION_TEXT);
-
-
     }
 
     @Test
     public void testUpdateDescription() {
 
         createDescription();
-        descriptionClick();
-        modalWindow().click();
-        modalWindow().sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.DELETE);
-        modalWindow().sendKeys((DESCRIPTION_TEXT_NEW));
-        saveClick();
+        getDriver().findElement(By.xpath(DESCRIPTION_CLICK)).click();
+        getDriver().findElement(By.id(MODAL_WINDOW)).click();
+        getDriver().findElement(By.id(MODAL_WINDOW)).sendKeys(Keys.chord(Keys.CONTROL, "a"), Keys.DELETE);
+        getDriver().findElement(By.id(MODAL_WINDOW)).sendKeys((DESCRIPTION_TEXT_NEW));
+        getDriver().findElement(By.xpath(SAVE_CLICK)).click();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.textToBePresentInElementLocated(
                 By.id(DESCRIPTION_CONTENT), DESCRIPTION_TEXT_NEW));
 
         Assert.assertEquals(getDriver().findElement(By.id(DESCRIPTION_CONTENT)).getText(), DESCRIPTION_TEXT_NEW);
-
-
     }
 
     private void createDescription() {
-        descriptionClick();
-        modalWindow().sendKeys((DESCRIPTION_TEXT));
-        saveClick();
-        getDriver().findElement(By.id(SIDE_PANEL)).click();
-
-    }
-
-    private WebElement modalWindow() {
-
-        return getDriver().findElement(By.id(MODAL_WINDOW));
-
-    }
-
-    private void descriptionClick() {
-
         getDriver().findElement(By.xpath(DESCRIPTION_CLICK)).click();
-
-    }
-
-    private void saveClick() {
-
+        getDriver().findElement(By.id(MODAL_WINDOW)).sendKeys((DESCRIPTION_TEXT));
         getDriver().findElement(By.xpath(SAVE_CLICK)).click();
-
+        getDriver().findElement(By.id(SIDE_PANEL)).click();
     }
-
-
 }

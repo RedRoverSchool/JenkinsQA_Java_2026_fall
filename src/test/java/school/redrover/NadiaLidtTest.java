@@ -22,7 +22,7 @@ public class NadiaLidtTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(expectedResult);
 
         WebDriver driver = getDriver();
-        JavascriptExecutor jse = (JavascriptExecutor)driver;
+        JavascriptExecutor jse = (JavascriptExecutor) driver;
         jse.executeScript("window.scrollBy(0, 1000)", "");
         getDriver().findElement(By.className("jenkins_branch_OrganizationFolder")).click();
         getDriver().findElement(By.id("ok-button")).click();
@@ -34,6 +34,4 @@ public class NadiaLidtTest extends BaseTest {
 
         Assert.assertTrue(actualResult.contains(expectedResult));
     }
-
-
 }

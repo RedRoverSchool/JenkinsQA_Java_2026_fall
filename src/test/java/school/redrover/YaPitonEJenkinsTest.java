@@ -25,7 +25,5 @@ public class YaPitonEJenkinsTest extends BaseTest {
 
         getDriver().findElement(By.xpath("//a[@data-title=\"Delete Folder\"]")).click();
         getDriver().findElement(By.className("jenkins-button--primary")).click();
-
     }
-
 }
