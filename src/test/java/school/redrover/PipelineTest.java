@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PipelineTest extends BaseTest {
-    public final By NEW_ITEM_ICON = By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]");
-    public final By ITEM_NAME_FIELD = By.id("name");
-    public final By JOB_ITEM_TYPE = By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob");
-    public final By SUBMIT_BUTTON = By.id("ok-button");
-    public final By CONFIGURE_PIPELINE_LINK = By.xpath("//span[normalize-space(.)='Pipeline']");
+    public static final By NEW_ITEM_ICON = By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]");
+    public static final By ITEM_NAME_FIELD = By.id("name");
+    public static final By JOB_ITEM_TYPE = By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob");
+    public static final By SUBMIT_BUTTON = By.id("ok-button");
+    public static final By CONFIGURE_PIPELINE_LINK = By.xpath("//span[normalize-space(.)='Pipeline']");
 
     @Test
     public void testCreatePipeline() {
@@ -96,13 +96,9 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-
         wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
-
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
-
         getDriver().findElement(By.id("name")).sendKeys(projectName);
-
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
         WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'A job already exists')]")));
@@ -118,13 +114,9 @@ public class PipelineTest extends BaseTest {
         final String projectName = "SkipConfigPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
-
         getDriver().findElement(By.id("name")).sendKeys(projectName);
-
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-
         wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-
         wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
 
         WebElement itemInList = wait.until(ExpectedConditions.visibilityOfElementLocated(
@@ -152,6 +144,8 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys("test" + invalidPipelineName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
+        wait.until(
+                ExpectedConditions.presenceOfElementLocated((By.xpath("//div[@class='error']"))));
         String errorElementText = wait.until(
                 ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']")))).getText();
 
