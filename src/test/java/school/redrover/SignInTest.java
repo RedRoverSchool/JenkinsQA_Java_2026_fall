@@ -10,11 +10,14 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Duration;
 
 public class SignInTest extends BaseTest {
     @BeforeMethod
-    public void loginPage(){
+    public void loginPage() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         WebElement userMenuButton = wait.until(ExpectedConditions.presenceOfElementLocated(
@@ -27,11 +30,13 @@ public class SignInTest extends BaseTest {
                 By.cssSelector("a[href='/logout']")));
         signOutLink.click();
     }
+
+
     @Test
-    public void testCorrectLogin(){
-        String password = System.getProperty("jenkins.password", "admin");
+    public void testCorrectLogin() {
+
         getDriver().findElement(By.cssSelector("#j_username")).sendKeys("admin");
-        getDriver().findElement(By.cssSelector("#j_password")).sendKeys(password);
+        getDriver().findElement(By.cssSelector("#j_password")).sendKeys(getJenkinsPassword());
         getDriver().findElement(By.xpath("//*[@id='main-panel']/div/form/button")).click();
 
         String expectedUrl = "http://localhost:8080/";
@@ -41,5 +46,19 @@ public class SignInTest extends BaseTest {
 
         Assert.assertEquals(actualUrl, expectedUrl,
                 "Адрес страницы не совпадает с ожидаемым!");
+    }
+
+    public String getJenkinsPassword() {
+        // Путь к секретному паролю Jenkins по умолчанию
+        Path tokenPath = Paths.get(System.getProperty("user.home"), ".jenkins", "secrets", "initialAdminPassword");
+        try {
+            if (Files.exists(tokenPath)) {
+                return Files.readString(tokenPath).trim();
+            }
+        } catch (Exception e) {
+            // Если не удалось прочитать, используем дефолтный
+        }
+        return "admin";
+
     }
 }
