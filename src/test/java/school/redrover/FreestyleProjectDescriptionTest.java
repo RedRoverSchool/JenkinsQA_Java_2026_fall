@@ -78,6 +78,34 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         }
     }
 
+    @Test (description = "TC_02_002_05")
+    public void testUpdateDescription() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
+        String projectName = "Desc_" + System.currentTimeMillis();
+        String descEdit = "I edited the text";
+        String oldText = "There was an old text here";
+        try {
+            createFreestyleProject(wait, projectName);
+
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.linkText(projectName))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-link"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-textarea"))).sendKeys(oldText);
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("description-content"), oldText));
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-link"))).click();
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-textarea"))).clear();
+            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-textarea"))).sendKeys(descEdit);
+            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
+            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("description-content"), descEdit));
+
+            WebElement descEditField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content")));
+            Assert.assertEquals(descEditField.getText(), descEdit, "Текст не изменился");
+        } finally {
+            deleteProject(projectName);
+        }
+    }
+
     private void createFreestyleProject(WebDriverWait wait, String name) {
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*='newJob']"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("name"))).sendKeys(name);
