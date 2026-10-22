@@ -31,7 +31,7 @@ public class SignInTest extends BaseTest {
     public void testCorrectLogin(){
         getDriver().findElement(By.cssSelector("#j_username")).sendKeys("admin");
         getDriver().findElement(By.cssSelector("#j_password")).sendKeys("admin");
-        getDriver().findElement(By.cssSelector(".jenkins-button--primary")).click();
+        getDriver().findElement(By.xpath("//*[@id='main-panel']/div/form/button")).click();
 
         String expectedUrl = "http://localhost:8080/";
         String actualUrl = getDriver().getCurrentUrl();
