@@ -9,9 +9,10 @@ import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import java.time.Duration;
 
-public class QuietPeriodTest extends BaseTest {
+public class AdvancedPipelineConfigurationTest extends BaseTest {
     String pipeLineName = "Pipeline 1";
-    String qpSeconds = "10";
+    String qpPositiveSeconds = "10";
+    String qpNegativeSeconds = "-2";
     WebDriverWait wait;
 
     @BeforeMethod
@@ -25,13 +26,7 @@ public class QuietPeriodTest extends BaseTest {
 
     @Test
     public void testQuietPeriodPositiveValue() throws InterruptedException {
-        openAdvancedDropdown();
-        wait.until(ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("input[name='hasCustomQuietPeriod'] + label")))
-                .click();
-        WebElement quietPeriodSeconds = getDriver().findElement(By.cssSelector("input[name='quiet_period']"));
-        quietPeriodSeconds.clear();
-        quietPeriodSeconds.sendKeys(qpSeconds);
+        setQuietPeriod(qpPositiveSeconds);
         getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
         wait.until(ExpectedConditions.elementToBeClickable(
                         By.cssSelector("a[href$=configure]")))
@@ -39,7 +34,19 @@ public class QuietPeriodTest extends BaseTest {
         openAdvancedDropdown();
         WebElement getQuietPeriodSeconds = getDriver().findElement(By.cssSelector("input[name='quiet_period']"));
 
-        Assert.assertEquals(getQuietPeriodSeconds.getAttribute("value"), qpSeconds);
+        Assert.assertEquals(getQuietPeriodSeconds.getAttribute("value"), qpPositiveSeconds);
+    }
+
+    @Test
+    public void testQuietPeriodNegativeValue() throws InterruptedException {
+        setQuietPeriod(qpNegativeSeconds);
+        WebElement error = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath(
+                        "//input[@name='quiet_period']/ancestor::div[contains(@class,'jenkins-form-item')]/descendant::div[@class='error']"
+                )));
+
+        Assert.assertEquals(error.getText(), "This value should be larger than 0");
+
     }
 
     private void openAdvancedDropdown() throws InterruptedException {
@@ -52,5 +59,16 @@ public class QuietPeriodTest extends BaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(
                         By.cssSelector(".jenkins-section button.advancedButton")))
                 .click();
+    }
+
+    private void setQuietPeriod(String seconds) throws InterruptedException {
+        openAdvancedDropdown();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("input[name='hasCustomQuietPeriod'] + label")))
+                .click();
+        WebElement quietPeriodSeconds = getDriver().findElement(By.cssSelector("input[name='quiet_period']"));
+        quietPeriodSeconds.clear();
+        quietPeriodSeconds.sendKeys(seconds);
+        quietPeriodSeconds.sendKeys(Keys.TAB);
     }
 }
