@@ -35,6 +35,9 @@ public class SignInTest extends BaseTest {
 
         String expectedUrl = "http://localhost:8080/";
         String actualUrl = getDriver().getCurrentUrl();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("login")));
+
         Assert.assertEquals(actualUrl, expectedUrl,
                 "Адрес страницы не совпадает с ожидаемым!");
     }
