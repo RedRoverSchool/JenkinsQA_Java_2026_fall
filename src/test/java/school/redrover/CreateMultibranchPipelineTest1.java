@@ -15,26 +15,20 @@ public class CreateMultibranchPipelineTest1 extends BaseTest {
     @Test
     public void testCreateMultibranchPipeline() {
         String itemName = "test-pipeline";
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10)).until(ExpectedConditions.elementToBeClickable(By.linkText("New Item")))
-                .click();
-
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.id("name")))
-                .sendKeys(itemName);
+        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("New Item"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(itemName);
         WebElement multibranch=getDriver().findElement(By.xpath("//span[text()='Multibranch Pipeline']"));
 
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].scrollIntoView({block: 'center'});", multibranch);
 
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10)).until(ExpectedConditions.elementToBeClickable(multibranch)).click();
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10)).until(ExpectedConditions.elementToBeClickable(By.id("ok-button")))
-                .click();
+        wait.until(ExpectedConditions.elementToBeClickable(multibranch)).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
 
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.name("Submit")))
-                .click();
-        WebElement actualProjectName = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[contains(text(),'%s')]".formatted(itemName))));
+        wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
+        WebElement actualProjectName = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[contains(text(),'%s')]".formatted(itemName))));
 
         Assert.assertEquals(actualProjectName.getText(), itemName);
     }
