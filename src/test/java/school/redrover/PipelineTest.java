@@ -228,4 +228,35 @@ public class PipelineTest extends BaseTest {
 
         Assert.assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
+
+    @Test
+    public void testApplyButton() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        String pipelineName = "New test";
+        String addDescription = "New description";
+
+
+        getDriver().findElement(NEW_ITEM_ICON).click();
+        getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
+        getDriver().findElement(JOB_ITEM_TYPE).click();
+        getDriver().findElement(SUBMIT_BUTTON).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
+
+        WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
+        chevronOpen.click();
+
+        WebElement configureOpen = getDriver().findElement(By.cssSelector("#tippy-4 > div > div > div > a:nth-child(4)"));
+        wait.until(ExpectedConditions.elementToBeClickable((configureOpen)));
+        configureOpen.click();
+
+        WebElement generalDescription = getDriver().findElement(By.name("description"));
+        generalDescription.sendKeys(addDescription);
+
+        WebElement applyButton = getDriver().findElement(By.name("Apply"));
+        applyButton.click();
+
+        WebElement notificationBar = getDriver().findElement(By.xpath("//*[@id='notification-bar']/span"));
+
+        Assert.assertEquals(notificationBar.getText(), "Saved", "Changes were not applied");
+    }
 }
