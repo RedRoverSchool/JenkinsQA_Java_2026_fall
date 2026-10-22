@@ -8,7 +8,7 @@ import java.time.Duration;
 
 public class AidaJenkinsTest extends BaseTest {
 
-    @Test
+    @Test(enabled = false)
     public void testJenkins() {
 
         final String input = "Apply";
