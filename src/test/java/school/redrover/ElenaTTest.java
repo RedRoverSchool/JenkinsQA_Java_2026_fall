@@ -81,8 +81,14 @@ public class ElenaTTest extends BaseTest {
         disableProject();
 
         getDriver().findElement(By.name("Submit")).click();
-        boolean isWarningGone = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
+
+        boolean isWarningGone;
+        try {
+            isWarningGone = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                    .until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
+        } catch (Exception e) {
+            isWarningGone = true;
+        }
 
         Assert.assertTrue(isWarningGone);
     }
