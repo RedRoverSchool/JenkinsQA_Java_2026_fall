@@ -198,7 +198,6 @@ public class PipelineTest extends BaseTest {
         final String pipelineName = "New test";
         final String addDescription = "New description";
 
-
         getDriver().findElement(NEW_ITEM_ICON).click();
         getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
         getDriver().findElement(JOB_ITEM_TYPE).click();
@@ -207,17 +206,13 @@ public class PipelineTest extends BaseTest {
 
         WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
         chevronOpen.click();
-
         WebElement configureOpen = getDriver().findElement(By.cssSelector("#tippy-4 > div > div > div > a:nth-child(4)"));
         wait.until(ExpectedConditions.elementToBeClickable((configureOpen)));
         configureOpen.click();
-
         WebElement generalDescription = getDriver().findElement(By.name("description"));
         generalDescription.sendKeys(addDescription);
-
         WebElement submitButton = getDriver().findElement(By.name("Submit"));
         submitButton.click();
-
         WebElement newTestDescription = getDriver().findElement(By.xpath("//*[@id='description']"));
 
         Assert.assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
@@ -229,7 +224,6 @@ public class PipelineTest extends BaseTest {
         final String pipelineName = "New test";
         final String addDescription = "New description";
 
-
         getDriver().findElement(NEW_ITEM_ICON).click();
         getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
         getDriver().findElement(JOB_ITEM_TYPE).click();
@@ -238,19 +232,15 @@ public class PipelineTest extends BaseTest {
 
         WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
         chevronOpen.click();
-
         WebElement configureOpen = getDriver().findElement(By.cssSelector("#tippy-4 > div > div > div > a:nth-child(4)"));
         wait.until(ExpectedConditions.elementToBeClickable((configureOpen)));
         configureOpen.click();
-
         WebElement generalDescription = getDriver().findElement(By.name("description"));
         generalDescription.sendKeys(addDescription);
-
         WebElement applyButton = getDriver().findElement(By.name("Apply"));
         applyButton.click();
         WebElement notificationBar = getDriver().findElement(By.xpath("//*[@id='notification-bar']/span"));
         wait.until(ExpectedConditions.visibilityOf(notificationBar));
-
 
         Assert.assertEquals(notificationBar.getText(), "Saved", "Changes were not applied");
     }
