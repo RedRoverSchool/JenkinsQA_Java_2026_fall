@@ -1,6 +1,7 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -188,5 +189,37 @@ public class PipelineTest extends BaseTest {
     public void clickConfigurePipelineLink() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         wait.until(ExpectedConditions.elementToBeClickable(CONFIGURE_PIPELINE_LINK)).click();
+    }
+
+    @Test
+    public void testSaveButton() {
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        String pipelineName = "New test";
+        String addDescription = "New description";
+
+
+        getDriver().findElement(NEW_ITEM_ICON).click();
+        getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
+        getDriver().findElement(JOB_ITEM_TYPE).click();
+        getDriver().findElement(SUBMIT_BUTTON).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
+
+        WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
+        chevronOpen.click();
+
+        WebElement configureOpen = getDriver().findElement(By.cssSelector("#tippy-4 > div > div > div > a:nth-child(4)"));
+        wait.until(ExpectedConditions.elementToBeClickable((configureOpen)));
+        configureOpen.click();
+
+        WebElement generalDescription = getDriver().findElement(By.name("description"));
+        generalDescription.sendKeys(addDescription);
+
+        WebElement submitButton = getDriver().findElement(By.name("Submit"));
+        submitButton.click();
+
+        WebElement newTestDescription = getDriver().findElement(By.xpath("//*[@id='description']"));
+
+        Assert.assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
 }
