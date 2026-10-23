@@ -12,25 +12,8 @@ import java.time.Duration;
 
 import org.openqa.selenium.WebElement;
 
-public class ElenaTTest extends BaseTest {
+public class FreestyleTest extends BaseTest {
 
-    @Test
-    public void testADescription() throws InterruptedException {
-        String titleDescription = "TEST";
-
-        //Нажать кнопку "добавить описание"
-        getDriver().findElement(By.id("description-link")).click();
-        //вставить текст в модальное окно
-        getDriver().findElement(By.id("description-textarea")).sendKeys(titleDescription);
-        //нажать кнопку "Save"
-        getDriver().findElement(By.xpath("//*[@id=\"bottom-sticker\"]/div/button[2]")).click();
-
-        Thread.sleep(1000); //Ждем пока обновится сохранение
-
-        Assert.assertEquals(
-                getDriver().findElement(By.id("description-content")).getText(),
-                titleDescription);
-    }
 
     @Test
     public void newItemFreestyleProject() {
@@ -91,5 +74,30 @@ public class ElenaTTest extends BaseTest {
         }
 
         Assert.assertTrue(isWarningGone);
+    }
+
+    @Test
+    public void testNewItemCopyFrom(){
+        createProject();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
+        WebElement newItem = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']")));
+        newItem.click();
+
+        getDriver().findElement(By.id("name")).sendKeys("Copied item");
+        getDriver().findElement(By.xpath("//*[@id=\"duplicate-job\"]/div[2]")).click();
+        getDriver().findElement(By.id("from")).sendKeys("Elena Freestyle project");
+        getDriver().findElement(By.id("ok-button")).click();
+        getDriver().findElement(By.name("Submit")).click();
+
+        WebElement headIcon = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
+        headIcon.click();
+
+        WebElement copiedProject = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//table[@id='projectstatus']//a[normalize-space()='Copied item']")
+        ));
+
+        Assert.assertEquals(copiedProject.getText(), "Copied item");
     }
 }
