@@ -195,8 +195,8 @@ public class PipelineTest extends BaseTest {
     public void testSaveButton() {
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        String pipelineName = "New test";
-        String addDescription = "New description";
+        final String pipelineName = "New test";
+        final String addDescription = "New description";
 
 
         getDriver().findElement(NEW_ITEM_ICON).click();
@@ -226,8 +226,8 @@ public class PipelineTest extends BaseTest {
     @Test
     public void testApplyButton() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        String pipelineName = "New test";
-        String addDescription = "New description";
+        final String pipelineName = "New test";
+        final String addDescription = "New description";
 
 
         getDriver().findElement(NEW_ITEM_ICON).click();
@@ -248,8 +248,9 @@ public class PipelineTest extends BaseTest {
 
         WebElement applyButton = getDriver().findElement(By.name("Apply"));
         applyButton.click();
-
         WebElement notificationBar = getDriver().findElement(By.xpath("//*[@id='notification-bar']/span"));
+        wait.until(ExpectedConditions.visibilityOf(notificationBar));
+
 
         Assert.assertEquals(notificationBar.getText(), "Saved", "Changes were not applied");
     }
