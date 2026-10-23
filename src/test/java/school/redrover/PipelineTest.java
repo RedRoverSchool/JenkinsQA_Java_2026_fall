@@ -81,7 +81,7 @@ public class PipelineTest extends BaseTest {
         newNameBtn.clear();
         newNameBtn.sendKeys(newProjectName);
         getDriver().findElement(By.xpath("//button[@value='Rename']")).click();
-
+        wait.until(ExpectedConditions.textToBe(By.tagName("h1"), newProjectName));
         String actualProjectName = wait.until(ExpectedConditions.visibilityOfElementLocated((By.tagName("h1")))).getText();
 
         Assert.assertEquals(actualProjectName, newProjectName);
