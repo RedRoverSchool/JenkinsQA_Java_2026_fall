@@ -12,7 +12,6 @@ public class PipelineConfigurationTest extends BaseTest {
     private static final By ITEM_NAME_FIELD = By.id("name");
     private static final By JOB_ITEM_PIPELINE = By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob");
     private static final By SUBMIT_BUTTON = By.id("ok-button");
-    private static final By CONFIGURE_PIPELINE = By.cssSelector("a[href*=\"/configure\"]");
     //locators on Configure project page
     private static final By DISABLE_PROJECT_BUTTON = By.cssSelector("label[data-title=\"Disabled\"]");
     private static final By SAVE_BUTTON = By.name("Submit");
