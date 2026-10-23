@@ -3,11 +3,8 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-
-import java.util.Random;
 
 public class PipelineConfigurationTest extends BaseTest {
     //locators on Dashboard page
