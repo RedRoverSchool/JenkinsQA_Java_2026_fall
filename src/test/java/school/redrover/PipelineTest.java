@@ -120,6 +120,7 @@ public class PipelineTest extends BaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
 
+
         WebElement itemInList = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector(".jenkins-table__link > span:first-child")));
 
