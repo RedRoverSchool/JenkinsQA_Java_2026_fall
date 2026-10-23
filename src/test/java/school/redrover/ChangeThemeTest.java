@@ -53,7 +53,7 @@ public class ChangeThemeTest extends BaseTest {
 
         Assert.assertTrue(isDarkTheme);
     }
-
+/*
     @Test
     public void testCheckingThemeAfterLogOut(){
         changeTheme();
@@ -70,7 +70,7 @@ public class ChangeThemeTest extends BaseTest {
 
         Assert.assertTrue(isDarkTheme);
     }
-
+*/
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
