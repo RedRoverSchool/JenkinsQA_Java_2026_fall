@@ -7,7 +7,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +22,8 @@ public class CreateUserTest extends BaseTest {
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        getDriver().findElement(By.cssSelector("a[href=\"/manage\"]")).click();
-        getDriver().findElement(By.cssSelector("a[href=\"securityRealm/\"]")).click();
+        getDriver().findElement(By.cssSelector("a[href='/manage']")).click();
+        getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
         getDriver().findElement(By.className("jenkins-button--primary")).click();
 
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username"))).sendKeys(username);
@@ -34,7 +33,6 @@ public class CreateUserTest extends BaseTest {
         getDriver().findElement(By.name("fullname")).sendKeys(fullName);
         getDriver().findElement(By.name("email")).sendKeys(email);
         getDriver().findElement(By.cssSelector(".jenkins-submit-button")).click();
-
 
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.cssSelector("#people a[href='user/" + username + "/']")
@@ -53,5 +51,4 @@ public class CreateUserTest extends BaseTest {
                "http://localhost:8080/securityRealm/");
         Assert.assertTrue(userList.contains(username));
     }
-
 }
