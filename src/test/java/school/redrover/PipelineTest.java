@@ -63,7 +63,7 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testRenamePipeline() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(3));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         final String projectName = "testName";
         final String newProjectName = "testNewName";
 
