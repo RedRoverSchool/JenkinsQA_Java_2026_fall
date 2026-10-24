@@ -51,4 +51,17 @@ public class ManageUsersTest extends BaseTest {
                "http://localhost:8080/securityRealm/");
         Assert.assertTrue(userList.contains(USERNAME));
     }
+
+    @Test
+    public void testView() {
+        testCreate();
+        getDriver().findElement(By.cssSelector("a[href='/manage']")).click();
+        getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
+        getDriver().findElement(By.cssSelector("#people a[href='user/" + USERNAME + "/']")).click();
+
+        Assert.assertEquals(
+                getDriver().getCurrentUrl(),
+                "http://localhost:8080/manage/securityRealm/user/" + USERNAME + "/");
+        Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(), FULL_NAME);
+    }
 }
