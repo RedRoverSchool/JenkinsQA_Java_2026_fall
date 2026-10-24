@@ -9,11 +9,9 @@ import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-
 import java.time.Duration;
 
-public class NadiaLidtTest extends BaseTest {
-    @Ignore
+public class OrganizationFolderTest extends BaseTest {
     @Test
     public void testCreateOrganizationFolder() {
         final String expectedResult = "Organization_folder";
@@ -28,7 +26,7 @@ public class NadiaLidtTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//button[@value='Save']")).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(20));
         wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
         String actualResult = getDriver().findElement(By.className("jenkins-table__link")).getAttribute("href");
 
