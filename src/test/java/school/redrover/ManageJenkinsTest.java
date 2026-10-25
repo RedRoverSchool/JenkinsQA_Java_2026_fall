@@ -26,6 +26,5 @@ public class ManageJenkinsTest extends BaseTest  {
         wait10.until(ExpectedConditions.textToBePresentInElement(getDriver().findElement(By.xpath("//h1")),HEADER_ABOUT ));
 
         Assert.assertEquals(getDriver().findElement(By.cssSelector(".app-about-version")).getText(), VERSION);
-
     }
 }
