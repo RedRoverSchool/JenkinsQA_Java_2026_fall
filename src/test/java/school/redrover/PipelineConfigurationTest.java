@@ -1,10 +1,15 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+
+import java.time.Duration;
 
 public class PipelineConfigurationTest extends BaseTest {
     //locators on Dashboard page
@@ -36,7 +41,9 @@ public class PipelineConfigurationTest extends BaseTest {
     @Test
     public void testDisabledStateOnDashboard(){
         disableProject();
+        WebDriverWait wait10 = new WebDriverWait(getDriver(),Duration.ofSeconds(10));
         getDriver().findElement(By.className("app-jenkins-logo")).click();
+        wait10.until(ExpectedConditions.visibilityOf (getDriver().findElement(By.className("disabledJob"))));
         Assert.assertTrue(
                 getDriver().findElement(By.className("disabledJob")).isDisplayed(),
                 "Disabled icon is not displayed"
