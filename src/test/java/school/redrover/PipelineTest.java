@@ -15,16 +15,16 @@ import java.util.Arrays;
 import java.util.List;
 
 public class PipelineTest extends BaseTest {
-    public static final By NEW_ITEM_ICON = By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]");
-    public static final By ITEM_NAME_FIELD = By.id("name");
-    public static final By JOB_ITEM_TYPE = By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob");
-    public static final By SUBMIT_BUTTON = By.id("ok-button");
-    public static final By CONFIGURE_PIPELINE_LINK = By.xpath("//span[normalize-space(.)='Pipeline']");
+    private static final By NEW_ITEM_ICON = By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]");
+    private static final By ITEM_NAME_FIELD = By.id("name");
+    private static final By JOB_ITEM_TYPE = By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob");
+    private static final By SUBMIT_BUTTON = By.id("ok-button");
+    private static final By CONFIGURE_PIPELINE_LINK = By.xpath("//span[@class='task-link-text' and contains(text(), 'Pipeline')]/ancestor::button");
 
     @Test
     public void testCreate() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        final String projectName = "NewPipeline";
+        String projectName = "NewPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(projectName);
@@ -39,7 +39,7 @@ public class PipelineTest extends BaseTest {
     @Test
     public void testDelete() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        final String projectName = "test";
+        String projectName = "test";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
@@ -64,8 +64,8 @@ public class PipelineTest extends BaseTest {
     @Test
     public void testRename() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        final String projectName = "testName";
-        final String newProjectName = "testNewName";
+        String projectName = "testName";
+        String newProjectName = "testNewName";
 
         getDriver().findElement(By.xpath("//a[@href='newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
@@ -90,7 +90,7 @@ public class PipelineTest extends BaseTest {
     @Test
     public void testCreateWithExistingName() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        final String projectName = "ExistingPipeline";
+        String projectName = "ExistingPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
@@ -111,7 +111,7 @@ public class PipelineTest extends BaseTest {
     @Test
     public void testSkipConfigurationAndReturnToDashboard() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        final String projectName = "SkipConfigPipeline";
+        String projectName = "SkipConfigPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
@@ -182,7 +182,8 @@ public class PipelineTest extends BaseTest {
     }
 
     public void clickSubmitButton() {
-        getDriver().findElement(SUBMIT_BUTTON).click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
     }
 
     public void clickConfigurePipelineLink() {
@@ -200,7 +201,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(NEW_ITEM_ICON).click();
         getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
         getDriver().findElement(JOB_ITEM_TYPE).click();
-        getDriver().findElement(SUBMIT_BUTTON).click();
+        wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
 
         WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
@@ -226,7 +227,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(NEW_ITEM_ICON).click();
         getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
         getDriver().findElement(JOB_ITEM_TYPE).click();
-        getDriver().findElement(SUBMIT_BUTTON).click();
+        wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
 
         WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
