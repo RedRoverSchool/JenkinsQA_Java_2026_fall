@@ -13,8 +13,7 @@ public class FreestyleProjectTest extends BaseTest {
     final String description = "test description";
 
     @Test
-    public void testCreateFreestyleProject(){
-
+    public void testCreateFreestyleProject() {
         getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span")).click();
         getDriver().findElement(By.id("name")).sendKeys(itemName);
         getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
@@ -29,15 +28,30 @@ public class FreestyleProjectTest extends BaseTest {
                 itemName);
     }
     @Test
-    public void testApplyButton(){
+    public void testApplyButton() {
         getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span")).click();
         getDriver().findElement(By.id("name")).sendKeys(itemName);
         getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
 
         Assert.assertEquals(notification.getText(), "Saved");
+    }
+    @Test
+    public void testTriggerBuildsRemotely() {
+        getDriver().findElement(By.cssSelector("#main-panel > div:nth-child(3) > div > section:nth-child(3) > ul > li > a")).click();
+        getDriver().findElement(By.id("name")).sendKeys(itemName);
+        getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(2));
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/section[3]/div[3]/div[1]/div/span/label"))).click();
+        getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
+        WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
+
+        Assert.assertEquals(notification.getText(), "Saved");
+        Assert.assertTrue(getDriver().findElement(By.name("authToken")).isDisplayed());
     }
 }
