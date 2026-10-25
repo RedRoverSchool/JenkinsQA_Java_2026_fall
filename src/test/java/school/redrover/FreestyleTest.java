@@ -22,9 +22,9 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(itemName);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        WebElement headIcon = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+        WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
-        headIcon.click();
+        logo.click();
     }
 
     public void disableProject() {
@@ -90,9 +90,9 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.name("Submit")).click();
 
-        WebElement headIcon = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+        WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
                 .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
-        headIcon.click();
+        logo.click();
 
         WebElement copiedProject = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//table[@id='projectstatus']//a[normalize-space()='Copied item']")
@@ -115,7 +115,9 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.name("authToken")).sendKeys("1234");
         getDriver().findElement(By.name("Submit")).click();
 
-        getDriver().findElement(By.id("jenkins-head-icon")).click();
+        WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
+        logo.click();
         WebElement newProject = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id='projectstatus']//a[normalize-space()='new item']")));
         newProject.click();
