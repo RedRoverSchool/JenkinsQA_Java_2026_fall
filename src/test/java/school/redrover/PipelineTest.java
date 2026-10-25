@@ -163,7 +163,7 @@ public class PipelineTest extends BaseTest {
         clickSubmitButton();
         clickConfigurePipelineLink();
         wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='samples']")));
-        Select select = new Select(getDriver().findElement(By.xpath("//div[@class='samples']/select")));
+        Select select = new Select(getDriver().findElement(By.xpath("//div[@class='samples']//select")));
         select.selectByValue("hello");
 
         Assert.assertEquals(getDriver().findElement(By.xpath("//span[@class='ace_identifier']")).getText(), "pipeline");
