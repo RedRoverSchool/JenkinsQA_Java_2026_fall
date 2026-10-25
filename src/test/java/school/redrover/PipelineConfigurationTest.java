@@ -19,14 +19,13 @@ public class PipelineConfigurationTest extends BaseTest {
     public void testDisableProject(){
         createPipeline();
         disableProject();
-        WebElement message = getDriver().findElement(By.cssSelector("form[method=\"post\"]"));
 
         Assert.assertTrue(
                 getDriver().findElement(By.id("enable-project")).isDisplayed(),
                 "Enable button is not displayed"
         );
 
-
+        WebElement message = getDriver().findElement(By.cssSelector("form[method=\"post\"]"));
         Assert.assertTrue(message.getText().contains("This project is currently disabled"),
                 "Message is absent");
     }
