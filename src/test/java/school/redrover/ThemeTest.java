@@ -62,7 +62,7 @@ public class ThemeTest extends BaseTest {
         getDriver().navigate().refresh();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("j_username")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("j_username")));
         JenkinsUtils.login(getDriver());
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
