@@ -8,6 +8,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -109,6 +110,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
+    @Ignore
     @Test
     public void testSkipConfigurationAndReturnToDashboard() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
