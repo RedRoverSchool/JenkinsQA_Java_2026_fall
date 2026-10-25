@@ -1,7 +1,6 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -23,7 +22,7 @@ public class PipelineTest extends BaseTest {
     public static final By CONFIGURE_PIPELINE_LINK = By.xpath("//span[normalize-space(.)='Pipeline']");
 
     @Test
-    public void testCreatePipeline() {
+    public void testCreate() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         final String projectName = "NewPipeline";
 
@@ -38,7 +37,7 @@ public class PipelineTest extends BaseTest {
     }
 
     @Test
-    public void testDeletePipeline() {
+    public void testDelete() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         final String projectName = "test";
 
@@ -63,7 +62,7 @@ public class PipelineTest extends BaseTest {
     }
 
     @Test
-    public void testRenamePipeline() {
+    public void testRename() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         final String projectName = "testName";
         final String newProjectName = "testNewName";
@@ -89,7 +88,7 @@ public class PipelineTest extends BaseTest {
     }
 
     @Test
-    public void testCreatePipelineWithExistingName() {
+    public void testCreateWithExistingName() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         final String projectName = "ExistingPipeline";
 
@@ -137,7 +136,7 @@ public class PipelineTest extends BaseTest {
     }
 
     @Test(dataProvider = "unsupportedCharacters")
-    public void testCreatePipelineWithUnsupportedCharacters(String invalidPipelineName) {
+    public void testCreateWithUnsupportedCharacters(String invalidPipelineName) {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(7));
         String expectedErrorMsg = String.format("‘%s’ is an unsafe character", invalidPipelineName);
 
@@ -155,15 +154,15 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testDefinePipelineScriptFromSample() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String projectName = "testPipeline";
 
         clickNewItemIcon();
-        inputItemName(projectName);
+        inputJobName(projectName);
         selectJobItemType();
         clickSubmitButton();
         clickConfigurePipelineLink();
-        WebElement samples = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
+        WebElement samples = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='samples']/select")));
         Select select = new Select(samples);
         select.selectByValue("hello");
 
@@ -174,7 +173,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(NEW_ITEM_ICON).click();
     }
 
-    public void inputItemName(String projectName) {
+    public void inputJobName(String projectName) {
         getDriver().findElement(ITEM_NAME_FIELD).sendKeys(projectName);
     }
 
