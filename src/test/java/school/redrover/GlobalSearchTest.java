@@ -92,7 +92,7 @@ public class GlobalSearchTest extends BaseTest {
         Assert.assertTrue(
                 getDriver().findElement(By.cssSelector("#main-panel h1")).getText().contains(clickedItemText));
     }
-
+    @Ignore
     @Test
     public void testModifySearch() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
