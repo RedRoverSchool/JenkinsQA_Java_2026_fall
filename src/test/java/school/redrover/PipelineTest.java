@@ -162,7 +162,7 @@ public class PipelineTest extends BaseTest {
         selectJobItemType();
         clickSubmitButton();
         clickConfigurePipelineLink();
-        WebElement samples = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='samples']/select")));
+        WebElement samples = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='samples']/select")));
         Select select = new Select(samples);
         select.selectByValue("hello");
 
