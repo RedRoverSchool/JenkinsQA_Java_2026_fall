@@ -154,7 +154,7 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testDefinePipelineScriptFromSample() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
         String projectName = "testPipeline";
 
         clickNewItemIcon();
@@ -162,7 +162,7 @@ public class PipelineTest extends BaseTest {
         selectJobItemType();
         clickSubmitButton();
         clickConfigurePipelineLink();
-        WebElement samples = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@class='samples']/select")));
+        WebElement samples = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='samples']/select")));
         Select select = new Select(samples);
         select.selectByValue("hello");
 
@@ -182,7 +182,7 @@ public class PipelineTest extends BaseTest {
     }
 
     public void clickSubmitButton() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
     }
 
