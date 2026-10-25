@@ -1,4 +1,5 @@
 package school.redrover;
+import org.openqa.selenium.JavascriptExecutor;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -13,8 +14,7 @@ public class FreestyleProjectTest extends BaseTest {
     final String description = "test description";
 
     @Test
-    public void testCreateFreestyleProject(){
-
+    public void testCreateFreestyleProject() {
         getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span")).click();
         getDriver().findElement(By.id("name")).sendKeys(itemName);
         getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
@@ -29,15 +29,40 @@ public class FreestyleProjectTest extends BaseTest {
                 itemName);
     }
     @Test
-    public void testApplyButton(){
+    public void testApplyButton() {
         getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span")).click();
         getDriver().findElement(By.id("name")).sendKeys(itemName);
         getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
 
         Assert.assertEquals(notification.getText(), "Saved");
+    }
+    @Test
+    public void testTriggerBuildsRemotely() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#main-panel > div:nth-child(3) > div > section:nth-child(3) > ul > li > a"))).click();
+        getDriver().findElement(By.id("name")).sendKeys(itemName);
+        getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "var el = document.querySelector('.bottom-sticker');" +
+                        "if (el) { el.style.position = 'static'; }"
+        );
+        WebElement label = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("//span[.//input[@name='pseudoRemoteTrigger']]/label")));
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", label);
+
+        WebElement applyBtn = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")));
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", applyBtn);
+
+        WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
+
+        Assert.assertEquals(notification.getText(), "Saved");
+        Assert.assertTrue(getDriver().findElement(By.name("authToken")).isDisplayed());
     }
 }
