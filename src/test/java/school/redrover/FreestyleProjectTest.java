@@ -47,7 +47,7 @@ public class FreestyleProjectTest extends BaseTest {
         getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/section[3]/div[3]/div[1]/div/span/label"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#main-panel > form > div.config-table > section:nth-child(9) > div:nth-child(3) > div.help-sibling.tr.optional-block-start.row-group-start.row-set-start > div > span > label"))).click();
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
         WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
 
