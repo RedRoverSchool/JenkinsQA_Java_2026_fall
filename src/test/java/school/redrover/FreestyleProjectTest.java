@@ -52,9 +52,14 @@ public class FreestyleProjectTest extends BaseTest {
                 "var el = document.querySelector('.bottom-sticker');" +
                         "if (el) { el.style.position = 'static'; }"
         );
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//span[.//input[@name='pseudoRemoteTrigger']]/label"))).click();
-        getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
+        WebElement label = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("//span[.//input[@name='pseudoRemoteTrigger']]/label")));
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", label);
+
+        WebElement applyBtn = wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")));
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", applyBtn);
+
         WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
 
         Assert.assertEquals(notification.getText(), "Saved");
