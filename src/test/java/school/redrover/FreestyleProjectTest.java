@@ -41,13 +41,13 @@ public class FreestyleProjectTest extends BaseTest {
     }
     @Test
     public void testTriggerBuildsRemotely() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#main-panel > div:nth-child(3) > div > section:nth-child(3) > ul > li > a"))).click();
         getDriver().findElement(By.id("name")).sendKeys(itemName);
         getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        getDriver().findElement(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/section[3]/div[3]/div[1]/div/span/label")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[.//input[@name='pseudoRemoteTrigger']]/label"))).click();
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
         WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
 
