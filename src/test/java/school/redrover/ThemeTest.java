@@ -13,7 +13,7 @@ import school.redrover.common.JenkinsUtils;
 import java.time.Duration;
 
 
-public class ChangeThemeTest extends BaseTest {
+public class ThemeTest extends BaseTest {
 
     @Test
     public void testChangeThemeFromHomePage() {
@@ -37,7 +37,7 @@ public class ChangeThemeTest extends BaseTest {
     }
 
     @Test
-    public void testChangeThemeFromAppearance(){
+    public void testChangeThemeFromAppearance() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
@@ -53,24 +53,23 @@ public class ChangeThemeTest extends BaseTest {
 
         Assert.assertTrue(isDarkTheme);
     }
-/*
-    @Test
-    public void testCheckingThemeAfterLogOut(){
-        changeTheme();
 
-        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.className("jenkins-avatar")));
+    @Test
+    public void testCheckingThemeAfterLogOut() {
+        changeTheme();
 
         getDriver().manage().deleteAllCookies();
         getDriver().navigate().refresh();
 
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.name("j_username")));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.name("j_username")));
         JenkinsUtils.login(getDriver());
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
 
         Assert.assertTrue(isDarkTheme);
     }
-*/
+
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 

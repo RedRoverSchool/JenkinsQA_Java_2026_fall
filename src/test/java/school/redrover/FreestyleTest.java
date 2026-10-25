@@ -1,6 +1,7 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
@@ -14,18 +15,8 @@ import org.openqa.selenium.WebElement;
 
 public class FreestyleTest extends BaseTest {
 
-
-    @Test
-    public void newItemFreestyleProject() {
-        String itemName = "Elena Freestyle project";
-        createProject();
-
-        Assert.assertEquals(getDriver().findElement(By.xpath("//*[@id=\"job_Elena Freestyle project\"]/td[3]/a")).getText(),
-                itemName);
-    }
-
     private void createProject() {
-        String itemName = "Elena Freestyle project";
+        final String itemName = "Elena Freestyle project";
 
         getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[1]/span/a")).click();
         getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(itemName);
@@ -36,18 +27,6 @@ public class FreestyleTest extends BaseTest {
         headIcon.click();
     }
 
-    @Test
-    public void testDisableProject() {
-
-        String disableText = "This project is currently disabled";
-        createProject();
-        disableProject();
-
-        String actualText = getDriver().findElement(By.className("warning")).getAttribute("innerText");
-
-        Assert.assertTrue(actualText.contains(disableText));
-    }
-
     public void disableProject() {
         getDriver().findElement(By.xpath("//span[text()='Elena Freestyle project']")).click();
         getDriver().findElement(By.xpath("//a[contains(@class, 'task-link') and contains(@href, 'configure')]")).click();
@@ -56,6 +35,27 @@ public class FreestyleTest extends BaseTest {
 
         new WebDriverWait(getDriver(), Duration.ofSeconds(10))
                 .until(ExpectedConditions.visibilityOfElementLocated(By.className("warning")));
+    }
+
+    @Test
+    public void testCreateProject() {
+        final String itemName = "Elena Freestyle project";
+        createProject();
+
+        Assert.assertEquals(getDriver().findElement(By.xpath("//*[@id=\"job_Elena Freestyle project\"]/td[3]/a")).getText(),
+                itemName);
+    }
+
+    @Test
+    public void testDisableProject() {
+
+        final String disableText = "This project is currently disabled";
+        createProject();
+        disableProject();
+
+        String actualText = getDriver().findElement(By.className("warning")).getAttribute("innerText");
+
+        Assert.assertTrue(actualText.contains(disableText));
     }
 
     @Test
@@ -99,5 +99,31 @@ public class FreestyleTest extends BaseTest {
         ));
 
         Assert.assertEquals(copiedProject.getText(), "Copied item");
+    }
+
+    @Test
+    public void testTriggerBuildsRemotely(){
+        getDriver().findElement(By.className("task-link-no-confirm")).click();
+        getDriver().findElement(By.id("name")).sendKeys("new item");
+        getDriver().findElement(By.xpath("//*[@id=\"items\"]/div[2]/label/span")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        WebElement checkBox = getDriver().findElement(By.xpath("//input[@name='pseudoRemoteTrigger']/following-sibling::label"));
+        ((JavascriptExecutor)getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", checkBox);
+        checkBox.click();
+
+        getDriver().findElement(By.name("authToken")).sendKeys("1234");
+        getDriver().findElement(By.name("Submit")).click();
+
+        getDriver().findElement(By.id("jenkins-head-icon")).click();
+        WebElement newProject = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id='projectstatus']//a[normalize-space()='new item']")));
+        newProject.click();
+        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[6]/span/a")).click();
+
+        WebElement checkBox2 = new WebDriverWait(getDriver(), Duration.ofSeconds(10)).
+                until(ExpectedConditions.presenceOfElementLocated(By.name("pseudoRemoteTrigger")));
+
+        Assert.assertTrue(checkBox2.isSelected());
     }
 }
