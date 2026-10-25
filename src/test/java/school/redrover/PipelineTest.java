@@ -30,7 +30,7 @@ public class PipelineTest extends BaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
         Assert.assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(),
                 projectName);
@@ -46,7 +46,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated((By.id("jenkins-head-icon"))));
-        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
@@ -71,7 +71,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(
@@ -117,7 +117,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
         WebElement itemInList = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector(".jenkins-table__link > span:first-child")));
@@ -186,7 +186,7 @@ public class PipelineTest extends BaseTest {
     }
 
     public void clickConfigurePipelineLink() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(CONFIGURE_PIPELINE_LINK)).click();
     }
 
