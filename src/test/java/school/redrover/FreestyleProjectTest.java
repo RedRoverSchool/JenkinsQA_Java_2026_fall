@@ -1,4 +1,5 @@
 package school.redrover;
+import org.openqa.selenium.JavascriptExecutor;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
@@ -47,7 +48,12 @@ public class FreestyleProjectTest extends BaseTest {
         getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//span[.//input[@name='pseudoRemoteTrigger']]/label"))).click();
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "var el = document.querySelector('.bottom-sticker');" +
+                        "if (el) { el.style.position = 'static'; }"
+        );
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//span[.//input[@name='pseudoRemoteTrigger']]/label"))).click();
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
         WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
 
