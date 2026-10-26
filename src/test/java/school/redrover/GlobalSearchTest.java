@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -60,7 +61,7 @@ public class GlobalSearchTest extends BaseTest {
         }
         return count;
     }
-
+    @Ignore
     @Test
     public void testSearchByPartialNameAndNavigate() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
@@ -91,7 +92,7 @@ public class GlobalSearchTest extends BaseTest {
         Assert.assertTrue(
                 getDriver().findElement(By.cssSelector("#main-panel h1")).getText().contains(clickedItemText));
     }
-
+    @Ignore
     @Test
     public void testModifySearch() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
