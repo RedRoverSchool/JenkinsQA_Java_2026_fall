@@ -53,8 +53,7 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
             deleteProject(projectName);
         }
     }
-
-    @Ignore
+@Ignore
 @Test(description = "TC_02_002_04")
     public void testAddNewDescription(){
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
