@@ -1,6 +1,7 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -11,26 +12,19 @@ import school.redrover.common.BaseTest;
 
 import java.time.Duration;
 
-public class FreestyleProjectDescriptionTest extends BaseTest {
+public class FreestyleDescriptionTest extends BaseTest {
+    private static final String PROJECT_NAME = "Freestyle_Description";
 
     @Test
-    public void testDescriptionFieldAndPreview() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
-        String projectName = "Desc_" + System.currentTimeMillis();
-
-        try {
-            createFreestyleProject(wait, projectName);
-
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href$='/configure']"))).click();
+    public void testFieldAndPreview() {
+            createFreestyleProject(PROJECT_NAME);
+            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+            getDriver().findElement(By.cssSelector("a[href$='/configure']")).click();
 
             WebElement descriptionField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("description")));
             Assert.assertTrue(descriptionField.isDisplayed(), "Элемент поля не виден");
-
             WebElement preview = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("textarea-show-preview")));
             Assert.assertTrue(preview.isDisplayed(), "Элемент Preview не видна");
-        } finally {
-            deleteProject(projectName);
-        }
     }
 
 @Test(description = "TC_02.002.03")
@@ -40,7 +34,7 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         String descText = "This is my test";
 
         try {
-            createFreestyleProject(wait, projectName);
+            createFreestyleProject(projectName);
 
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href$='/configure']"))).click();
             WebElement descField = wait.until(ExpectedConditions.elementToBeClickable(By.name("description")));
@@ -61,7 +55,7 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         String descAddText = "A new text for description";
 
         try {
-            createFreestyleProject(wait, projectName);
+            createFreestyleProject(projectName);
 
             wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
             wait.until(ExpectedConditions.elementToBeClickable(By.linkText(projectName))).click();
@@ -87,7 +81,7 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         String descEdit = "I edited the text";
         String oldText = "There was an old text here";
         try {
-            createFreestyleProject(wait, projectName);
+            createFreestyleProject(projectName);
 
             wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
             wait.until(ExpectedConditions.elementToBeClickable(By.linkText(projectName))).click();
@@ -108,12 +102,20 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
         }
     }
 
-    private void createFreestyleProject(WebDriverWait wait, String name) {
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*='newJob']"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("name"))).sendKeys(name);
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#items .hudson_model_FreeStyleProject"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
+    private void createFreestyleProject(String name) {
+        getDriver().findElement(By.cssSelector("a[href*='newJob']")).click();
+        getDriver().findElement(By.id("name")).sendKeys(name);
+        getDriver().findElement(By.cssSelector("#items .hudson_model_FreeStyleProject")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        for (int i = 0; i < 3; i++) {
+            try {
+                WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+                wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
+                break;
+            } catch (StaleElementReferenceException e) {
+            }
+        }
     }
 
     private void deleteProject(String name) {
@@ -122,7 +124,6 @@ public class FreestyleProjectDescriptionTest extends BaseTest {
             WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
             wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#main-panel form button"))).click();
         } catch (Exception ignored) {
-            // Если проект не создался — ничего страшного
         }
     }
 }
