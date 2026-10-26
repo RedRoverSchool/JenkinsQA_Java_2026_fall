@@ -28,7 +28,7 @@ public class HistoryTest extends BaseTest {
                         By.cssSelector(String.format("a[title='Schedule a Build for %s']", PIPELINE_SECOND_NAME)))
                 .click();
 
-        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[2]/span/a")).click();
+        getDriver().findElement(By.xpath("//a[@href='/view/all/builds']")).click();
 
         By failedBuildIcons = By.cssSelector("svg[aria-label='failure']");
         new WebDriverWait(getDriver(), Duration.ofSeconds(20))
