@@ -17,7 +17,7 @@ public class FreestyleProjectTest extends BaseTest {
     public void testCreateFreestyleProject() {
         getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span")).click();
         getDriver().findElement(By.id("name")).sendKeys(itemName);
-        getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/div[2]/div/div[2]/textarea")).sendKeys(description);
         getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.jenkins-submit-button.jenkins-button--primary")).click();
@@ -64,5 +64,31 @@ public class FreestyleProjectTest extends BaseTest {
 
         Assert.assertEquals(notification.getText(), "Saved");
         Assert.assertTrue(getDriver().findElement(By.name("authToken")).isDisplayed());
+    }
+
+    @Test
+    public void testAddPostBuildAction() {
+        testCreateFreestyleProject();
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#job_" + itemName + " a"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='configure']"))).click();
+
+        By addButton = By.xpath("//button[contains(., 'Add post-build action')]");
+        WebElement button = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(addButton)
+        );
+
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].scrollIntoView({block: 'center'});", button
+        );
+        wait.until(ExpectedConditions.elementToBeClickable(addButton)).click();
+
+        Assert.assertTrue(
+                wait.until(ExpectedConditions.visibilityOfElementLocated(
+                        By.xpath("//*[normalize-space()='Aggregate downstream test results']")
+                )).isDisplayed()
+        );
     }
 }
