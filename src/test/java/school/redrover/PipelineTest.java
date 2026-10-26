@@ -162,8 +162,7 @@ public class PipelineTest extends BaseTest {
         selectJobItemType();
         clickSubmitButton();
         clickConfigurePipelineLink();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='samples']")));
-        Select select = new Select(getDriver().findElement(By.xpath("//div[@class='samples']//select")));
+        Select select = new Select(getDriver().findElement(By.id("workflow-editor-samples")));
         select.selectByValue("hello");
 
         Assert.assertEquals(getDriver().findElement(By.xpath("//span[@class='ace_identifier']")).getText(), "pipeline");
@@ -191,7 +190,7 @@ public class PipelineTest extends BaseTest {
     public void clickConfigurePipelineLink() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable(CONFIGURE_PIPELINE_LINK)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='samples']/select")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
     }
 
     @Test
