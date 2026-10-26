@@ -128,4 +128,35 @@ public class FreestyleTest extends BaseTest {
 
         Assert.assertTrue(checkBox2.isSelected());
     }
+
+    @Test
+    public void testBuildIfAProjectExist(){
+        createProject();
+
+        getDriver().findElement(By.className("task-link-no-confirm")).click();
+        getDriver().findElement(By.id("name")).sendKeys("new item");
+        getDriver().findElement(By.xpath("//span[normalize-space()='Freestyle project']")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        WebElement checkbox = getDriver().findElement(By.name("jenkins-triggers-ReverseBuildTrigger"));
+        ((JavascriptExecutor)getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", checkbox);
+        ((JavascriptExecutor)getDriver()).executeScript("arguments[0].click();", checkbox);
+
+        getDriver().findElement(By.name("_.upstreamProjects")).sendKeys("new item");
+        getDriver().findElement(By.name("Submit")).click();
+
+        WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
+        logo.click();
+
+        WebElement newProject = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id='projectstatus']//a[normalize-space()='new item']")));
+        newProject.click();
+        getDriver().findElement(By.xpath("//a[contains(@href, 'configure')]")).click();
+
+        WebElement checkbox1 = new WebDriverWait(getDriver(), Duration.ofSeconds(10)).
+                until(ExpectedConditions.presenceOfElementLocated(By.name("jenkins-triggers-ReverseBuildTrigger")));
+
+        Assert.assertTrue(checkbox1.isSelected());
+    }
 }

@@ -1,3 +1,5 @@
+
+
 package school.redrover;
 
 import org.openqa.selenium.By;
@@ -55,7 +57,6 @@ public class ThemeTest extends BaseTest {
         Assert.assertTrue(isDarkTheme);
     }
 
-    @Ignore
     @Test
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
@@ -64,7 +65,7 @@ public class ThemeTest extends BaseTest {
         getDriver().navigate().refresh();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("j_username")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("j_username")));
         JenkinsUtils.login(getDriver());
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
@@ -85,4 +86,3 @@ public class ThemeTest extends BaseTest {
         getDriver().findElement(By.name("Submit")).click();
     }
 }
-
