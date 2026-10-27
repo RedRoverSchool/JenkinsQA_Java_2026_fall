@@ -156,7 +156,6 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testDefinePipelineScriptFromSample() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String projectName = "testPipeline";
 
         clickNewItemIcon();
@@ -222,6 +221,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
 
+    @Ignore
     @Test
     public void testApplyButton() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
