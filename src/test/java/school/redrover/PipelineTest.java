@@ -156,7 +156,6 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testDefinePipelineScriptFromSample() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String projectName = "testPipeline";
 
         clickNewItemIcon();
