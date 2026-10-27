@@ -159,4 +159,31 @@ public class FreestyleTest extends BaseTest {
 
         Assert.assertTrue(checkbox1.isSelected());
     }
+
+    @Test
+    public void testBuildStepsExecuteWindowsBatchCommand(){
+        getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span > a")).click();
+        getDriver().findElement(By.id("name")).sendKeys("new item");
+        getDriver().findElement(By.cssSelector("#items > div.hudson_model_FreeStyleProject.jenkins-choice-list__item > label > span")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        WebElement buildStep = getDriver().findElement(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/section[5]/div[3]/span/button"));
+        ((JavascriptExecutor)getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", buildStep);
+        buildStep.click();
+
+        WebElement buttonOne = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
+                until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#tippy-5 > div > div > div > div.jenkins-dropdown.jenkins-dropdown--compact > button:nth-child(1)")));
+        buttonOne.click();
+        getDriver().findElement(By.className("fixed-width")).sendKeys("any command");
+
+        getDriver().findElement(By.name("Submit")).click();
+
+        WebElement configureButton = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"tasks\"]/div[6]/span/a")));
+        configureButton.click();
+
+        WebElement buildStep2 = getDriver().findElement(By.className("fixed-width"));
+        ((JavascriptExecutor)getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", buildStep2);
+
+        Assert.assertEquals(buildStep2.getText(), "any command");
+    }
 }
