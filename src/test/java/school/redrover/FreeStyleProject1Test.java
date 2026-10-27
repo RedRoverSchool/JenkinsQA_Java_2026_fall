@@ -9,10 +9,10 @@ import school.redrover.common.BaseTest;
 
 import java.time.Duration;
 
-public class NastyaTest extends BaseTest {
+public class FreeStyleProject1Test extends BaseTest {
 
     @Test
-    public void testCreateFreeStyleProject() {
+    public void testCreate() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         getDriver().findElement(By.className("content-block__link")).click();
