@@ -11,10 +11,10 @@ import school.redrover.common.BaseTest;
 
 import java.time.Duration;
 
-public class CreateMultibranchPipelineTest1 extends BaseTest {
+public class MultibranchPipelineTest extends BaseTest {
     @Test
-    public void testCreateMultibranchPipeline() {
-        String itemName = "test-pipeline";
+    public void testCreate() {
+        String itemName = "test-multibranch-pipeline";
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         wait.until(ExpectedConditions.elementToBeClickable(By.linkText("New Item"))).click();
