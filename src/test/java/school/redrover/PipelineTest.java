@@ -97,7 +97,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='jenkins-head-icon']"))).click();
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
@@ -109,7 +109,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
-    @Ignore
+
     @Test
     public void testSkipConfigurationAndReturnToDashboard() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
