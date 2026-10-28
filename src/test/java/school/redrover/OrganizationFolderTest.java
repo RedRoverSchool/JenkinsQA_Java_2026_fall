@@ -6,14 +6,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-
 import java.time.Duration;
 
-public class NadiaLidtTest extends BaseTest {
-    @Ignore
+public class OrganizationFolderTest extends BaseTest {
+
     @Test
     public void testCreateOrganizationFolder() {
         final String expectedResult = "Organization_folder";
@@ -28,8 +26,8 @@ public class NadiaLidtTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//button[@value='Save']")).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
         String actualResult = getDriver().findElement(By.className("jenkins-table__link")).getAttribute("href");
 
         Assert.assertTrue(actualResult.contains(expectedResult));
