@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Locale;
 
 public class GlobalSearchTest extends BaseTest {
-
     private static final String SEARCH_WORD = "item";
     private static final String MODIFY_SEARCH_WORD = "ends";
     private static final String[] ITEMS_TO_CREATE = {
@@ -61,6 +60,7 @@ public class GlobalSearchTest extends BaseTest {
                 count++;
             }
         }
+
         return count;
     }
 
@@ -135,5 +135,22 @@ public class GlobalSearchTest extends BaseTest {
             Assert.assertTrue(
                     result.getText().toLowerCase(Locale.ROOT).contains(MODIFY_SEARCH_WORD));
         }
+    }
+
+    @Test
+    public void testLongQuery() {
+        final String longQuery = "a".repeat(300);
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(WAIT_TIMEOUT_SECONDS));
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("root-action-SearchAction"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("command-bar"))).sendKeys(longQuery);
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("#search-results span")));
+
+        Assert.assertTrue(getDriver().findElement(By.id("command-bar")).isDisplayed());
+        Assert.assertTrue(getDriver().findElement(
+                By.cssSelector("#search-results span")).getText().contains("No results for"));
     }
 }
