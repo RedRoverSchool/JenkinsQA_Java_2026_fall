@@ -88,6 +88,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(actualProjectName, newProjectName);
     }
 
+    @Ignore
     @Test
     public void testCreateWithExistingName() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));

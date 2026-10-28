@@ -5,10 +5,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-
 import java.time.Duration;
 import java.util.List;
 import java.util.Locale;
@@ -22,9 +20,10 @@ public class GlobalSearchTest extends BaseTest {
             "ends with item",
             "no match here"
     };
+    private static final int WAIT_TIMEOUT_SECONDS = 5;
 
     private void createItem(String itemName) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(WAIT_TIMEOUT_SECONDS));
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#tasks :first-child"))).click();
@@ -37,6 +36,9 @@ public class GlobalSearchTest extends BaseTest {
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("#bottom-sticker button"))).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("form .config-table")));
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.id("jenkins-head-icon"))).click();
@@ -61,16 +63,16 @@ public class GlobalSearchTest extends BaseTest {
         }
         return count;
     }
-    @Ignore
+
     @Test
-    public void testSearchByPartialNameAndNavigate() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+    public void testPartialNameAndNavigate() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(WAIT_TIMEOUT_SECONDS));
 
         createItems(ITEMS_TO_CREATE);
         int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
 
-        getDriver().findElement(By.id("root-action-SearchAction")).click();
-        getDriver().findElement(By.id("command-bar")).sendKeys(SEARCH_WORD);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("root-action-SearchAction"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("command-bar"))).sendKeys(SEARCH_WORD);
 
         wait.until(ExpectedConditions.numberOfElementsToBe(
                 By.cssSelector("#search-results a"), expectedMatching));
@@ -92,16 +94,16 @@ public class GlobalSearchTest extends BaseTest {
         Assert.assertTrue(
                 getDriver().findElement(By.cssSelector("#main-panel h1")).getText().contains(clickedItemText));
     }
-    @Ignore
+
     @Test
-    public void testModifySearch() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+    public void testModifyQuery() {
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(WAIT_TIMEOUT_SECONDS));
 
         createItems(ITEMS_TO_CREATE);
         int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
 
-        getDriver().findElement(By.id("root-action-SearchAction")).click();
-        getDriver().findElement(By.id("command-bar")).sendKeys(SEARCH_WORD);
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("root-action-SearchAction"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("command-bar"))).sendKeys(SEARCH_WORD);
 
         wait.until(ExpectedConditions.numberOfElementsToBe(
                 By.cssSelector("#search-results a"), expectedMatching));
@@ -115,8 +117,10 @@ public class GlobalSearchTest extends BaseTest {
                     result.getText().toLowerCase(Locale.ROOT).contains(SEARCH_WORD));
         }
 
-        getDriver().findElement(By.id("command-bar")).clear();
-        getDriver().findElement(By.id("command-bar")).sendKeys(MODIFY_SEARCH_WORD);
+        WebElement searchInput = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("command-bar")));
+        searchInput.clear();
+        searchInput.sendKeys(MODIFY_SEARCH_WORD);
 
         expectedMatching = countMatchingItems(ITEMS_TO_CREATE, MODIFY_SEARCH_WORD);
 
