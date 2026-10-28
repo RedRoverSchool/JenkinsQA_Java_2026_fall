@@ -153,4 +153,36 @@ public class GlobalSearchTest extends BaseTest {
         Assert.assertTrue(getDriver().findElement(
                 By.cssSelector("#search-results span")).getText().contains("No results for"));
     }
+
+    @Test
+    public void testEmptyQuery() {
+        boolean hasHelpLink = false;
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(WAIT_TIMEOUT_SECONDS));
+
+        createItems(ITEMS_TO_CREATE);
+
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("root-action-SearchAction"))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("command-bar")));
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#search-results")));
+
+        List<WebElement> searchResults = getDriver().findElements(By.cssSelector("#search-results a"));
+
+        for (WebElement result : searchResults) {
+            if (result.getText().contains("Get help using Jenkins search")) {
+                hasHelpLink = true;
+                break;
+            }
+        }
+
+        Assert.assertTrue(hasHelpLink);
+
+        for (WebElement result : searchResults) {
+            String resultText = result.getText().toLowerCase();
+            for (String item : ITEMS_TO_CREATE) {
+                Assert.assertFalse(resultText.contains(item.toLowerCase()));
+            }
+        }
+    }
 }
