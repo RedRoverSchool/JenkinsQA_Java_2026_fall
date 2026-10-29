@@ -88,41 +88,41 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(actualProjectName, newProjectName);
     }
 
-    @Ignore
     @Test
     public void testCreateWithExistingName() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait5 = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait10 = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String projectName = "ExistingPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='jenkins-head-icon']"))).click();
+        wait5.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        wait10.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
-        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'A job already exists')]")));
+        WebElement errorMessage = wait5.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'A job already exists')]")));
         Assert.assertTrue(errorMessage.isDisplayed(), "Сообщение об ошибке не появилось!");
 
         WebElement okButton = getDriver().findElement(By.id("ok-button"));
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
-
     @Test
     public void testSkipConfigurationAndReturnToDashboard() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait5 = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait10 = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String projectName = "SkipConfigPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
+        wait5.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        wait10.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
-        WebElement itemInList = wait.until(ExpectedConditions.visibilityOfElementLocated(
+        WebElement itemInList = wait5.until(ExpectedConditions.visibilityOfElementLocated(
                 By.cssSelector(".jenkins-table__link > span:first-child")));
 
         Assert.assertEquals(itemInList.getText(), projectName, "Созданный проект не отображается на Dashboard!");
@@ -147,8 +147,8 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys("test" + invalidPipelineName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
-        wait.until(
-                ExpectedConditions.presenceOfElementLocated((By.xpath("//div[@class='error']"))));
+//        wait.until(
+//                ExpectedConditions.presenceOfElementLocated((By.xpath("//div[@class='error']"))));
         String errorElementText = wait.until(
                 ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']")))).getText();
 
@@ -222,7 +222,6 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
 
-    @Ignore
     @Test
     public void testApplyButton() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
@@ -233,7 +232,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
         getDriver().findElement(JOB_ITEM_TYPE).click();
         wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
         WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
         chevronOpen.click();
