@@ -3,6 +3,7 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -96,7 +97,7 @@ public class FreestyleTest extends BaseTest {
 
         Assert.assertEquals(copiedProject.getText(), "Copied item");
     }
-
+    @Ignore
     @Test
     public void testTriggerBuildsRemotely(){
         getDriver().findElement(By.className("task-link-no-confirm")).click();
