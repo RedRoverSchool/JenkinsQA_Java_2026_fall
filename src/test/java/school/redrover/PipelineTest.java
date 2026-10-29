@@ -112,7 +112,6 @@ public class PipelineTest extends BaseTest {
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
-
     @Test
     public void testSkipConfigurationAndReturnToDashboard() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
@@ -150,8 +149,6 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys("test" + invalidPipelineName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
-        wait.until(
-                ExpectedConditions.presenceOfElementLocated((By.xpath("//div[@class='error']"))));
         String errorElementText = wait.until(
                 ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']")))).getText();
 
