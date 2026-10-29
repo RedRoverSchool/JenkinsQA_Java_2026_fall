@@ -26,10 +26,10 @@ public class OrganizationFolderTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.xpath("//button[@value='Save']")).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
-        String actualResult = getDriver().findElement(By.className("jenkins-table__link")).getAttribute("href");
+        String actualResult = getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText();
 
-        Assert.assertTrue(actualResult.contains(expectedResult));
+        Assert.assertEquals(actualResult, expectedResult);
     }
 }
