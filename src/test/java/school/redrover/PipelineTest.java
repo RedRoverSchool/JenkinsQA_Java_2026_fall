@@ -1,6 +1,8 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -31,7 +33,7 @@ public class PipelineTest extends BaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
+        safeClick(By.xpath("//a[@class='app-jenkins-logo']"), wait);
 
         Assert.assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(),
                 projectName);
@@ -247,5 +249,17 @@ public class PipelineTest extends BaseTest {
         wait.until(ExpectedConditions.visibilityOf(notificationBar));
 
         Assert.assertEquals(notificationBar.getText(), "Saved", "Changes were not applied");
+    }
+
+    private void safeClick(By locator, WebDriverWait wait) {
+        wait.until(driver -> {
+            try {
+                WebElement element = driver.findElement(locator);
+                element.click();
+                return true;
+            } catch (StaleElementReferenceException e) {
+                return false;
+            }
+        });
     }
 }
