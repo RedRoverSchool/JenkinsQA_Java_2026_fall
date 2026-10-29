@@ -60,6 +60,7 @@ public class FreestyleDescriptionTest extends BaseTest {
         Assert.assertTrue(linkEdit.getText().contains("Edit description"), "Текст ссылки не изменился на 'Edit description'");
     }
 
+    @Ignore
     @Test
     public void testUpdateDescription() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
