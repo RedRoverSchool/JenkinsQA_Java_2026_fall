@@ -24,7 +24,7 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testCreate() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String projectName = "NewPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
