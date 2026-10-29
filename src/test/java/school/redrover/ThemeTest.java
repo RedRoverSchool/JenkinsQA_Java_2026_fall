@@ -12,6 +12,7 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.common.JenkinsUtils;
+import school.redrover.common.ProjectUtils;
 
 import java.time.Duration;
 
@@ -66,7 +67,7 @@ public class ThemeTest extends BaseTest {
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
 
         JenkinsUtils.logout(getDriver());
-        getDriver().get("http://localhost:8081/login");
+        getDriver().get(ProjectUtils.getUrl() + "login");
         JenkinsUtils.login(getDriver());
 
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='app-jenkins-logo']")));
