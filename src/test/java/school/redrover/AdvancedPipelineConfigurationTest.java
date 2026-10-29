@@ -4,7 +4,6 @@ import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import java.time.Duration;
@@ -34,7 +33,6 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
         Assert.assertEquals(getQuietPeriodSeconds, QP_POSITIVE);
     }
 
-    @Ignore
     @Test
     public void testQuietPeriodNegativeValue() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
@@ -73,11 +71,21 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
     }
 
     private void openAdvancedDropdown() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.elementToBeClickable(
-                        By.xpath("//span[contains(text(),'Advanced')]/ancestor::button")))
-                .click();
-        wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".jenkins-bottom-app-bar__shadow--stuck")));
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(6));
+        int maxAttempts = 2;
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            wait.until(ExpectedConditions.elementToBeClickable(
+                            By.xpath("//span[contains(text(),'Advanced')]/ancestor::button")))
+                    .click();
+            try {
+                wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".jenkins-bottom-app-bar__shadow--stuck")));
+                break;
+            } catch (TimeoutException e) {
+                if (attempt == maxAttempts) {
+                    throw new RuntimeException("После " + maxAttempts + " кликов по боковой панели страница не доскроллилась до низа, Save перекрывает Advanced", e);
+                }
+            }
+        }
         getDriver().findElement(By.cssSelector(".jenkins-section button.advancedButton")).click();
     }
 
