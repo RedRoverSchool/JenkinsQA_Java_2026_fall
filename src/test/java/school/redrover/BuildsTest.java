@@ -47,8 +47,7 @@ public class BuildsTest extends BaseTest {
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
         WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='app-jenkins-logo']")));
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")));
         logo.click();
     }
-
 }
