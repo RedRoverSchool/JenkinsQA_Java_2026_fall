@@ -20,7 +20,7 @@ public class FreeStyleProject1Test extends BaseTest {
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(),
