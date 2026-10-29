@@ -1,6 +1,7 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
@@ -249,4 +250,38 @@ public class PipelineTest extends BaseTest {
 
         Assert.assertEquals(notificationBar.getText(), "Saved", "Changes were not applied");
     }
+    @Test
+    public void testHelpToolTipBehaviour(){
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        final String projectName = "NewPipeline";
+
+        getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(projectName);
+        getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector(".jenkins-app-bar__content h1"),"Configure"));
+        getDriver().findElement(By.cssSelector("a[helpurl$='help/script']")).sendKeys(Keys.ENTER);
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.help-area[style*='block'] p"),"Groovy script"));
+        String scriptText = getDriver().findElement(By.cssSelector("div.help-area[style*='block'] p")).getText();
+
+        getDriver().findElement(By.cssSelector("a[helpurl$='help/script']")).sendKeys(Keys.ENTER);
+        boolean scriptClosed = wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.help-area[style*='block'] p")));
+
+        getDriver().findElement(By.cssSelector("a[helpurl$='help/sandbox']")).sendKeys(Keys.ENTER);
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.help-area[style*='block'] .help > div"),"If checked, run this Groovy script"));
+        String sandboxText = getDriver().findElement(By.cssSelector("div.help-area[style*='block'] .help > div")).getText();
+
+        getDriver().findElement(By.cssSelector("a[helpurl$='help/sandbox']")).sendKeys(Keys.ENTER);
+        boolean sandboxClosed = wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector("div.help-area[style*='block'] .help > div")));
+
+        Assert.assertEquals(scriptText,"Groovy script defining this Pipeline. Use the Pipeline Syntax link for details.");
+        Assert.assertTrue(scriptClosed);
+        Assert.assertEquals(sandboxText,"If checked, run this Groovy script in a sandbox with limited abilities. If unchecked, and you are not a Jenkins administrator, " +
+                "you will need to wait for an administrator to approve the script.");
+        Assert.assertTrue(sandboxClosed);
+
+    }
 }
+
+
+
