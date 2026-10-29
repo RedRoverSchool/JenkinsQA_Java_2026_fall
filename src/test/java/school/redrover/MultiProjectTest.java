@@ -24,7 +24,7 @@ public class MultiProjectTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector("#job_firstMultiProject > td:nth-child(3) > a > span")).getText(), projectName);
