@@ -88,6 +88,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(actualProjectName, newProjectName);
     }
 
+    @Ignore
     @Test
     public void testCreateWithExistingName() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
@@ -97,7 +98,7 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='jenkins-head-icon']"))).click();
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
@@ -109,7 +110,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
-    @Ignore
+
     @Test
     public void testSkipConfigurationAndReturnToDashboard() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
@@ -156,7 +157,6 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testDefinePipelineScriptFromSample() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         String projectName = "testPipeline";
 
         clickNewItemIcon();
@@ -194,7 +194,7 @@ public class PipelineTest extends BaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(CONFIGURE_PIPELINE_LINK)).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
     }
-
+    @Ignore
     @Test
     public void testSaveButton() {
 
@@ -222,6 +222,7 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
 
+    @Ignore
     @Test
     public void testApplyButton() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));

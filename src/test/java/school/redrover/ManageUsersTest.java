@@ -64,4 +64,31 @@ public class ManageUsersTest extends BaseTest {
                 "http://localhost:8080/manage/securityRealm/user/" + USERNAME + "/");
         Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(), FULL_NAME);
     }
+
+    @Test
+    public void testVerify() {
+        testCreate();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#people a[href='user/" + USERNAME + "/']"))).click();
+
+        String[] menu = {
+                "builds",
+                "my-views",
+                "account",
+                "appearance",
+                "preferences",
+                "security",
+                "experiments",
+                "credentials"
+        };
+
+        for (String item : menu) {
+            getDriver().findElement(By.cssSelector("a[href='/user/" + USERNAME + "/" + item + "']")).click();
+            if(item.equals("my-views")) {
+                getDriver().navigate().back();
+            }
+        }
+
+        Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(),"Access Denied");
+    }
 }
