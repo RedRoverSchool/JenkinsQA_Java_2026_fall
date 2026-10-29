@@ -21,7 +21,9 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(itemName);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        new WebDriverWait(getDriver(), Duration.ofSeconds(10)).until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
+        WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='app-jenkins-logo']")));
+        logo.click();
     }
 
     public void disableProject() {
@@ -78,8 +80,7 @@ public class FreestyleTest extends BaseTest {
         createProject();
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        WebElement newItem = wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']")));
-        newItem.click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']"))).click();
 
         getDriver().findElement(By.id("name")).sendKeys("Copied item");
         getDriver().findElement(By.xpath("//*[@id=\"duplicate-job\"]/div[2]")).click();
@@ -87,7 +88,7 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.name("Submit")).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='app-jenkins-logo']"))).click();
 
         WebElement copiedProject = wait.until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//table[@id='projectstatus']//a[normalize-space()='Copied item']")
@@ -111,7 +112,7 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.name("Submit")).click();
 
         WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='app-jenkins-logo']")));
         logo.click();
         WebElement newProject = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
                 until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id='projectstatus']//a[normalize-space()='new item']")));
@@ -141,7 +142,7 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.name("Submit")).click();
 
         WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon")));
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@class='app-jenkins-logo']")));
         logo.click();
 
         WebElement newProject = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
