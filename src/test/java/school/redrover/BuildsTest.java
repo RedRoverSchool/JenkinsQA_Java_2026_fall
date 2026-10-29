@@ -22,7 +22,9 @@ public class BuildsTest extends BaseTest {
                 until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']"))));
         wait.click();
 
-        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[2]/span/a/span[1]")).click();
+        WebElement historyButton = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
+                until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"tasks\"]/div[2]/span/a")));
+        historyButton.click();
         getDriver().findElement(By.xpath("//*[@id=\"projectStatus\"]/tbody/tr/td[2]/a[2]")).click();
         getDriver().findElement(By.xpath("//a[@href='/job/Elena%20Freestyle%20project/1/']")).click();
         getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[4]/span/a")).click();
@@ -34,8 +36,9 @@ public class BuildsTest extends BaseTest {
 
         getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[2]/span/a")).click();
 
-        List<WebElement> projects = getDriver().findElements(By.linkText("Elena Freestyle project"));
-        Assert.assertTrue(projects.isEmpty());
+        List<WebElement> builds = getDriver().findElements(
+                By.xpath("//a[contains(@href, '/job/Elena%20Freestyle%20project/1/')]"));
+        Assert.assertTrue(builds.isEmpty());
     }
 
     private void createFreestyle() {
