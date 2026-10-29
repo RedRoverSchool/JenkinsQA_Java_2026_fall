@@ -12,9 +12,9 @@ import school.redrover.common.BaseTest;
 
 public class DashboardTest extends BaseTest {
 
-    private static final By DASHBOARD_DESCRIPTION_BUTTON = By.id("description-link");
-    private static final By DASHBOARD_DESCRIPTION_TEXTAREA = By.id("description-textarea");
-    private static final By DASHBOARD_DESCRIPTION_CONTENT = By.id("description-content");
+    private static final By DESCRIPTION_BUTTON = By.id("description-link");
+    private static final By DESCRIPTION_TEXTAREA = By.id("description-textarea");
+    private static final By DESCRIPTION_CONTENT = By.id("description-content");
     private static final By DESCRIPTION_SAVE_BUTTON = By.cssSelector("button[data-id='ok']");
     private static final By JENKINS_HEAD_ICON = By.id("jenkins-head-icon");
     private static final By JENKINS_VERSION_LABEL = By.className("jenkins_ver");
@@ -28,10 +28,10 @@ public class DashboardTest extends BaseTest {
         ".textarea-preview-container");
 
     private static final String JENKINS_VERSION_TEXT = "Jenkins 2.580.1";
-    private static final String DASHBOARD_DESCRIPTION_TEXT = "Dashboard description text";
-    private static final String DASHBOARD_NEW_DESCRIPTION_TEXT = "Dashboard NEW description text. Version 2.0";
-    private static final String ADD_DASHBOARD_DESCRIPTION_BUTTON_NAME = "Add description";
-    private static final String EDIT_DASHBOARD_DESCRIPTION_BUTTON_NAME = "Edit description";
+    private static final String DESCRIPTION_TEXT = "Dashboard description text";
+    private static final String NEW_DESCRIPTION_TEXT = "Dashboard NEW description text. Version 2.0";
+    private static final String ADD_DESCRIPTION_BUTTON_NAME = "Add description";
+    private static final String EDIT_DESCRIPTION_BUTTON_NAME = "Edit description";
 
     @Test
     public void testCheckJenkinsVersion() {
@@ -41,136 +41,123 @@ public class DashboardTest extends BaseTest {
     }
 
     @Test
-    public void testAddDashboardDescription() {
+    public void testAddDescription() {
 
-        putDashboardDescription(DASHBOARD_DESCRIPTION_TEXT);
+        putDescription(DESCRIPTION_TEXT);
 
-        Assert.assertEquals(getDriver().findElement(DASHBOARD_DESCRIPTION_CONTENT).getText(),
-            DASHBOARD_DESCRIPTION_TEXT);
+        Assert.assertEquals(getDriver().findElement(DESCRIPTION_CONTENT).getText(),
+            DESCRIPTION_TEXT);
     }
 
     @Test
-    public void testEditDashboardDescription() {
+    public void testEditDescription() {
 
-        putDashboardDescription(DASHBOARD_DESCRIPTION_TEXT);
-        putDashboardDescription(DASHBOARD_NEW_DESCRIPTION_TEXT);
+        putDescription(DESCRIPTION_TEXT);
+        putDescription(NEW_DESCRIPTION_TEXT);
 
-        Assert.assertEquals(getDriver().findElement(DASHBOARD_DESCRIPTION_CONTENT).getText(),
-            DASHBOARD_NEW_DESCRIPTION_TEXT);
+        Assert.assertEquals(getDriver().findElement(DESCRIPTION_CONTENT).getText(),
+            NEW_DESCRIPTION_TEXT);
     }
 
     @Test
-    public void testDeleteDashboardDescription() {
+    public void testDeleteDescription() {
 
-        putDashboardDescription(DASHBOARD_DESCRIPTION_TEXT);
+        putDescription(DESCRIPTION_TEXT);
         deleteDashboardDescription();
-        String actualDescription = getDriver().findElement(DASHBOARD_DESCRIPTION_CONTENT).getText();
+        String actualDescription = getDriver().findElement(DESCRIPTION_CONTENT).getText();
 
         Assert.assertTrue(actualDescription.isEmpty(),
             "Ожидалось пустое описание, но было получено: '" + actualDescription + "'");
     }
 
     @Test
-    public void testAddOrEditDashboardDescriptionButtonDisplayedName() {
+    public void testAddOrEditDescriptionButtonDisplayedName() {
 
         String actualDescriptionButtonTextWithoutDescription =
-            getDriver().findElement(DASHBOARD_DESCRIPTION_BUTTON).getText();
+            getDriver().findElement(DESCRIPTION_BUTTON).getText();
 
-        putDashboardDescription(DASHBOARD_DESCRIPTION_TEXT);
+        putDescription(DESCRIPTION_TEXT);
         String actualDescriptionButtonTextWithDescription =
-            getDriver().findElement(DASHBOARD_DESCRIPTION_BUTTON).getText();
+            getDriver().findElement(DESCRIPTION_BUTTON).getText();
 
         deleteDashboardDescription();
         String actualDescriptionButtonTextAfterDescriptionClear =
-            getDriver().findElement(DASHBOARD_DESCRIPTION_BUTTON).getText();
+            getDriver().findElement(DESCRIPTION_BUTTON).getText();
 
         SoftAssert softAssert = new SoftAssert();
 
         softAssert.assertEquals(actualDescriptionButtonTextWithoutDescription,
-            ADD_DASHBOARD_DESCRIPTION_BUTTON_NAME,
+            ADD_DESCRIPTION_BUTTON_NAME,
             "Текст кнопки с пустым description отличается от ожидаемого");
         softAssert.assertEquals(actualDescriptionButtonTextWithDescription,
-            EDIT_DASHBOARD_DESCRIPTION_BUTTON_NAME,
+            EDIT_DESCRIPTION_BUTTON_NAME,
             "Текст кнопки с заполненным description отличается от ожидаемого");
         softAssert.assertEquals(actualDescriptionButtonTextAfterDescriptionClear,
-            ADD_DASHBOARD_DESCRIPTION_BUTTON_NAME,
+            ADD_DESCRIPTION_BUTTON_NAME,
             "Текст кнопки с удаленным description отличается от ожидаемого");
         softAssert.assertAll();
     }
 
     @Test
-    public void testCheckUIElementsDashboardDescription() {
-
-        openAndClearDashboardDescriptionEditor();
-
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        WebElement title = wait.until(
-            ExpectedConditions.visibilityOfElementLocated(DESCRIPTION_WINDOW_TITLE));
-
-        WebElement textArea = getDriver().findElement(DESCRIPTION_WINDOW_CONTENT);
-
-        WebElement previewContainer = getDriver().findElement(DESCRIPTION_PREVIEW_CONTEINER);
-
-        WebElement previewLink = getDriver().findElement(DESCRIPTION_SHOW_PREVIEW);
-        WebElement hidePreviewLink = getDriver().findElement(DESCRIPTION_HIDE_PREVIEW);
-        WebElement previewBlock = getDriver().findElement(DESCRIPTION_PREVIEW_BLOCK);
-
-        WebElement cancelButton = getDriver().findElement(DESCRIPTION_CANCEL_BUTTON);
-
-        WebElement saveButton = getDriver().findElement(DESCRIPTION_SAVE_BUTTON);
+    public void testCheckUIElementsDescription() {
 
         final String expectedCancelButtonText = "Cancel";
         final String expectedSaveButtonText = "Save";
         final String expectedPreviewContainerPlain = "Plain text";
         final String expectedPreviewConteinerPreview = "Preview";
 
+        openAndClearDescriptionEditor();
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        WebElement title = wait.until(
+            ExpectedConditions.visibilityOfElementLocated(DESCRIPTION_WINDOW_TITLE));
+        WebElement textArea = getDriver().findElement(DESCRIPTION_WINDOW_CONTENT);
+        WebElement previewContainer = getDriver().findElement(DESCRIPTION_PREVIEW_CONTEINER);
+        WebElement previewLink = getDriver().findElement(DESCRIPTION_SHOW_PREVIEW);
+        WebElement hidePreviewLink = getDriver().findElement(DESCRIPTION_HIDE_PREVIEW);
+        WebElement previewBlock = getDriver().findElement(DESCRIPTION_PREVIEW_BLOCK);
+        WebElement cancelButton = getDriver().findElement(DESCRIPTION_CANCEL_BUTTON);
+        WebElement saveButton = getDriver().findElement(DESCRIPTION_SAVE_BUTTON);
+
         SoftAssert softAssert = new SoftAssert();
 
-        softAssert.assertEquals(title.getText(), ADD_DASHBOARD_DESCRIPTION_BUTTON_NAME,
+        softAssert.assertEquals(title.getText(), ADD_DESCRIPTION_BUTTON_NAME,
             "Текст заголовка отличается");
-
         softAssert.assertTrue(textArea.isDisplayed(), "Поле ввода должно отображаться");
         softAssert.assertEquals(textArea.getAttribute("value"), "", "Поле ввода не пустое");
         softAssert.assertTrue(textArea.isEnabled(), "Поле ввода должно быть доступно");
-
         softAssert.assertTrue(previewContainer.isDisplayed(),
             "Контейнер с 'Plain text' должен отображаться");
         softAssert.assertTrue(previewContainer.getText().contains(expectedPreviewContainerPlain),
             expectedPreviewContainerPlain + " отличается от ожидаемого");
-
         softAssert.assertEquals(previewLink.getText(), expectedPreviewConteinerPreview,
             expectedPreviewConteinerPreview + " отличается от ожидаемого");
         softAssert.assertTrue(previewLink.isDisplayed(), "Preview должно отображаться");
-
         softAssert.assertFalse(hidePreviewLink.isDisplayed(), "Hide preview должен быть скрыт");
-
         softAssert.assertFalse(previewBlock.isDisplayed(), "Блок preview должен быть скрыт");
-
         softAssert.assertTrue(cancelButton.isDisplayed(), "Кнопка Cancel должна отображаться");
         softAssert.assertEquals(cancelButton.getText(), expectedCancelButtonText,
             "Название кнопки отличается от " + expectedCancelButtonText);
-
         softAssert.assertTrue(saveButton.isDisplayed(), "Кнопка Save должна отображаться");
         softAssert.assertEquals(saveButton.getText(), expectedSaveButtonText,
             "Название кнопки отличается от " + expectedSaveButtonText);
-
         softAssert.assertAll();
     }
 
-    private void putDashboardDescription(String text) {
+    private void putDescription(String text) {
 
-        openAndClearDashboardDescriptionEditor();
-        getDriver().findElement(DASHBOARD_DESCRIPTION_TEXTAREA).sendKeys(text);
-        saveOpenedDashboardDescriptionEditor();
+        openAndClearDescriptionEditor();
+        getDriver().findElement(DESCRIPTION_TEXTAREA).sendKeys(text);
+        saveOpenedDescriptionEditor();
     }
 
-    private void openAndClearDashboardDescriptionEditor() {
+    private void openAndClearDescriptionEditor() {
 
-        getDriver().findElement(DASHBOARD_DESCRIPTION_BUTTON).click();
-        getDriver().findElement(DASHBOARD_DESCRIPTION_TEXTAREA).clear();
+        getDriver().findElement(DESCRIPTION_BUTTON).click();
+        getDriver().findElement(DESCRIPTION_TEXTAREA).clear();
     }
 
-    private void saveOpenedDashboardDescriptionEditor() {
+    private void saveOpenedDescriptionEditor() {
 
         getDriver().findElement(DESCRIPTION_SAVE_BUTTON).click();
         getDriver().findElement(JENKINS_HEAD_ICON).click();
@@ -178,7 +165,7 @@ public class DashboardTest extends BaseTest {
 
     private void deleteDashboardDescription() {
 
-        openAndClearDashboardDescriptionEditor();
-        saveOpenedDashboardDescriptionEditor();
+        openAndClearDescriptionEditor();
+        saveOpenedDescriptionEditor();
     }
 }

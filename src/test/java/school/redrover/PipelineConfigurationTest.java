@@ -5,6 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import java.time.Duration;
@@ -17,6 +18,7 @@ public class PipelineConfigurationTest extends BaseTest {
     private static final By SUBMIT_BUTTON = By.id("ok-button");
     private static final By DISABLE_PROJECT_BUTTON = By.cssSelector("label[data-title=\"Disabled\"]");
     private static final By SAVE_BUTTON = By.name("Submit");
+    private static final By ENABLE_BUTTON = By.id("enable-project");
 
     @Test
     public void testDisableProject(){
@@ -24,7 +26,7 @@ public class PipelineConfigurationTest extends BaseTest {
         disableProject();
 
         Assert.assertTrue(
-                getDriver().findElement(By.id("enable-project")).isDisplayed(),
+                getDriver().findElement(ENABLE_BUTTON).isDisplayed(),
                 "Enable button is not displayed"
         );
 
@@ -44,6 +46,18 @@ public class PipelineConfigurationTest extends BaseTest {
                 getDriver().findElement(By.className("disabledJob")).isDisplayed(),
                 "Disabled icon is not displayed"
         );
+    }
+
+    @Ignore
+    @Test
+    public void testEnableProjectByButton(){
+        createPipeline();
+        disableProject();
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable(getDriver().findElement(By.name("Submit")))).click();
+        WebElement buildNowLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now")));
+
+        Assert.assertTrue(buildNowLink.isDisplayed(), "Ссылка 'Build Now' не отображается на странице!");
     }
 
     public void createPipeline() {
