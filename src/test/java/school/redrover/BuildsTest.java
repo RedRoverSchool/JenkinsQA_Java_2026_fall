@@ -11,14 +11,12 @@ import school.redrover.common.BaseTest;
 import java.time.Duration;
 import java.util.List;
 
-import static java.sql.DriverManager.getDriver;
-
 public class BuildsTest extends BaseTest {
     @Test
     public void testDeleteBuild(){
         createFreestyle();
 
-        WebElement wait = new WebDriverWait((org.openqa.selenium.WebDriver) getDriver(), Duration.ofSeconds(10)).
+        WebElement wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10)).
                 until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']"))));
         wait.click();
 
