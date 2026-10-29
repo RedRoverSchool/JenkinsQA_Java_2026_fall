@@ -12,10 +12,10 @@ import java.time.Duration;
 
 //@Ignore
 
-public class SparrowTest extends BaseTest {
+public class MultiProjectTest extends BaseTest {
 
     @Test
-    public void testCreateMultiProject() {
+    public void testCreate() {
         final String projectName = "firstMultiProject";
 
         getDriver().findElement(By.className("content-block__link")).click();
