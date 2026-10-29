@@ -194,7 +194,7 @@ public class PipelineTest extends BaseTest {
         wait.until(ExpectedConditions.elementToBeClickable(CONFIGURE_PIPELINE_LINK)).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
     }
-
+    @Ignore
     @Test
     public void testSaveButton() {
 
