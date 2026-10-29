@@ -57,17 +57,19 @@ public class ThemeTest extends BaseTest {
         Assert.assertTrue(isDarkTheme);
     }
 
-    @Ignore
+
     @Test
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
 
-        getDriver().manage().deleteAllCookies();
-        getDriver().navigate().refresh();
-
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("j_username")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
+
+        JenkinsUtils.logout(getDriver());
+        getDriver().get("http://localhost:8081/login");
         JenkinsUtils.login(getDriver());
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='app-jenkins-logo']")));
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
 
@@ -77,9 +79,7 @@ public class ThemeTest extends BaseTest {
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
-        new Actions(getDriver()).moveToElement(userIcon).perform();
-
+        getDriver().get("http://localhost:8081/user/admin/appearance");
         WebElement appearanceButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href=\"/user/admin/appearance\"]")));
         appearanceButton.click();
 
