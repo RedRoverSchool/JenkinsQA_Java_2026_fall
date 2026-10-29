@@ -19,7 +19,6 @@ public class BuildsTest extends BaseTest {
         WebElement wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10)).
                 until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']"))));
         wait.click();
-
         WebElement historyButton = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
                 until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"tasks\"]/div[2]/span/a")));
         historyButton.click();
