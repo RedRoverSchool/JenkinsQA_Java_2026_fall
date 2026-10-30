@@ -91,4 +91,29 @@ public class ManageUsersTest extends BaseTest {
 
         Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(),"Access Denied");
     }
+
+    @Test
+    public void testDelete() {
+        testCreate();
+        int numOfUsers = Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
+
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#people a[href='user/" + USERNAME + "/']"))).click();
+
+        getDriver().findElement(By.cssSelector(".confirmation-link")).click();
+
+        String dialog = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-dialog__contents"))).getText();
+        boolean isFullNameDisplayed = dialog.contains(FULL_NAME);
+
+        getDriver().findElement(By.cssSelector("button[data-id='ok']")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href='/manage']"))).click();
+        getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
+
+        int usersLeft = Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
+        boolean userExists = !getDriver().findElements(By.cssSelector("#people a[href='user/" + USERNAME + "/']")).isEmpty();
+
+        Assert.assertTrue(isFullNameDisplayed);
+        Assert.assertEquals(usersLeft, numOfUsers - 1);
+        Assert.assertFalse(userExists);
+    }
 }
