@@ -37,8 +37,8 @@ public abstract class BaseTest {
 
     @AfterMethod
     protected void afterMethod(Method method, ITestResult testResult) {
-        boolean failed = testResult.getStatus() == ITestResult.FAILURE;
-        if (failed && ProjectUtils.isRunCI()) {
+
+        if (testResult.getStatus() == ITestResult.FAILURE && ProjectUtils.isRunCI()) {
             ProjectUtils.log("Taking screenshot for " + testResult.getName());
             takeScreenshot(
                     getDriver(),
