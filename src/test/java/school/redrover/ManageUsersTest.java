@@ -106,7 +106,7 @@ public class ManageUsersTest extends BaseTest {
         boolean isFullNameDisplayed = dialog.contains(FULL_NAME);
 
         getDriver().findElement(By.cssSelector("button[data-id='ok']")).click();
-        getDriver().findElement(By.cssSelector("a[href='/manage']")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href='/manage']"))).click();
         getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
 
         int usersLeft = Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
