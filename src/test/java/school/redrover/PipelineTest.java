@@ -225,8 +225,8 @@ public class PipelineTest extends BaseTest {
         Assert.assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
 
-    @Ignore
-    @Test
+
+    @Test(enabled = false)
     public void testApplyButton() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         final String pipelineName = "New test";
