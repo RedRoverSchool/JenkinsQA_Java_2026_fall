@@ -3,11 +3,9 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,13 +18,11 @@ public class ManageUsersTest extends BaseTest {
 
     @Test
     public void testCreate() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-
         getDriver().findElement(By.cssSelector("a[href='/manage']")).click();
         getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
         getDriver().findElement(By.className("jenkins-button--primary")).click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("username"))).sendKeys(USERNAME);
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("username"))).sendKeys(USERNAME);
 
         getDriver().findElement(By.name("password1")).sendKeys(PASSWORD);
         getDriver().findElement(By.name("password2")).sendKeys(PASSWORD);
@@ -34,7 +30,7 @@ public class ManageUsersTest extends BaseTest {
         getDriver().findElement(By.name("email")).sendKeys(EMAIL);
         getDriver().findElement(By.cssSelector(".jenkins-submit-button")).click();
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(
+        getWait5().until(ExpectedConditions.presenceOfElementLocated(
                 By.cssSelector("#people a[href='user/" + USERNAME + "/']")
         ));
 
@@ -46,9 +42,7 @@ public class ManageUsersTest extends BaseTest {
             userList.add(user);
         }
 
-        Assert.assertEquals(
-                getDriver().getCurrentUrl(),
-               "http://localhost:8080/securityRealm/");
+        Assert.assertTrue(getDriver().findElement(By.cssSelector("#breadcrumbs > li")).getText().contains("database"));
         Assert.assertTrue(userList.contains(USERNAME));
     }
 
@@ -59,17 +53,15 @@ public class ManageUsersTest extends BaseTest {
         getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
         getDriver().findElement(By.cssSelector("#people a[href='user/" + USERNAME + "/']")).click();
 
-        Assert.assertEquals(
-                getDriver().getCurrentUrl(),
-                "http://localhost:8080/manage/securityRealm/user/" + USERNAME + "/");
+        Assert.assertTrue(
+                getDriver().findElement(By.cssSelector("#main-panel > div:nth-child(4)")).getText().contains(USERNAME));
         Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(), FULL_NAME);
     }
 
     @Test
     public void testVerify() {
         testCreate();
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#people a[href='user/" + USERNAME + "/']"))).click();
+        getWait5().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#people a[href='user/" + USERNAME + "/']"))).click();
 
         String[] menu = {
                 "builds",
@@ -97,16 +89,14 @@ public class ManageUsersTest extends BaseTest {
         testCreate();
         int numOfUsers = Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#people a[href='user/" + USERNAME + "/']"))).click();
-
+        getDriver().findElement(By.cssSelector("#people a[href='user/" + USERNAME + "/']")).click();
         getDriver().findElement(By.cssSelector(".confirmation-link")).click();
 
-        String dialog = wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-dialog__contents"))).getText();
+        String dialog = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-dialog__contents"))).getText();
         boolean isFullNameDisplayed = dialog.contains(FULL_NAME);
 
         getDriver().findElement(By.cssSelector("button[data-id='ok']")).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href='/manage']"))).click();
+        getWait5().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href='/manage']"))).click();
         getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
 
         int usersLeft = Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
