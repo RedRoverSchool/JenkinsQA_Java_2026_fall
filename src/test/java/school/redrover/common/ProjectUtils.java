@@ -13,7 +13,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.Properties;
 
@@ -27,9 +27,6 @@ public final class ProjectUtils {
     private static final Properties properties;
 
     private static final ChromeOptions chromeOptions;
-
-    private static final String SCREENSHOTS_DIR =
-            System.getProperty("screenshots.dir", "screenshots");
 
     static {
         properties = new Properties();
@@ -115,13 +112,17 @@ public final class ProjectUtils {
             ProjectUtils.log("Driver does not support screenshots: " + driver.getClass());
             return;
         }
-        Path dir = Paths.get(SCREENSHOTS_DIR);
+        Path dir = Paths.get("screenshots");
         try {
             Files.createDirectories(dir);
             String safeName = (className + "." + methodName).replaceAll("[^a-zA-Z0-9._-]", "_");
-            Path target = dir.resolve(safeName+ "." + System.currentTimeMillis() + ".png");
-            byte[] bytes = ((TakesScreenshot) driver).getScreenshotAs(OutputType.BYTES);
-            Files.write(target, bytes, StandardOpenOption.CREATE_NEW);
+            Path target = dir.resolve(safeName + "." + System.currentTimeMillis() + ".png");
+            File tmp = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            try {
+                Files.move(tmp.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
+            } finally {
+                Files.deleteIfExists(tmp.toPath());
+            }
         } catch (IOException | WebDriverException e) {
             ProjectUtils.log("Error while making screenshot: " + e.getMessage());
         }
