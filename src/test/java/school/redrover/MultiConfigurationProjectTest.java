@@ -23,7 +23,8 @@ public class MultiConfigurationProjectTest extends BaseTest {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#name"))).sendKeys("MultiConfigurationProject");
         wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//label[input[@value='hudson.matrix.MatrixProject']]"))).click();
         wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
+        wait.until(ExpectedConditions.elementToBeClickable(
+                (By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
         WebElement itemLink = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a.jenkins-table__link[href^='job/']")));
 
         Assert.assertTrue(itemLink.getText().contains("MultiConfigurationProject"));
