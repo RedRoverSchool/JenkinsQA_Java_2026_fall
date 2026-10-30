@@ -16,6 +16,8 @@ public class FreestyleDescriptionTest extends BaseTest {
     private static final String PROJECT_NAME = "Freestyle_Description";
     private static final String DESK_TEXT = "This is my test";
     private static final String DESK_ADD_TEXT = "A new text for description";
+    private static final String DESK_EDIT_TEXT = "I edited the text";
+    private static final String OLD_TEXT = "This is old text";
 
     @Test
     public void testFieldAndPreview() {
@@ -59,32 +61,25 @@ public class FreestyleDescriptionTest extends BaseTest {
     }
 
     @Ignore
-    @Test(description = "TC_02_002_05")
+    @Test
     public void testUpdateDescription() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(40));
-        String projectName = "Desc_" + System.currentTimeMillis();
-        String descEdit = "I edited the text";
-        String oldText = "There was an old text here";
-        try {
-            createFreestyleProject(projectName);
+        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        createFreestyleProject(PROJECT_NAME);
 
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
-            wait.until(ExpectedConditions.elementToBeClickable(By.linkText(projectName))).click();
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-link"))).click();
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-textarea"))).sendKeys(oldText);
-            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
-            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("description-content"), oldText));
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-link"))).click();
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-textarea"))).clear();
-            wait.until(ExpectedConditions.elementToBeClickable(By.id("description-textarea"))).sendKeys(descEdit);
-            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
-            wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("description-content"), descEdit));
+        getDriver().findElement(By.id("jenkins-head-icon")).click();
+        getDriver().findElement(By.linkText(PROJECT_NAME)).click();
+        getDriver().findElement(By.id("description-link")).click();
+        getDriver().findElement(By.id("description-textarea")).sendKeys(OLD_TEXT);
+        getDriver().findElement(By.cssSelector("#bottom-sticker button.jenkins-button--primary")).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("description-content"), OLD_TEXT));
+        getDriver().findElement(By.id("description-link")).click();
+        getDriver().findElement(By.id("description-textarea")).clear();
+        getDriver().findElement(By.id("description-textarea")).sendKeys(DESK_EDIT_TEXT);
+        getDriver().findElement(By.cssSelector("#bottom-sticker button.jenkins-button--primary")).click();
+        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.id("description-content"), DESK_EDIT_TEXT));
 
-            WebElement descEditField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content")));
-            Assert.assertEquals(descEditField.getText(), descEdit, "Текст не изменился");
-        } finally {
-            deleteProject(projectName);
-        }
+        WebElement descEditField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description-content")));
+        Assert.assertEquals(descEditField.getText(), DESK_EDIT_TEXT, "Текст не изменился");
     }
 
     private void createFreestyleProject(String name) {
@@ -100,15 +95,6 @@ public class FreestyleDescriptionTest extends BaseTest {
                 break;
             } catch (StaleElementReferenceException e) {
             }
-        }
-    }
-
-    private void deleteProject(String name) {
-        try {
-            getDriver().get("http://localhost:8080/job/" + name + "/delete");
-            WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
-            wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#main-panel form button"))).click();
-        } catch (Exception ignored) {
         }
     }
 }

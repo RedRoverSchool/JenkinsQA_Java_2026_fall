@@ -12,6 +12,10 @@ public abstract class BaseTest {
 
     private WebDriver driver;
 
+    private WebDriverWait wait2;
+    private WebDriverWait wait5;
+    private WebDriverWait wait10;
+
     @BeforeMethod
     protected void beforeMethod(Method method) {
         ProjectUtils.log("Run %s.%s", this.getClass().getName(), method.getName());
@@ -39,6 +43,10 @@ public abstract class BaseTest {
                 driver.quit();
                 driver = null;
 
+                wait2 = null;
+                wait5 = null;
+                wait10 = null;
+
                 ProjectUtils.log("Browser closed");
             }
         }
@@ -48,5 +56,29 @@ public abstract class BaseTest {
 
     protected WebDriver getDriver() {
         return driver;
+    }
+
+    protected WebDriverWait getWait2() {
+        if (wait2 == null) {
+            wait2 = new WebDriverWait(getDriver(), Duration.ofSeconds(2));
+        }
+
+        return wait2;
+    }
+
+    protected WebDriverWait getWait5() {
+        if (wait5 == null) {
+            wait5 = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+        }
+
+        return wait5;
+    }
+
+    protected WebDriverWait getWait10() {
+        if (wait10 == null) {
+            wait10 = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        }
+
+        return wait10;
     }
 }

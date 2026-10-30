@@ -126,8 +126,8 @@ public final class JenkinsUtils {
     private static List<String> getHeaderCrumb() {
         if (headerCrumb == null) {
             HttpResponse<String> jsonResponse = getHttp(ProjectUtils.getUrl() + "crumbIssuer/api/json", getHeaderAuthorization());
-            if (jsonResponse.statusCode() == 403) {
-                throw new RuntimeException(String.format("Authorization does not work with user: \"%s\" and password: \"%s\"", ProjectUtils.getUserName(), ProjectUtils.getUserName()));
+            if (jsonResponse.statusCode() == 403 || jsonResponse.statusCode() == 401) {
+                throw new RuntimeException(String.format("Authorization does not work with user: \"%s\" and password: \"%s\"", ProjectUtils.getUserName(), ProjectUtils.getPassword()));
             } else if (jsonResponse.statusCode() != 200) {
                 throw new RuntimeException("Something went wrong while clearing data");
             }

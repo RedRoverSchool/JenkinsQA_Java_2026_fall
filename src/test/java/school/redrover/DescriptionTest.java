@@ -40,8 +40,7 @@ public class DescriptionTest extends BaseTest {
         getDriver().findElement(By.id(MODAL_WINDOW)).sendKeys((DESCRIPTION_TEXT_NEW));
         getDriver().findElement(By.xpath(SAVE_CLICK)).click();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(
+        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(
                 By.id(DESCRIPTION_CONTENT), DESCRIPTION_TEXT_NEW));
 
         Assert.assertEquals(getDriver().findElement(By.id(DESCRIPTION_CONTENT)).getText(), DESCRIPTION_TEXT_NEW);
