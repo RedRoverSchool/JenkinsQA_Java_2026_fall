@@ -92,40 +92,36 @@ public class PipelineTest extends BaseTest {
 
     @Test
     public void testCreateWithExistingName() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
+
         String projectName = "ExistingPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(
-                (By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable((By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
-        WebElement errorMessage = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[contains(text(), 'A job already exists')]")));
-        Assert.assertTrue(errorMessage.isDisplayed(), "Сообщение об ошибке не появилось!");
-
+        WebElement errorMessage = getDriver().findElement(By.xpath("//*[contains(text(), 'A job already exists')]"));
         WebElement okButton = getDriver().findElement(By.id("ok-button"));
+
+        Assert.assertTrue(errorMessage.isDisplayed(), "Сообщение об ошибке не появилось!");
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
     @Test
     public void testSkipConfigurationAndReturnToDashboard() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         String projectName = "SkipConfigPipeline";
 
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(
-                (By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable((By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
 
-        WebElement itemInList = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector(".jenkins-table__link > span:first-child")));
+        WebElement itemInList = getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child"));
 
         Assert.assertEquals(itemInList.getText(), projectName, "Созданный проект не отображается на Dashboard!");
     }
