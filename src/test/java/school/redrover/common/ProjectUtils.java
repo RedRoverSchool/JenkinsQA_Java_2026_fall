@@ -1,11 +1,19 @@
 package school.redrover.common;
 
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Duration;
 import java.util.Properties;
 
@@ -93,5 +101,30 @@ public final class ProjectUtils {
 
     public static void log(String message, Object... args) {
         System.out.println(message.formatted(args));
+    }
+
+    public static void takeScreenshot(WebDriver driver, String className, String methodName) {
+        if (driver == null) {
+            ProjectUtils.log("Cannot take screenshot: driver is null");
+            return;
+        }
+        if (!(driver instanceof TakesScreenshot)) {
+            ProjectUtils.log("Driver does not support screenshots: " + driver.getClass());
+            return;
+        }
+        Path dir = Paths.get("screenshots");
+        try {
+            Files.createDirectories(dir);
+            String safeName = (className + "." + methodName).replaceAll("[^a-zA-Z0-9._-]", "_");
+            Path target = dir.resolve(safeName + "." + System.currentTimeMillis() + ".png");
+            File tmp = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            try {
+                Files.move(tmp.toPath(), target, StandardCopyOption.REPLACE_EXISTING);
+            } finally {
+                Files.deleteIfExists(tmp.toPath());
+            }
+        } catch (IOException | WebDriverException e) {
+            ProjectUtils.log("Error while making screenshot: " + e.getMessage());
+        }
     }
 }
