@@ -72,7 +72,10 @@ public class PipelineTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(projectName);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
         wait.until(ExpectedConditions.elementToBeClickable((By.id("ok-button")))).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated((By.name("description"))));
+        getDriver().findElement(By.xpath("//a[@class='app-jenkins-logo']")).click();
+
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
         wait.until(ExpectedConditions.visibilityOfElementLocated(
