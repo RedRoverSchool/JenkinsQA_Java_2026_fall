@@ -88,8 +88,9 @@ public class HistoryTest extends BaseTest {
         getDriver().findElement(By.id("name")).sendKeys(name);
         getDriver().findElement(By.className("jenkins-choice-list__item__label")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated((By.id("jenkins-head-icon"))));
-        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated((By.name("description"))));
+        getDriver().findElement((By.id("jenkins-head-icon"))).click();
     }
 
 }
