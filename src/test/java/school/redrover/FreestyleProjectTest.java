@@ -70,23 +70,21 @@ public class FreestyleProjectTest extends BaseTest {
     public void testAddPostBuildAction() {
         testCreateFreestyleProject();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#job_" + itemName + " a"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='configure']"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("#job_" + itemName + " a"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='configure']"))).click();
 
         By addButton = By.xpath("//button[contains(., 'Add post-build action')]");
-        WebElement button = wait.until(
+        WebElement button = getWait5().until(
                 ExpectedConditions.visibilityOfElementLocated(addButton)
         );
 
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].scrollIntoView({block: 'center'});", button
         );
-        wait.until(ExpectedConditions.elementToBeClickable(addButton)).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(addButton)).click();
 
         Assert.assertTrue(
-                wait.until(ExpectedConditions.visibilityOfElementLocated(
+                getWait5().until(ExpectedConditions.visibilityOfElementLocated(
                         By.xpath("//*[normalize-space()='Aggregate downstream test results']")
                 )).isDisplayed()
         );
