@@ -48,21 +48,20 @@ public class MultiConfigurationProjectTest extends BaseTest {
 
     @Test
     public void testSetProjectDescription() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         final String projectName = "MultiConfigDescProject";
         final String descriptionText = "This is an automated test description.";
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(projectName);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//label[input[@value='hudson.matrix.MatrixProject']]"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
+        getDriver().findElement(By.id("name")).sendKeys(projectName);
+        getDriver().findElement(By.xpath("//label[input[@value='hudson.matrix.MatrixProject']]")).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
 
-        WebElement descriptionField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("description")));
+        WebElement descriptionField = getDriver().findElement(By.name("description"));
         descriptionField.sendKeys(descriptionText);
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[name='Submit']"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("button[name='Submit']"))).click();
 
-        WebElement actualDescription = wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("description")));
+        WebElement actualDescription = getDriver().findElement(By.id("description"));
 
         Assert.assertTrue(actualDescription.getText().contains(descriptionText),
                 "Описание проекта не отобразилось!");
