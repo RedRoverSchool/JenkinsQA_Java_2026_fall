@@ -27,12 +27,12 @@ public class ChangeHealthMetricsTest extends BaseTest {
 
     }
     @Test
-    public void visibleHealthMetricsButton(){
+    public void testVisibleHealthMetricsButton(){
         WebElement button = getWait10().until(ExpectedConditions.visibilityOfElementLocated(HEALTH_METRICS_BUTTON2));
         Assert.assertTrue(button.isDisplayed());
     }
     @Test
-    public void clickHealthMetricsButton(){
+    public void testClickHealthMetricsButton(){
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].scrollIntoView({block: 'center', inline: 'nearest'});",
                 getDriver().findElement(HEALTH_METRICS_BUTTON2)
