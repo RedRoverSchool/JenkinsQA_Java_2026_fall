@@ -3,12 +3,9 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-import java.time.Duration;
 
 public class PipelineConfigurationTest extends BaseTest {
 
@@ -39,8 +36,7 @@ public class PipelineConfigurationTest extends BaseTest {
     public void testDisabledStateOnDashboard(){
         createPipeline();
         disableProject();
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("tasks")));
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("tasks")));
         getDriver().findElement(By.className("app-jenkins-logo")).click();
         Assert.assertTrue(
                 getDriver().findElement(By.className("disabledJob")).isDisplayed(),
@@ -48,14 +44,26 @@ public class PipelineConfigurationTest extends BaseTest {
         );
     }
 
-    @Ignore
     @Test
     public void testEnableProjectByButton(){
         createPipeline();
         disableProject();
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.elementToBeClickable(getDriver().findElement(By.name("Submit")))).click();
-        WebElement buildNowLink = wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now")));
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
+        WebElement buildNowLink = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now")));
+
+        Assert.assertTrue(buildNowLink.isDisplayed(), "Ссылка 'Build Now' не отображается на странице!");
+    }
+
+    @Test
+    public void testEnableProjectByToggle(){
+        createPipeline();
+        disableProject();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("tasks")));
+        getDriver().findElement(By.className("app-jenkins-logo")).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.className("jenkins-menu-dropdown-chevron"))).click();
+        getDriver().findElement(By.cssSelector("a[href*=\"configure\"]")).click();
+        disableProject();
+        WebElement buildNowLink =  getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now")));
 
         Assert.assertTrue(buildNowLink.isDisplayed(), "Ссылка 'Build Now' не отображается на странице!");
     }
