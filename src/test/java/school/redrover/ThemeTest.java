@@ -57,8 +57,8 @@ public class ThemeTest extends BaseTest {
         Assert.assertTrue(isDarkTheme);
     }
 
-    @Test
     @Ignore
+    @Test
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
 
