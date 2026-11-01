@@ -48,10 +48,13 @@ public class PipelineConfigurationTest extends BaseTest {
     public void testEnableProjectByButton(){
         createPipeline();
         disableProject();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
-        WebElement buildNowLink = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now")));
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("tasks")));
+        getDriver().findElement(By.name("Submit")).click();
 
-        Assert.assertTrue(buildNowLink.isDisplayed(), "Ссылка 'Build Now' не отображается на странице!");
+        Assert.assertTrue(
+                getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now"))).isDisplayed(),
+                "Ссылка 'Build Now' не отображается на странице!"
+        );
     }
 
     @Test
