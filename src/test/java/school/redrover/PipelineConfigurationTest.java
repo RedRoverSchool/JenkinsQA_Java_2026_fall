@@ -60,12 +60,15 @@ public class PipelineConfigurationTest extends BaseTest {
         disableProject();
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("tasks")));
         getDriver().findElement(By.className("app-jenkins-logo")).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.className("jenkins-menu-dropdown-chevron"))).click();
-        getDriver().findElement(By.cssSelector("a[href*=\"configure\"]")).click();
-        disableProject();
-        WebElement buildNowLink =  getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now")));
 
-        Assert.assertTrue(buildNowLink.isDisplayed(), "Ссылка 'Build Now' не отображается на странице!");
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.className("jenkins-menu-dropdown-chevron"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*=\"configure\"]"))).click();
+
+        disableProject();
+        Assert.assertTrue(
+                getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.linkText("Build Now"))).isDisplayed(),
+                "Ссылка 'Build Now' не отображается на странице!"
+        );
     }
 
     public void createPipeline() {
