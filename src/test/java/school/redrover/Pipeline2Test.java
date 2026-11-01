@@ -24,8 +24,6 @@ public class Pipeline2Test extends BaseTest {
     private static final By TRIGGER_SECTION = By.xpath("//section[div[contains(@class, 'jenkins-section__title') " +
             "and normalize-space()='Triggers']]");
     private static final By PIPELINE_ITEM = By.cssSelector("#items div.org_jenkinsci_plugins_workflow_job_WorkflowJob");
-    private static final By TRIGGER_CHECKBOXES = By.xpath(".//div[contains(@class, 'help-sibling')]//input[@type='checkbox']");
-    private static final By TRIGGER_ICON_HELPS = By.xpath(".//a[contains(@class, 'jenkins-help-button')]");
 
     @Test
     public void testCreateTriggers() {
@@ -46,6 +44,7 @@ public class Pipeline2Test extends BaseTest {
     @Test
     public void testEditTriggers() {
         createPipeline(PIPELINE_NAME);
+        clickSave();
         getDriver().findElement(By.cssSelector("a[href$='/configure']")).click();
         WebElement triggerSection = getWait5().until(ExpectedConditions.visibilityOfElementLocated(TRIGGER_SECTION));
         for (String triggerName : TRIGGER_NAMES) {
@@ -53,8 +52,17 @@ public class Pipeline2Test extends BaseTest {
 
             Assert.assertTrue(triggerSection.isDisplayed(), "Секция TRIGGERS не обнаружена");
             Assert.assertFalse(block.findElements(By.xpath(".//input[@type='checkbox']")).isEmpty(), "Нет чекбокса у триггера на странице Configure: " + triggerName);
-            Assert.assertFalse(block.findElements(By.xpath(".//a[contains(@class, 'jenkins-help-button')]")).isEmpty(), "Нет иконки '?' у триггера при создании Configure: " + triggerName );
+            Assert.assertFalse(block.findElements(By.xpath(".//a[contains(@class, 'jenkins-help-button')]")).isEmpty(), "Нет иконки '?' у триггера при создании Configure: " + triggerName);
         }
+    }
+
+    @Test
+    public void testCreateWithoutTriggers() {
+        createPipeline(PIPELINE_NAME);
+        clickSave();
+        WebElement configureButton = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href$='/configure']")));
+
+        Assert.assertTrue(configureButton.isDisplayed(), "Проект не был создан без триггеров");
     }
 
     private void createPipeline(String name) {
@@ -62,6 +70,9 @@ public class Pipeline2Test extends BaseTest {
         getDriver().findElement(By.name("name")).sendKeys(name);
         getDriver().findElement(PIPELINE_ITEM).click();
         getDriver().findElement(By.id("ok-button")).click();
+    }
+
+    private void clickSave() {
 
         for (int i = 0; i < 3; i++) {
             try {
