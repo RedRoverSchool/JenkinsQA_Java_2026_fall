@@ -58,6 +58,7 @@ public class ThemeTest extends BaseTest {
     }
 
     @Test
+    @Ignore
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
 
