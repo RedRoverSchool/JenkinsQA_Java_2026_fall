@@ -115,14 +115,12 @@ public class HistoryTest extends BaseTest {
     }
 
     private void createPipeline(String name) {
-
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         getDriver().findElement(By.className("task-icon-link")).click();
         getDriver().findElement(By.id("name")).sendKeys(name);
         getDriver().findElement(By.className("jenkins-choice-list__item__label")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated((By.name("description"))));
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated((By.name("description"))));
         getDriver().findElement((By.id("jenkins-head-icon"))).click();
     }
 
