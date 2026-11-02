@@ -47,7 +47,7 @@ public class PipelineProjectTest extends BaseTest {
 
         assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(), "Welcome to Jenkins!");
     }
-@Ignore
+
     @Test
     public void testRename() {
         final String newProjectName = "testNewName";
@@ -212,6 +212,7 @@ public class PipelineProjectTest extends BaseTest {
 
     private void clickSubmitButton() {
         getDriver().findElement(By.id("ok-button")).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(),'Configure')]")));
     }
 
     private void clickConfigurePipelineLink() {
@@ -225,7 +226,7 @@ public class PipelineProjectTest extends BaseTest {
     }
 
     private void openJobDropDownMenu() {
-        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
     }
 
     private void deleteJobFromDropDownMenu() {
