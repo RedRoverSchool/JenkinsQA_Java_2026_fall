@@ -80,8 +80,8 @@ public class ThemeTest extends BaseTest {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         getDriver().findElement(By.id("root-action-UserAction")).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//div[@id='tasks']//a[contains(@href, '/appearance')]")
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("#tasks a[href$='/appearance']")
         )).click();
 
 
