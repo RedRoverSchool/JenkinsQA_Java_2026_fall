@@ -58,7 +58,6 @@ public class ThemeTest extends BaseTest {
         Assert.assertTrue(isDarkTheme);
     }
 
-    @Ignore
     @Test
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
@@ -80,9 +79,14 @@ public class ThemeTest extends BaseTest {
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        String appearanceUrl = ProjectUtils.getUrl() + "user/" + ProjectUtils.getUserName() + "/appearance";
-        getDriver().get(appearanceUrl);
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='radio-block-1']"))).click();
+        getDriver().findElement(By.id("root-action-UserAction")).click();
+        getDriver().findElement(By.xpath("//a[contains(@href, '/appearance')]")).click();
+
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("label[for='radio-block-1']")
+        )).click();
+        wait.until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
 
         WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
         submitButton.click();
