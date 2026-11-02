@@ -79,7 +79,10 @@ public class ThemeTest extends BaseTest {
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        getDriver().findElement(By.id("root-action-UserAction")).click();
+        WebElement userButton = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.id("root-action-UserAction")));
+        userButton.click();
 
         wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.xpath("//div[@id='tasks']//a[contains(@href, '/appearance') and contains(@class, 'task-link') and .//span[normalize-space()='Appearance']]"))).click();

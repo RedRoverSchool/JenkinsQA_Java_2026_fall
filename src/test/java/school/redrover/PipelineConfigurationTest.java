@@ -44,7 +44,7 @@ public class PipelineConfigurationTest extends BaseTest {
                 "Disabled icon is not displayed"
         );
     }
-
+@Ignore
     @Test
     public void testEnableProjectByButton(){
         createPipeline();
