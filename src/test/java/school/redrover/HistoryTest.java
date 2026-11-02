@@ -145,9 +145,10 @@ public class HistoryTest extends BaseTest {
     }
 
     private void assertSortArrow(String columnName, String expectedArrow) {
-        WebElement arrow = getDriver().findElement(
-                By.xpath("//th[.//a[normalize-space(text())='" + columnName + "']]//span[@class='sortarrow']")
-        );
+        WebElement arrow =
+                getWait10().until(
+                        ExpectedConditions.visibilityOfElementLocated((
+                                By.xpath("//th[.//a[normalize-space(text())='" + columnName + "']]//span[@class='sortarrow']"))));
 
         Assert.assertTrue(arrow.isDisplayed());
         Assert.assertEquals(arrow.getText().trim(), expectedArrow);
