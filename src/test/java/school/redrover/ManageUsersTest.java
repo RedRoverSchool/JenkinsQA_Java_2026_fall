@@ -84,7 +84,8 @@ public class ManageUsersTest extends BaseTest {
 
         Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(),"Access Denied");
     }
-@Ignore
+
+    @Ignore
     @Test
     public void testDelete() {
         testCreate();
