@@ -15,6 +15,9 @@ public class HistoryTest extends BaseTest {
 
     private static final String PIPELINE_FIRST_NAME = "Pipeline1";
     private static final String PIPELINE_SECOND_NAME = "Pipeline2";
+    private static final String SUCCESS_PIPELINE = "Success";
+    private static final String FAIL_PIPELINE = "Fail";
+
 
     @Test
     public void testBuildHistoryInformation() {
@@ -81,6 +84,36 @@ public class HistoryTest extends BaseTest {
         }
     }
 
+    @Test
+    public void testSortBuildHistory() {
+        createPipelineAndBuildSuccess(SUCCESS_PIPELINE);
+        createPipeline(FAIL_PIPELINE);
+
+        getDriver().findElement(
+                By.cssSelector(String.format(
+                        "a[title='Schedule a Build for %s']",
+                        FAIL_PIPELINE))
+        ).click();
+
+        getDriver().findElement(
+                By.cssSelector("a[href='/view/all/builds']")
+        ).click();
+
+        assertSortArrow("Прошло", "↑");
+        assertBuildOrder(FAIL_PIPELINE, SUCCESS_PIPELINE);
+
+        assertSorting("Прошло", "↓", SUCCESS_PIPELINE, FAIL_PIPELINE);
+
+        assertSorting("S", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
+        assertSorting("S", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
+
+        assertSorting("Сборка", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
+        assertSorting("Сборка", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
+
+        assertSorting("Статус", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
+        assertSorting("Статус", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
+    }
+
     private void createPipeline(String name) {
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
@@ -93,4 +126,52 @@ public class HistoryTest extends BaseTest {
         getDriver().findElement((By.id("jenkins-head-icon"))).click();
     }
 
+    private void createPipelineAndBuildSuccess(String name) {
+
+        getDriver().findElement(By.className("task-icon-link")).click();
+        getDriver().findElement(By.id("name")).sendKeys(name);
+        getDriver().findElement(By.className("jenkins-choice-list__item__label")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+        getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
+        getDriver().findElement(
+                By.cssSelector("a[href='/job/" + name + "/build?delay=0sec']")
+        ).click();
+
+        getDriver().findElement((By.id("jenkins-head-icon"))).click();
+    }
+
+    private void clickSortHeader(String columnName) {
+        getDriver().findElement(
+                By.xpath("//th[.//a[normalize-space(text())='" + columnName + "']]//a")
+        ).click();
+    }
+
+    private void assertSortArrow(String columnName, String expectedArrow) {
+        WebElement arrow = getDriver().findElement(
+                By.xpath("//th[.//a[normalize-space(text())='" + columnName + "']]//span[@class='sortarrow']")
+        );
+
+        Assert.assertTrue(arrow.isDisplayed());
+        Assert.assertEquals(arrow.getText().trim(), expectedArrow);
+    }
+
+    private void assertBuildOrder(String firstBuild, String secondBuild) {
+        List<WebElement> builds = getDriver().findElements(
+                By.cssSelector("a.jenkins-table__link > span")
+        );
+
+        Assert.assertEquals(builds.get(0).getText(), firstBuild);
+        Assert.assertEquals(builds.get(1).getText(), secondBuild);
+    }
+
+    private void assertSorting(
+            String columnName,
+            String expectedArrow,
+            String firstBuild,
+            String secondBuild
+    ) {
+        clickSortHeader(columnName);
+        assertSortArrow(columnName, expectedArrow);
+        assertBuildOrder(firstBuild, secondBuild);
+    }
 }
