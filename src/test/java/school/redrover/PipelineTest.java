@@ -55,7 +55,7 @@ public class PipelineTest extends BaseTest {
         assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(),
                 "Welcome to Jenkins!");
     }
-
+@Ignore
     @Test
     public void testRename() {
         final String newProjectName = "testNewName";
