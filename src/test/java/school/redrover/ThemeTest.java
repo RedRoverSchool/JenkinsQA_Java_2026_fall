@@ -80,17 +80,18 @@ public class ThemeTest extends BaseTest {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         getDriver().findElement(By.id("root-action-UserAction")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("#tasks a[href$='/appearance']")
-        )).click();
-
 
         wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("label[for='radio-block-1']")
-        )).click();
-        wait.until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
+                By.cssSelector("#tasks a[href*='/appearance']"))).click();
 
-        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("label[for='radio-block-1']"))).click();
+
+        wait.until(ExpectedConditions.elementToBeSelected(
+                By.id("radio-block-1")));
+
+        WebElement submitButton = wait.until(
+                ExpectedConditions.elementToBeClickable(By.name("Submit")));
         submitButton.click();
         wait.until(ExpectedConditions.stalenessOf(submitButton));
     }
