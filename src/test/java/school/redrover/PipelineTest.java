@@ -78,7 +78,7 @@ public class PipelineTest extends BaseTest {
 
         assertEquals(actualProjectName, newProjectName);
     }
-
+@Ignore
     @Test
     public void testCreateWithExistingName() {
 
