@@ -81,8 +81,8 @@ public class ThemeTest extends BaseTest {
 
         getDriver().findElement(By.id("root-action-UserAction")).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//div[@id='tasks']//a[@href='/user/admin/appearance' and contains(@class, 'task-link') and .//span[normalize-space()='Appearance']]"))).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("//div[@id='tasks']//a[contains(@href, '/appearance') and contains(@class, 'task-link') and .//span[normalize-space()='Appearance']]"))).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("label[for='radio-block-1']"))).click();
