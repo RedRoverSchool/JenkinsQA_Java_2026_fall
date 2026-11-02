@@ -84,7 +84,7 @@ public class ThemeTest extends BaseTest {
                         By.id("root-action-UserAction")));
         userButton.click();
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(
+        wait.until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//div[@id='tasks']//a[contains(@href, '/appearance') and contains(@class, 'task-link') and .//span[normalize-space()='Appearance']]"))).click();
 
         wait.until(ExpectedConditions.elementToBeClickable(
