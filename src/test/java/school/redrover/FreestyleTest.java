@@ -97,7 +97,7 @@ public class FreestyleTest extends BaseTest {
 
         Assert.assertEquals(copiedProject.getText(), "Copied item");
     }
-    @Ignore
+
     @Test
     public void testTriggerBuildsRemotely(){
         getDriver().findElement(By.className("task-link-no-confirm")).click();

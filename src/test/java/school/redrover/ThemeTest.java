@@ -15,6 +15,7 @@ import school.redrover.common.JenkinsUtils;
 import school.redrover.common.ProjectUtils;
 
 import java.time.Duration;
+import java.util.List;
 
 
 public class ThemeTest extends BaseTest {
@@ -58,7 +59,6 @@ public class ThemeTest extends BaseTest {
         Assert.assertTrue(isDarkTheme);
     }
 
-    @Ignore
     @Test
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
@@ -80,11 +80,26 @@ public class ThemeTest extends BaseTest {
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        String appearanceUrl = ProjectUtils.getUrl() + "user/" + ProjectUtils.getUserName() + "/appearance";
-        getDriver().get(appearanceUrl);
-        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//label[@for='radio-block-1']"))).click();
+        WebElement userButton = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
 
-        WebElement submitButton = wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
+        Actions actions = new Actions(getDriver());
+        actions.moveToElement(userButton).perform();
+
+        WebElement appearanceButton = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']")));
+        appearanceButton.click();
+
+        wait.until(ExpectedConditions.urlContains("/appearance"));
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("label[for='radio-block-1']"))).click();
+
+        wait.until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
+
+        WebElement submitButton = wait.until(
+                ExpectedConditions.elementToBeClickable(By.name("Submit")));
         submitButton.click();
         wait.until(ExpectedConditions.stalenessOf(submitButton));
     }

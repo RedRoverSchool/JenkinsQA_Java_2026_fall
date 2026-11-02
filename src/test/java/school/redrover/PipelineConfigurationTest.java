@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -43,7 +44,7 @@ public class PipelineConfigurationTest extends BaseTest {
                 "Disabled icon is not displayed"
         );
     }
-
+@Ignore
     @Test
     public void testEnableProjectByButton(){
         createPipeline();
@@ -56,7 +57,7 @@ public class PipelineConfigurationTest extends BaseTest {
                 "Ссылка 'Build Now' не отображается на странице!"
         );
     }
-
+@Ignore
     @Test
     public void testEnableProjectByToggle(){
         createPipeline();

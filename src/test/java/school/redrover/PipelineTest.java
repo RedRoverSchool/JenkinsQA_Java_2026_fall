@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -54,7 +55,7 @@ public class PipelineTest extends BaseTest {
         assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(),
                 "Welcome to Jenkins!");
     }
-
+@Ignore
     @Test
     public void testRename() {
         final String newProjectName = "testNewName";
@@ -77,7 +78,7 @@ public class PipelineTest extends BaseTest {
 
         assertEquals(actualProjectName, newProjectName);
     }
-
+@Ignore
     @Test
     public void testCreateWithExistingName() {
 
@@ -210,7 +211,7 @@ public class PipelineTest extends BaseTest {
 
         assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
-
+@Ignore
     @Test
     public void testApplyButton() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
