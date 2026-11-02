@@ -79,13 +79,19 @@ public class ThemeTest extends BaseTest {
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        WebElement userButton = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.id("root-action-UserAction")));
-        userButton.click();
+//        WebElement userButton = wait.until(
+//                ExpectedConditions.elementToBeClickable(
+//                        By.id("root-action-UserAction")));
+//        userButton.click();
+//
+//        wait.until(ExpectedConditions.elementToBeClickable(
+//                By.xpath("//div[@id='tasks']//a[contains(@href, '/appearance') and contains(@class, 'task-link') and .//span[normalize-space()='Appearance']]"))).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//div[@id='tasks']//a[contains(@href, '/appearance') and contains(@class, 'task-link') and .//span[normalize-space()='Appearance']]"))).click();
+        String userUrl = getDriver().findElement(
+                By.id("root-action-UserAction")
+        ).getAttribute("href");
+
+        getDriver().get(userUrl + "/appearance");
 
         wait.until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("label[for='radio-block-1']"))).click();
