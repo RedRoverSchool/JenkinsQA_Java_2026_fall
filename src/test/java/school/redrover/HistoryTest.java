@@ -102,25 +102,17 @@ public class HistoryTest extends BaseTest {
         getWait10().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
                 By.cssSelector("svg[aria-label='success'], svg[aria-label='failure']")));
 
-        List<WebElement> headers = getDriver().findElements(
-                By.cssSelector("th")
-        );
-
-        for (WebElement header : headers) {
-            System.out.println("Header in CI: " + header.getText());
-        }
-
-        assertSorting("Прошло", "↓", SUCCESS_PIPELINE, FAIL_PIPELINE);
-        assertSorting("Прошло", "↑", FAIL_PIPELINE, SUCCESS_PIPELINE);
+        assertSorting("Time Since", "↓", SUCCESS_PIPELINE, FAIL_PIPELINE);
+        assertSorting("Time Since", "↑", FAIL_PIPELINE, SUCCESS_PIPELINE);
 
         assertSorting("S", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
         assertSorting("S", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
 
-        assertSorting("Сборка", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
-        assertSorting("Сборка", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
+        assertSorting("Build", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
+        assertSorting("Build", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
 
-        assertSorting("Статус", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
-        assertSorting("Статус", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
+        assertSorting("Status", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
+        assertSorting("Status", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
     }
 
     private void createPipeline(String name) {
