@@ -99,6 +99,9 @@ public class HistoryTest extends BaseTest {
                 By.cssSelector("a[href='/view/all/builds']")
         ).click();
 
+        getWait10().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                By.cssSelector("svg[aria-label='success'], svg[aria-label='failure']")));
+
         assertSortArrow("Прошло", "↑");
         assertBuildOrder(FAIL_PIPELINE, SUCCESS_PIPELINE);
 
