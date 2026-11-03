@@ -102,10 +102,8 @@ public class HistoryTest extends BaseTest {
         getWait10().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
                 By.cssSelector("svg[aria-label='success'], svg[aria-label='failure']")));
 
-        assertSortArrow("Прошло", "↑");
-        assertBuildOrder(FAIL_PIPELINE, SUCCESS_PIPELINE);
-
         assertSorting("Прошло", "↓", SUCCESS_PIPELINE, FAIL_PIPELINE);
+        assertSorting("Прошло", "↑", FAIL_PIPELINE, SUCCESS_PIPELINE);
 
         assertSorting("S", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
         assertSorting("S", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
