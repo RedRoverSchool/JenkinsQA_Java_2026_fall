@@ -140,9 +140,10 @@ public class HistoryTest extends BaseTest {
     }
 
     private void clickSortHeader(String columnName) {
-        getDriver().findElement(
-                By.xpath("//th[.//a[normalize-space(text())='" + columnName + "']]//a")
-        ).click();
+        getWait10().until(
+                ExpectedConditions.visibilityOfElementLocated((
+                        By.xpath("//th[.//a[normalize-space(text())='" + columnName + "']]//a"))))
+                .click();
     }
 
     private void assertSortArrow(String columnName, String expectedArrow) {
