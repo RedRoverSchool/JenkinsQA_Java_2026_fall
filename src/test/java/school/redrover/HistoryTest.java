@@ -102,6 +102,14 @@ public class HistoryTest extends BaseTest {
         getWait10().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
                 By.cssSelector("svg[aria-label='success'], svg[aria-label='failure']")));
 
+        List<WebElement> headers = getDriver().findElements(
+                By.cssSelector("th")
+        );
+
+        for (WebElement header : headers) {
+            System.out.println("Header in CI: " + header.getText());
+        }
+
         assertSorting("Прошло", "↓", SUCCESS_PIPELINE, FAIL_PIPELINE);
         assertSorting("Прошло", "↑", FAIL_PIPELINE, SUCCESS_PIPELINE);
 
