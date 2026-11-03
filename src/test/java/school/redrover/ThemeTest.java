@@ -12,8 +12,10 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.common.JenkinsUtils;
+import school.redrover.common.ProjectUtils;
 
 import java.time.Duration;
+import java.util.List;
 
 
 public class ThemeTest extends BaseTest {
@@ -57,17 +59,18 @@ public class ThemeTest extends BaseTest {
         Assert.assertTrue(isDarkTheme);
     }
 
-    @Ignore
     @Test
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
 
-        getDriver().manage().deleteAllCookies();
-        getDriver().navigate().refresh();
-
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("j_username")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
+
+        JenkinsUtils.logout(getDriver());
+        getDriver().get(ProjectUtils.getUrl() + "login");
         JenkinsUtils.login(getDriver());
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='app-jenkins-logo']")));
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
 
@@ -77,13 +80,27 @@ public class ThemeTest extends BaseTest {
     private void changeTheme() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
-        new Actions(getDriver()).moveToElement(userIcon).perform();
+        WebElement userButton = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
 
-        WebElement appearanceButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href=\"/user/admin/appearance\"]")));
+        Actions actions = new Actions(getDriver());
+        actions.moveToElement(userButton).perform();
+
+        WebElement appearanceButton = wait.until(
+                ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']")));
         appearanceButton.click();
 
-        getDriver().findElement(By.xpath("//label[@for=\"radio-block-1\"]")).click();
-        getDriver().findElement(By.name("Submit")).click();
+        wait.until(ExpectedConditions.urlContains("/appearance"));
+
+        wait.until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("label[for='radio-block-1']"))).click();
+
+        wait.until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
+
+        WebElement submitButton = wait.until(
+                ExpectedConditions.elementToBeClickable(By.name("Submit")));
+        submitButton.click();
+        wait.until(ExpectedConditions.stalenessOf(submitButton));
     }
 }

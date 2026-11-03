@@ -4,12 +4,10 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
-import java.time.Duration;
 import java.util.List;
 
 
@@ -28,39 +26,30 @@ public class MultiConfigurationProjectTest extends BaseTest {
     private static final String JOB_NAME = "MultiConfigDescProject";
     private static final String DESCRIPTION_TEXT = "This is an automated test description.";
 
-
-    WebDriverWait wait10;
-
-
-
-
     @Test
     public void testCreateMultiConfigurationProject() {
-
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
-
-        wait.until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
-        wait.until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
-        wait.until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
-        wait.until(ExpectedConditions.elementToBeClickable(JENKINS_LOGO)).click();
-        WebElement itemLink = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a.jenkins-table__link[href^='job/']")));
+        getWait10().until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(JENKINS_LOGO)).click();
+        WebElement itemLink = getWait10().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a.jenkins-table__link[href^='job/']")));
 
         Assert.assertTrue(itemLink.getText().contains("MultiConfigurationProject"));
     }
 
     @Test
     public void testEnableOrDisableProject() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
-        wait.until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".jenkins-form, .app-page-body, form")));
-        wait.until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
-        wait.until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
-        wait.until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("label[for='enable-disable-project']"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
 
-        WebElement alertForm = wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("form#enable-project")));
+        getWait10().until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".jenkins-form, .app-page-body, form")));
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("label[for='enable-disable-project']"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
+
+        WebElement alertForm = getWait10().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("form#enable-project")));
 
         Assert.assertTrue(alertForm.getText().contains("This project is currently disabled"));
     }
@@ -68,38 +57,35 @@ public class MultiConfigurationProjectTest extends BaseTest {
     @Test
     public void testSetProjectDescription() {
 
-        wait10= new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
+        getDriver().findElement(PROJECT_NAME).sendKeys(JOB_NAME);
+        getDriver().findElement(PROJECT_TYPE).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
 
-        wait10.until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
-        wait10.until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys(JOB_NAME);
-        wait10.until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
-        wait10.until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
-
-        WebElement descriptionField = wait10.until(ExpectedConditions.visibilityOfElementLocated(By.name("description")));
+        WebElement descriptionField = getDriver().findElement(By.name("description"));
         descriptionField.sendKeys(DESCRIPTION_TEXT);
 
-        wait10.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
 
-        WebElement actualDescription = wait10.until(ExpectedConditions.visibilityOfElementLocated(By.id("description")));
+        WebElement actualDescription = getDriver().findElement(By.id("description"));
 
         Assert.assertTrue(actualDescription.getText().contains(DESCRIPTION_TEXT),
                 "Описание проекта не отобразилось!");
     }
 
     @Test
-    public void testConfigurationMatrixAddAxis(){
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(20));
+    public void testConfigurationMatrixAddAxis() {
 
-        wait.until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
-        wait.until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
-        wait.until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
 
         WebElement axis = getDriver().findElement(ADD_AXIS);
         ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", axis);
         axis.click();
         getDriver().findElement(USER_DEFINED_AXIS).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(AXIS_NANE_FIELD)).sendKeys("DB");
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(AXIS_NANE_FIELD)).sendKeys("DB");
         getDriver().findElement(AXIS_VALUES_FIELD).sendKeys("MongoBD SQL");
 
         ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", axis);
@@ -115,4 +101,3 @@ public class MultiConfigurationProjectTest extends BaseTest {
         Assert.assertEquals(List.of("MongoBD", "SQL"), columns);
     }
 }
-

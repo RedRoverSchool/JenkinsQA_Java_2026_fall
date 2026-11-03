@@ -15,27 +15,22 @@ public class FolderTest extends BaseTest {
     private static String FOLDER_NAME = "NewFolder";
 
     @Test
-    public void testCreate() {
-        createFolder();
-    }
-
     public void createFolder() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         getDriver().findElement(By.cssSelector("a.task-link")).click();
         getDriver().findElement(By.id("name")).sendKeys(FOLDER_NAME);
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
 
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/configure/?$"));
+        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/configure/?$"));
         getDriver().findElement(By.name("_.displayNameOrNull")).sendKeys(FOLDER_NAME);
         getDriver().findElement(By.name("Submit")).click();
 
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
+        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
 
         Assert.assertTrue(
-                wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(FOLDER_NAME))).isDisplayed()
+                getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.linkText(FOLDER_NAME))).isDisplayed()
         );
     }
 
@@ -51,34 +46,30 @@ public class FolderTest extends BaseTest {
 
     @Test
     public void testModifyFolderDisplayNameAndDescription() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
         final String folderName = "ConfigTestFolder";
         final String newDisplayName = "UpdatedFolderName";
         final String descriptionText = "This is a new description for the folder.";
 
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(folderName);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//label[input[@value='com.cloudbees.hudson.plugins.folder.Folder']]"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + folderName + "/configure/?$"));
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText(folderName))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText("Configure"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.task-link[href*='newJob']"))).click();
+        getDriver().findElement(By.id("name")).sendKeys(folderName);
+        getDriver().findElement(By.xpath("//label[input[@value='com.cloudbees.hudson.plugins.folder.Folder']]")).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        getWait10().until(ExpectedConditions.urlMatches(".*/job/" + folderName + "/configure/?$"));
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.linkText(folderName))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.linkText("Configure"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
 
-        WebElement displayNameField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.name("_.displayNameOrNull")));
+        WebElement displayNameField = getDriver().findElement(By.name("_.displayNameOrNull"));
         displayNameField.clear();
         displayNameField.sendKeys(newDisplayName);
-        WebElement descriptionField = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//textarea[contains(@name, 'description')]")));
+        WebElement descriptionField = getDriver().findElement(By.xpath("//textarea[contains(@name, 'description')]"));
         descriptionField.clear();
         descriptionField.sendKeys(descriptionText);
         displayNameField.click();
-        wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
-        wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), newDisplayName));
-        WebElement actualDescriptionElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//*[contains(text(), '" + descriptionText + "')]")));
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
+        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), newDisplayName));
+        WebElement actualDescriptionElement = getDriver().findElement(By.xpath("//*[contains(text(), '" + descriptionText + "')]"));
 
         Assert.assertTrue(actualDescriptionElement.isDisplayed(), "Описание не отобразилось на странице!");
     }
@@ -87,24 +78,22 @@ public class FolderTest extends BaseTest {
     public void testApplyChanges() {
         createFolder();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-
         getDriver().findElement(By.cssSelector("a[href$='" + FOLDER_NAME + "/']")).click();
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
+        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
         getDriver().findElement(By.cssSelector("a[href$='configure']")).click();
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/configure/?$"));
+        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/configure/?$"));
 
         getDriver().findElement(By.cssSelector("button.advanced-button")).click();
         getDriver().findElement(By.cssSelector("button.jenkins-button.hetero-list-add")).click();
 
-        wait.until(ExpectedConditions.elementToBeClickable(
+        getWait5().until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//button[normalize-space()='Child item with worst health']")
         )).click();
         getDriver().findElement(By.cssSelector("label.attach-previous")).click();
         getDriver().findElement(By.cssSelector("button.jenkins-button.apply-button")).click();
 
         Assert.assertTrue(
-                wait.until(ExpectedConditions.urlMatches(
+                getWait5().until(ExpectedConditions.urlMatches(
                         ".*/job/" + FOLDER_NAME + "/configure/?$")),
                 "User should remain on the folder configuration page"
         );
