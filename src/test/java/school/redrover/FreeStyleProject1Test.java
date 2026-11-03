@@ -13,14 +13,13 @@ public class FreeStyleProject1Test extends BaseTest {
 
     @Test
     public void testCreate() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         getDriver().findElement(By.className("content-block__link")).click();
         getDriver().findElement(By.id("name")).sendKeys("test");
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-
-        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
+        getDriver().findElement(By.id("47-65-6e-65-72-61-6c"));
+        getWait2().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(),
