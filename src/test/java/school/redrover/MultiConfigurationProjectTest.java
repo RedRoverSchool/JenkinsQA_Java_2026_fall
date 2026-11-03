@@ -30,7 +30,7 @@ public class MultiConfigurationProjectTest extends BaseTest {
 
 
     WebDriverWait wait10;
-    WebDriverWait wait30 = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
+    
 
 
 
