@@ -32,7 +32,7 @@ public class PipelineProjectTest extends BaseTest {
         clickSubmitButton();
         goToMainPage();
 
-        assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), PROJECT_NAME);
+        assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), PROJECT_NAME + 1);
     }
 
     @Test
