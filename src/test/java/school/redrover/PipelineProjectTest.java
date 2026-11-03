@@ -233,7 +233,7 @@ public class PipelineProjectTest extends BaseTest {
     }
 
     private void deleteJobFromDropDownMenu() {
-        getDriver().findElement(By.xpath("//button[@class='jenkins-dropdown__item' and contains(normalize-space(.), 'Delete Pipeline')]")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='jenkins-dropdown__item' and contains(normalize-space(.), 'Delete Pipeline')]"))).click();
         getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dialog[@class='jenkins-dialog']")));
         getDriver().findElement(By.xpath("//button[@data-id='ok']")).click();
     }
