@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
 import java.time.Duration;
+import java.util.List;
 
 
 public class MultiConfigurationProjectTest extends BaseTest {
@@ -20,6 +21,10 @@ public class MultiConfigurationProjectTest extends BaseTest {
     private static final By OK_BUTTON = By.cssSelector("#ok-button");
     private static final By JENKINS_LOGO = By.cssSelector("a.app-jenkins-logo");
     private static final By SUBMIT_BUTTON = By.cssSelector("button[name='Submit']");
+    private static final By ADD_AXIS = By.cssSelector("button[suffix='axis']");
+    private static final By USER_DEFINED_AXIS = By.xpath("//button[contains(.,'User-defined Axis')]");
+    private static final By AXIS_VALUES_FIELD =By.cssSelector("input#textarea\\._\\.valueString");
+    private static final By AXIS_NANE_FIELD = By.cssSelector("input[checkurl*='hudson.matrix.TextAxis'][name ='_.name']");
     private static final String JOB_NAME = "MultiConfigDescProject";
     private static final String DESCRIPTION_TEXT = "This is an automated test description.";
 
@@ -35,7 +40,6 @@ public class MultiConfigurationProjectTest extends BaseTest {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(30));
 
         wait.until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
-        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".jenkins-form, .app-page-body, form")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
         wait.until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
         wait.until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
@@ -63,9 +67,7 @@ public class MultiConfigurationProjectTest extends BaseTest {
 
     @Test
     public void testSetProjectDescription() {
-        //WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        //final String projectName = "MultiConfigDescProject";
-        //final String descriptionText = "This is an automated test description.";
+
         wait10= new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         wait10.until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
@@ -89,32 +91,28 @@ public class MultiConfigurationProjectTest extends BaseTest {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(20));
 
         wait.until(ExpectedConditions.elementToBeClickable(NEW_JOB)).click();
-        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(".jenkins-form, .app-page-body, form")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(PROJECT_NAME)).sendKeys("MultiConfigurationProject");
         wait.until(ExpectedConditions.presenceOfElementLocated(PROJECT_TYPE)).click();
         wait.until(ExpectedConditions.elementToBeClickable(OK_BUTTON)).click();
-        //wait.until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"),"Configure"));
-        //wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[.//span[normalize-space(.)='Configuration Matrix']]"))).click();
-        //wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("button[suffix='axis']"))).click();
-        WebElement axis= getDriver().findElement(By.cssSelector("button[suffix='axis']"));
+
+        WebElement axis = getDriver().findElement(ADD_AXIS);
         ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", axis);
         axis.click();
-        //axis.findElement(By.xpath("//button[contains(.,'User-defined Axis')]")).click();
-        getDriver().findElement(By.xpath("//button[contains(.,'User-defined Axis')]")).click();
-        getDriver().findElement(By.cssSelector("input[checkurl*='hudson.matrix.TextAxis'][name ='_.name']")).sendKeys("DB");
-        getDriver().findElement(By.cssSelector("input#textarea\\._\\.valueString")).sendKeys("MongoBD SQL");
-        //getDriver().findElement(SUBMIT_BUTTON).click();
+        getDriver().findElement(USER_DEFINED_AXIS).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(AXIS_NANE_FIELD)).sendKeys("DB");
+        getDriver().findElement(AXIS_VALUES_FIELD).sendKeys("MongoBD SQL");
+
         ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", axis);
         axis.click();
-        getDriver().findElement(By.xpath("//button[contains(.,'User-defined Axis')]")).click();
-        getDriver().findElements(By.cssSelector("input[checkurl*='hudson.matrix.TextAxis'][name='_.name']"))
+        getDriver().findElement(USER_DEFINED_AXIS).click();
+        getDriver().findElements(AXIS_NANE_FIELD)
                 .get(1)
                 .sendKeys("OS");
-        //getDriver().findElement(By.cssSelector("input[checkurl*='hudson.matrix.TextAxis'][name ='_.name']")).sendKeys("OS");
-        getDriver().findElements(By.cssSelector("input#textarea\\._\\.valueString")).get(1).sendKeys("Win Linux");
+        getDriver().findElements(AXIS_VALUES_FIELD).get(1).sendKeys("Win Linux");
         getDriver().findElement(SUBMIT_BUTTON).click();
 
-
-
+        List<String> columns= getDriver().findElements(By.cssSelector("#matrix thead td.mp-header span")).stream().map(WebElement::getText).toList();
+        Assert.assertEquals(List.of("MongoBD", "SQL"), columns);
     }
 }
+
