@@ -28,7 +28,7 @@ public class PipelineProjectTest extends BaseTest {
     public void testCreate() {
         clickNewItemIcon();
         inputJobName(PROJECT_NAME);
-        selectJobItemType();
+        selectPipelineItemType();
         clickSubmitButton();
         goToMainPage();
 
@@ -39,7 +39,7 @@ public class PipelineProjectTest extends BaseTest {
     public void testDelete() {
         clickNewItemIcon();
         inputJobName(PROJECT_NAME);
-        selectJobItemType();
+        selectPipelineItemType();
         clickSubmitButton();
         goToMainPage();
         openJobDropDownMenu();
@@ -54,7 +54,7 @@ public class PipelineProjectTest extends BaseTest {
 
         clickNewJobLink();
         inputJobName(PROJECT_NAME);
-        selectJobItemType();
+        selectPipelineItemType();
         clickSubmitButton();
         goToMainPage();
         openJobDropDownMenu();
@@ -63,7 +63,8 @@ public class PipelineProjectTest extends BaseTest {
 
         assertEquals(getDriver().findElement((By.tagName("h1"))).getText(), newProjectName);
     }
-@Ignore
+
+    @Ignore
     @Test
     public void testCreateWithExistingName() {
 
@@ -116,8 +117,8 @@ public class PipelineProjectTest extends BaseTest {
 
         clickNewItemIcon();
         inputJobName("test" + invalidPipelineName);
-        selectJobItemType();
-        String errorElementText = getWait5().until(
+        selectPipelineItemType();
+        String errorElementText = getWait2().until(
                 ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']")))).getText();
 
         assertEquals(errorElementText, expectedErrorMsg);
@@ -129,7 +130,7 @@ public class PipelineProjectTest extends BaseTest {
 
         clickNewItemIcon();
         inputJobName(projectName);
-        selectJobItemType();
+        selectPipelineItemType();
         clickSubmitButton();
         clickConfigurePipelineLink();
         Select select = new Select(getDriver().findElement(By.id("workflow-editor-samples")));
@@ -166,7 +167,8 @@ public class PipelineProjectTest extends BaseTest {
 
         assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
     }
-@Ignore
+
+    @Ignore
     @Test
     public void testApplyButton() {
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
@@ -196,23 +198,24 @@ public class PipelineProjectTest extends BaseTest {
 
     private void clickNewItemIcon() {
         getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(), 'New Item')]")));
     }
 
     private void clickNewJobLink() {
         getDriver().findElement(By.xpath("//a[@href='newJob']")).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(), 'New Item')]")));
     }
 
-    private void inputJobName(String projectName) {
-        getDriver().findElement(By.id("name")).sendKeys(projectName);
+    private void inputJobName(String jobName) {
+        getDriver().findElement(By.id("name")).sendKeys(jobName);
     }
 
-    private void selectJobItemType() {
+    private void selectPipelineItemType() {
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
     }
 
     private void clickSubmitButton() {
-        getDriver().findElement(By.id("ok-button")).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(),'Configure')]")));
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
     }
 
     private void clickConfigurePipelineLink() {
