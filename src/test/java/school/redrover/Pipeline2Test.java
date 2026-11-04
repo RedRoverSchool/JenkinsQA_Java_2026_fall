@@ -1,14 +1,13 @@
 package school.redrover;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import org.openqa.selenium.interactions.Actions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pipeline2Test extends BaseTest {
@@ -63,6 +62,34 @@ public class Pipeline2Test extends BaseTest {
         WebElement configureButton = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href$='/configure']")));
 
         Assert.assertTrue(configureButton.isDisplayed(), "Проект не был создан без триггеров");
+    }
+
+    @Test
+    public void testCheckAllTriggers() {
+        createPipeline(PIPELINE_NAME);
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(TRIGGER_SECTION));
+
+        List<WebElement> checkboxes = new ArrayList<>();
+        for (String triggerName : TRIGGER_NAMES) {
+            WebElement block = getDriver().findElement(getTriggerBlock(triggerName));
+            WebElement checkbox = block.findElement(By.xpath(".//input[@type='checkbox']"));
+            checkboxes.add(checkbox);
+
+            WebElement label = block.findElement(By.tagName("label"));
+            for (int i = 0; i < 3 && !checkbox.isSelected(); i++) {
+                new Actions(getDriver()).scrollToElement(label).scrollByAmount(0, 300).perform();
+                getWait5().until(ExpectedConditions.elementToBeClickable(label)).click();
+                try {
+                    getWait2().until(ExpectedConditions.elementToBeSelected(checkbox));
+                } catch (TimeoutException e) {
+                    // чекбокс не включился, пробуем кликнуть ещё раз
+                }
+            }
+        }
+
+        for (WebElement checkbox : checkboxes) {
+            Assert.assertTrue(checkbox.isSelected(), "Чекбокс не включился: " + checkbox.getAttribute("name"));
+        }
     }
 
     private void createPipeline(String name) {
