@@ -16,6 +16,21 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
     private static final String QP_NOT_INTEGER = "5.5";
     private static final String NEGATIVE_ERROR = "This value should be larger than 0";
     private static final String NOT_INTEGER_ERROR = "Not an integer";
+    private static final String TEXT_UNDER_QUESTION_MARK = "When this option is non-zero, newly triggered builds of this project will be added to the queue, but Jenkins will wait for the specified period of time (in seconds) before actually starting the build.\n" +
+            "For example, if your builds take a long time to execute, you may want to prevent multiple source control commits that are made at approximately the same time from triggering multiple builds. Enabling the quiet period would prevent a build from being started as soon as Jenkins discovers the first commit; this would give the developer the chance to push more commits which would be included in the build when it starts. This reduces the size of the queue, meaning that developers would get feedback faster for their series of commits, and the load on the Jenkins system would be reduced.\n" +
+            "If a new build of this project is triggered while a build is already sitting in the queue, waiting for its quiet period to end, the quiet period will not be reset. The newly triggered build will not be added to the queue, unless this project is parameterized and the build has different parameters than the build already in the queue.";
+
+    @Test
+    public void testShowsTextUnderQuestionMark() {
+        createPipeline();
+        openAdvancedDropdown();
+        getWait5().until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("a[aria-label='Help for feature: Quiet period'] > span"
+                ))).click();
+        String textInParagraphs = getDriver().findElement(By.cssSelector("div[class = 'help'] div")).getText();
+
+        Assert.assertEquals(textInParagraphs, TEXT_UNDER_QUESTION_MARK);
+    }
 
     @Test
     public void testQuietPeriodAcceptsPositiveValue() {
