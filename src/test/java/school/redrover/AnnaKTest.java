@@ -7,10 +7,10 @@ import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
 public class AnnaKTest extends BaseTest {
-@Ignore
+    @Ignore
     @Test
 
-    public void testCreateNewJob(){
+    public void testCreateNewJob() {
         final String prjName = "Project-name";
 
         getDriver().findElement(By.className("task-icon-link")).click();
@@ -20,6 +20,6 @@ public class AnnaKTest extends BaseTest {
 
         getDriver().findElement(By.id("jenkins-head-icon")).click();
 
-        Assert.assertEquals( getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), prjName);
+        Assert.assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), prjName);
     }
 }

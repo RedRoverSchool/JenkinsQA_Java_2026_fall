@@ -18,16 +18,16 @@ public class ProfileTest extends BaseTest {
 
     @Test
 
-    public void testCheckAddDescription (){
+    public void testCheckAddDescription() {
         getDriver().findElement(By.cssSelector(".jenkins-avatar")).click();
         WebElement button = getDriver().findElement(By.id("description-link"));
 
         Assert.assertEquals(button.getText(), "Add description");
     }
 
-@Ignore
+    @Ignore
     @Test
-    public void testCheckMenu (){
+    public void testCheckMenu() {
         getDriver().findElement(By.cssSelector(".jenkins-avatar")).click();
         List<WebElement> links = getDriver().findElements(
                 By.cssSelector("#tasks .task-link")
@@ -42,21 +42,22 @@ public class ProfileTest extends BaseTest {
                 ));
 
         Map<String, String> expected = new LinkedHashMap<>();
-        expected.put("Profile",     "/user/admin/");
-        expected.put("Builds",      "/user/admin/builds");
-        expected.put("My Views",    "/user/admin/my-views");
-        expected.put("Account",     "/user/admin/account");
-        expected.put("Appearance",  "/user/admin/appearance");
+        expected.put("Profile", "/user/admin/");
+        expected.put("Builds", "/user/admin/builds");
+        expected.put("My Views", "/user/admin/my-views");
+        expected.put("Account", "/user/admin/account");
+        expected.put("Appearance", "/user/admin/appearance");
         expected.put("Preferences", "/user/admin/preferences");
-        expected.put("Security",    "/user/admin/security");
+        expected.put("Security", "/user/admin/security");
         expected.put("Experiments", "/user/admin/experiments");
         expected.put("Credentials", "/user/admin/credentials");
 
         Assert.assertEquals(actual, expected);
     }
-@Ignore
+
+    @Ignore
     @Test
-    public void testCheckMenu2(){
+    public void testCheckMenu2() {
         getDriver().findElement(By.cssSelector(".jenkins-avatar")).click();
 
         List<String> actualTitles = getDriver()
@@ -71,7 +72,7 @@ public class ProfileTest extends BaseTest {
                 "Preferences", "Security", "Experiments", "Credentials"
         );
 
-        Assert.assertEquals(actualTitles,expectedTitles);
+        Assert.assertEquals(actualTitles, expectedTitles);
     }
 
     @Test
