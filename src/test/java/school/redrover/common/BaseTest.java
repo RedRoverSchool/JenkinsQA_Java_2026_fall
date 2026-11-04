@@ -8,9 +8,12 @@ import org.testng.annotations.*;
 import java.lang.reflect.Method;
 import java.time.Duration;
 
+import static school.redrover.common.ProjectUtils.takeScreenshot;
+
 public abstract class BaseTest {
 
     private WebDriver driver;
+
     private WebDriverWait wait2;
     private WebDriverWait wait5;
     private WebDriverWait wait10;
@@ -34,6 +37,16 @@ public abstract class BaseTest {
 
     @AfterMethod
     protected void afterMethod(Method method, ITestResult testResult) {
+
+        if (testResult.getStatus() == ITestResult.FAILURE && ProjectUtils.isRunCI()) {
+            ProjectUtils.log("Taking screenshot for " + testResult.getName());
+            takeScreenshot(
+                    getDriver(),
+                    testResult.getTestClass().getRealClass().getSimpleName(),
+                    testResult.getName()
+            );
+        }
+
         if (ProjectUtils.isRunCI() || testResult.isSuccess() || ProjectUtils.closeIfError()) {
             ProjectUtils.log("Logout");
             JenkinsUtils.logout(getDriver());
@@ -41,6 +54,10 @@ public abstract class BaseTest {
             if (driver != null) {
                 driver.quit();
                 driver = null;
+
+                wait2 = null;
+                wait5 = null;
+                wait10 = null;
 
                 ProjectUtils.log("Browser closed");
             }
