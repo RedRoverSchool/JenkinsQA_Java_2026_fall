@@ -8,11 +8,11 @@ import school.redrover.common.BaseTest;
 
 import java.time.Duration;
 
-public class MaksimTest extends BaseTest {
+public class GreatPipelineAndFolder extends BaseTest {
 
     @Test
     public void testGreatPipelineAndFolder() {
-        getDriver().findElement(By.xpath("//span[@class='task-link-text' and text()='New Item']/..")).click();
+        getDriver().findElement(By.className("content-block__link")).click();
 
         getDriver().findElement(By.id("name")).sendKeys("123");
 
@@ -21,11 +21,9 @@ public class MaksimTest extends BaseTest {
         getDriver().findElement(By.id("ok-button")).click();
 
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@class='app-jenkins-logo']")))).click();
 
-        getDriver().findElement(By.id("jenkins-head-icon")).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.id("jenkins-head-icon")))).click();
-
-        getDriver().findElement(By.xpath("//span[@class='task-link-text' and text()='New Item']/..")).click();
+        getDriver().findElement(By.className("task-icon-link")).click();
 
         getDriver().findElement(By.id("name")).sendKeys("222");
 
