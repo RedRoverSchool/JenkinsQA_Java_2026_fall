@@ -31,5 +31,4 @@ public class NodesTest extends BaseTest {
                 "Node configuration page is not opened"
         );
     }
-
 }
