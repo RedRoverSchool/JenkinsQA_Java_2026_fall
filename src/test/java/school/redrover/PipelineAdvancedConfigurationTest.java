@@ -2,14 +2,12 @@ package school.redrover;
 
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-import java.time.Duration;
 
-public class AdvancedPipelineConfigurationTest extends BaseTest {
+public class PipelineAdvancedConfigurationTest extends BaseTest {
     private static final String PIPELINE_NAME = "Pipeline 1";
     private static final String QP_POSITIVE = "10";
     private static final String QP_NEGATIVE = "-2";
@@ -21,24 +19,57 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
             "If a new build of this project is triggered while a build is already sitting in the queue, waiting for its quiet period to end, the quiet period will not be reset. The newly triggered build will not be added to the queue, unless this project is parameterized and the build has different parameters than the build already in the queue.";
 
     @Test
-    public void testShowsTextUnderQuestionMark() {
+    public void testQuietPeriodShowsTextUnderQuestionMark() {
         createPipeline();
         openAdvancedDropdown();
         getWait5().until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("a[aria-label='Help for feature: Quiet period'] > span"
                 ))).click();
-        String textInParagraphs = getDriver().findElement(By.cssSelector("div[class = 'help'] div")).getText();
+        String textInParagraphs = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("div[class = 'help'] div")
+        )).getText();
 
         Assert.assertEquals(textInParagraphs, TEXT_UNDER_QUESTION_MARK);
     }
 
+    @DataProvider(name = "Display Name")
+    public Object[][] displayName() {
+        return new Object[][]{
+                {"Test Display Name"},
+                {"Проект-1"},
+                {"')"},
+                {"' UNION SELECT username,password FROM users -- "},
+                {"<script>alert(1)</script>"},
+                {"<h1>test</h1>"},
+                {"'><script>alert('XSS')</script>"},
+                {"; whoami"},
+                {"..\\/..\\/..\\/..\\/etc\\/passwd"},
+                {"http://127.0.0.1"},
+                {"https://evil.com"},
+                {"${7*7}"},
+                {"<%= 7*7 %>"}
+        };
+    }
+
+    @Test(dataProvider = "Display Name")
+    public void testDisplayNameSetUp(String displayName) {
+        createPipeline();
+        openAdvancedDropdown();
+        setDisplayName(displayName);
+        getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
+        getWait2().until(ExpectedConditions.not(
+                ExpectedConditions.urlContains("/configure")));
+        String displayNameOnPage = getDriver().findElement(By.cssSelector("h1")).getText();
+
+        Assert.assertEquals(displayNameOnPage, displayName.trim());
+    }
+
     @Test
     public void testQuietPeriodAcceptsPositiveValue() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         createPipeline();
         setQuietPeriod(QP_POSITIVE);
         getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
-        wait.until(ExpectedConditions.elementToBeClickable(
+        getWait5().until(ExpectedConditions.elementToBeClickable(
                         By.cssSelector("a[href$=configure]")))
                 .click();
         openAdvancedDropdown();
@@ -59,10 +90,9 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
 
     @Test(dataProvider = "NegativeAndNonIntegerValues")
     public void testQuietPeriodRejectsNegativeAndNonIntegerValues(String value, String expectedError) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         createPipeline();
         setQuietPeriod(value);
-        String error = wait.until(ExpectedConditions.visibilityOfElementLocated(
+        String error = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath(
                         "//input[@name='quiet_period']/ancestor::div[contains(@class,'jenkins-form-item')]/descendant::div[@class='error']"
                 ))).getText();
@@ -90,9 +120,8 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
     }
 
     private void createPipeline() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']"))).click();
-        wait.until(ExpectedConditions.elementToBeClickable(
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("input[value='org.jenkinsci.plugins.workflow.job.WorkflowJob'] + span"
                 ))).click();
         getDriver().findElement(By.id("name")).sendKeys(PIPELINE_NAME);
@@ -100,14 +129,13 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
     }
 
     private void openAdvancedDropdown() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(6));
         int maxAttempts = 2;
         for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            wait.until(ExpectedConditions.elementToBeClickable(
+            getWait5().until(ExpectedConditions.elementToBeClickable(
                             By.xpath("//span[contains(text(),'Advanced')]/ancestor::button")))
                     .click();
             try {
-                wait.until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".jenkins-bottom-app-bar__shadow--stuck")));
+                getWait5().until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".jenkins-bottom-app-bar__shadow--stuck")));
                 break;
             } catch (TimeoutException e) {
                 if (attempt == maxAttempts) {
@@ -119,14 +147,20 @@ public class AdvancedPipelineConfigurationTest extends BaseTest {
     }
 
     private void setQuietPeriod(String seconds) {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
         openAdvancedDropdown();
-        wait.until(ExpectedConditions.elementToBeClickable(
+        getWait5().until(ExpectedConditions.elementToBeClickable(
                         By.cssSelector("input[name='hasCustomQuietPeriod'] + label")))
                 .click();
         WebElement quietPeriodSeconds = getDriver().findElement(By.cssSelector("input[name='quiet_period']"));
         quietPeriodSeconds.clear();
         quietPeriodSeconds.sendKeys(seconds);
         quietPeriodSeconds.sendKeys(Keys.TAB);
+    }
+
+    private void setDisplayName(String displayName) {
+        WebElement displayNameInput = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("input[checkurl$='checkDisplayNameOrNull']")
+        ));
+        displayNameInput.sendKeys(displayName, Keys.TAB);
     }
 }
