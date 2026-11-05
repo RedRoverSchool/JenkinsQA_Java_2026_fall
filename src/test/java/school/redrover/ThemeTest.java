@@ -60,15 +60,12 @@ public class ThemeTest extends BaseTest {
         getWait10().until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='app-jenkins-logo']")));
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-
         Assert.assertTrue(isDarkTheme);
     }
 
     private void changeTheme() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        WebElement userButton = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
+        WebElement userButton = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
 
         Actions actions = new Actions(getDriver());
         actions.moveToElement(userButton).perform();
@@ -78,9 +75,8 @@ public class ThemeTest extends BaseTest {
         getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("label[for='radio-block-1']"))).click();
         getWait10().until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
 
-        WebElement submitButton = wait.until(
-                ExpectedConditions.elementToBeClickable(By.name("Submit")));
+        WebElement submitButton = getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
         submitButton.click();
-        wait.until(ExpectedConditions.stalenessOf(submitButton));
+        getWait10().until(ExpectedConditions.stalenessOf(submitButton));
     }
 }

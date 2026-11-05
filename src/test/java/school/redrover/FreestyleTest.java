@@ -64,8 +64,7 @@ public class FreestyleTest extends BaseTest {
 
         boolean isWarningGone;
         try {
-            isWarningGone = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                    .until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
+            isWarningGone = getWait10().until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
         } catch (Exception e) {
             isWarningGone = true;
         }
@@ -109,9 +108,7 @@ public class FreestyleTest extends BaseTest {
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id='projectstatus']//a[normalize-space()='new item']"))).click();
         getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[6]/span/a")).click();
 
-        WebElement checkBox2 = new WebDriverWait(getDriver(), Duration.ofSeconds(10)).
-                until(ExpectedConditions.presenceOfElementLocated(By.name("pseudoRemoteTrigger")));
-
+        WebElement checkBox2 = getWait10().until(ExpectedConditions.presenceOfElementLocated(By.name("pseudoRemoteTrigger")));
         Assert.assertTrue(checkBox2.isSelected());
     }
 
@@ -134,9 +131,7 @@ public class FreestyleTest extends BaseTest {
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id='projectstatus']//a[normalize-space()='new item']"))).click();
         getDriver().findElement(By.xpath("//a[contains(@href, 'configure')]")).click();
 
-        WebElement checkbox1 = new WebDriverWait(getDriver(), Duration.ofSeconds(10)).
-                until(ExpectedConditions.presenceOfElementLocated(By.name("jenkins-triggers-ReverseBuildTrigger")));
-
+        WebElement checkbox1 = getWait10().until(ExpectedConditions.presenceOfElementLocated(By.name("jenkins-triggers-ReverseBuildTrigger")));
         Assert.assertTrue(checkbox1.isSelected());
     }
 
