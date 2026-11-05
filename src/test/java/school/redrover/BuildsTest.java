@@ -14,25 +14,18 @@ import java.util.List;
 
 public class BuildsTest extends BaseTest {
 
+    private static final String PROJECT_NAME = "Elena Freestyle project";
+
     @Test
     public void testDeleteBuild(){
         createFreestyle();
 
-        WebElement wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10)).
-                until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']"))));
-        wait.click();
-        WebElement historyButton = new WebDriverWait(getDriver(),Duration.ofSeconds(10)).
-                until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']")));
-        historyButton.click();
+        getWait10().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']")))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']"))).click();
         getDriver().findElement(By.xpath("//a[contains(@href, 'project/1')]")).click();
-
         getDriver().findElement(By.xpath("//a[contains(@href, 'confirmDelete')]")).click();
         getDriver().findElement(By.name("Submit")).click();
-
-        WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Elena Freestyle project')]//ancestor::div//a[@class='app-jenkins-logo']")));
-        logo.click();
-
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Elena Freestyle project')]//ancestor::div//a[@class='app-jenkins-logo']"))).click();
         getDriver().findElement(By.xpath("//a[@href='/view/all/builds']")).click();
 
         List<WebElement> builds = getDriver().findElements(
@@ -41,14 +34,11 @@ public class BuildsTest extends BaseTest {
     }
 
     private void createFreestyle() {
-        final String itemName = "Elena Freestyle project";
 
         getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[1]/span/a")).click();
-        getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(itemName);
+        getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(PROJECT_NAME);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        WebElement logo = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")));
-        logo.click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']"))).click();
     }
 }
