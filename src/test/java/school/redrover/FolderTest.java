@@ -125,4 +125,17 @@ public class FolderTest extends BaseTest {
 
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(childFolder))).isDisplayed(),"childFolder should be listed inside " + FOLDER_NAME);
     }
+
+    @Test
+    public void testCreateFolder(){
+        getDriver().findElement(By.cssSelector("a.task-link")).click();
+        getDriver().findElement(By.id("name")).sendKeys("Test_Folder");
+        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        WebElement folderElement = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href^='/job/']")));
+
+        Assert.assertEquals(folderElement.getText(), "Test_Folder");
+    }
 }
