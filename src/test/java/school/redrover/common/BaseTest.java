@@ -4,12 +4,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
+import school.redrover.common.filter.FilterForTests;
+import school.redrover.common.order.OrderForTests;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
 
 import static school.redrover.common.ProjectUtils.takeScreenshot;
 
+@Listeners({FilterForTests.class, OrderForTests.class})
 public abstract class BaseTest {
 
     private WebDriver driver;
