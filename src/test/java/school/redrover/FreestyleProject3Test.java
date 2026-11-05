@@ -5,7 +5,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
-public class FreestyleSourceCodeManagementTest extends BaseTest {
+public class FreestyleProject3Test extends BaseTest {
 
     @Test
     public void testScmSectionIsPresent() {
