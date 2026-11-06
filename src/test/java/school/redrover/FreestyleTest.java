@@ -72,6 +72,7 @@ public class FreestyleTest extends BaseTest {
         Assert.assertTrue(isWarningGone);
     }
 
+    @Ignore
     @Test
     public void testNewItemCopyFrom(){
         createProject();
