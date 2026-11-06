@@ -133,8 +133,7 @@ public class FolderTest extends BaseTest {
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        WebElement folderElement = new WebDriverWait(getDriver(), Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href^='/job/']")));
+        WebElement folderElement = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href^='/job/']")));
 
         Assert.assertEquals(folderElement.getText(), "Test_Folder");
     }
