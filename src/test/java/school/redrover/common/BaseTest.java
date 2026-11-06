@@ -6,11 +6,12 @@ import org.testng.ITestResult;
 import org.testng.annotations.*;
 import school.redrover.common.filter.FilterForTests;
 import school.redrover.common.order.OrderForTests;
+import school.redrover.common.order.OrderUtils;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
-
-import static school.redrover.common.ProjectUtils.takeScreenshot;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Listeners({FilterForTests.class, OrderForTests.class})
 public abstract class BaseTest {
@@ -21,21 +22,76 @@ public abstract class BaseTest {
     private WebDriverWait wait5;
     private WebDriverWait wait10;
 
+    private OrderUtils.MethodsOrder<Method> methodsOrder;
+
+    private void startDriver() {
+        ProjectUtils.log("Browser open");
+        driver = ProjectUtils.createDriver();
+    }
+
+    private void clearData() {
+        ProjectUtils.log("Clear data");
+        JenkinsUtils.clearData();
+    }
+
+    private void loginWeb() {
+        ProjectUtils.log("Login");
+        JenkinsUtils.login(getDriver());
+    }
+
+    private void getWeb() {
+        ProjectUtils.log("Get web page");
+        ProjectUtils.get(getDriver());
+    }
+
+    private void stopDriver(boolean quitDriver) {
+        JenkinsUtils.logout(getDriver());
+        closeDriver(quitDriver);
+    }
+
+    private void closeDriver(boolean quitDriver) {
+        if (driver != null) {
+            if (quitDriver) {
+                driver.quit();
+            }
+
+            driver = null;
+            wait2 = null;
+            wait5 = null;
+            wait10 = null;
+
+            ProjectUtils.log("Browser closed");
+        }
+    }
+
+    @BeforeClass
+    protected void beforeClass() {
+        methodsOrder = OrderUtils.createMethodsOrder(
+                Arrays.stream(this.getClass().getMethods())
+                        .filter(m -> m.getAnnotation(Test.class) != null && m.getAnnotation(Ignore.class) == null)
+                        .collect(Collectors.toList()),
+                m -> m.getName(),
+                m -> m.getAnnotation(Test.class).dependsOnMethods());
+    }
+
     @BeforeMethod
     protected void beforeMethod(Method method) {
         ProjectUtils.log("Run %s.%s", this.getClass().getName(), method.getName());
-
-        ProjectUtils.log("Clear data");
-        JenkinsUtils.clearData();
-
-        ProjectUtils.log("Browser open");
-        driver = ProjectUtils.createDriver();
-
-        ProjectUtils.log("Get web page");
-        ProjectUtils.get(getDriver());
-
-        ProjectUtils.log("Login");
-        JenkinsUtils.login(getDriver());
+        try {
+            if (!methodsOrder.isGroupStarted(method) || methodsOrder.isGroupFinished(method)) {
+                clearData();
+                startDriver();
+                getWeb();
+                loginWeb();
+            } else {
+                getWeb();
+            }
+        } catch (Exception e) {
+            closeDriver(true);
+            throw e;
+        } finally {
+            methodsOrder.markAsInvoked(method);
+        }
     }
 
     @AfterMethod
@@ -43,27 +99,10 @@ public abstract class BaseTest {
 
         if (testResult.getStatus() == ITestResult.FAILURE && ProjectUtils.isRunCI()) {
             ProjectUtils.log("Taking screenshot for " + testResult.getName());
-            takeScreenshot(
-                    getDriver(),
-                    testResult.getTestClass().getRealClass().getSimpleName(),
-                    testResult.getName()
-            );
+            ProjectUtils.takeScreenshot(getDriver(), testResult.getTestClass().getRealClass().getSimpleName(), testResult.getName());
         }
-
-        if (ProjectUtils.isRunCI() || testResult.isSuccess() || ProjectUtils.closeIfError()) {
-            ProjectUtils.log("Logout");
-            JenkinsUtils.logout(getDriver());
-
-            if (driver != null) {
-                driver.quit();
-                driver = null;
-
-                wait2 = null;
-                wait5 = null;
-                wait10 = null;
-
-                ProjectUtils.log("Browser closed");
-            }
+        if (methodsOrder.isGroupFinished(method)) {
+            stopDriver(ProjectUtils.isRunCI() || testResult.isSuccess() || ProjectUtils.closeIfError());
         }
 
         ProjectUtils.log("Execution time is %.3f sec", (testResult.getEndMillis() - testResult.getStartMillis()) / 1000.0);
