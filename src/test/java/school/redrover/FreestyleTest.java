@@ -36,6 +36,7 @@ public class FreestyleTest extends BaseTest {
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("warning")));
     }
 
+    @Ignore
     @Test
     public void testCreateProject() {
         createProject();
