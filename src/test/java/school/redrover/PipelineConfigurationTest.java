@@ -65,7 +65,7 @@ public class PipelineConfigurationTest extends BaseTest {
         getDriver().findElement(By.className("app-jenkins-logo")).click();
 
         getWait10().until(ExpectedConditions.elementToBeClickable(By.className("jenkins-menu-dropdown-chevron"))).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*=\"configure\"]"))).click();
+        getDriver().findElement(By.cssSelector("a[href*='configure']")).click();
 
         disableProject();
         Assert.assertTrue(
