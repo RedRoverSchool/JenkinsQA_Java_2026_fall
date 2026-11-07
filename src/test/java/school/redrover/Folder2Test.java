@@ -1,8 +1,8 @@
 package school.redrover;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
@@ -22,13 +22,34 @@ public class Folder2Test extends BaseTest {
         folder.click();
 
         getDriver().findElement(By.id("ok-button")).click();
-
         getDriver().findElement(By.name("_.description")).sendKeys(description);
         getDriver().findElement(By.name("Submit")).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.id("view-message")).getText(),
                 description
+        );
+    }
+
+    @Test
+    public void testSavePipelineDescription() {
+        final String pipelineName = "MyPipeline";
+        final String description = "My pipeline description";
+
+        getDriver().findElement(By.className("content-block__link")).click();
+        getDriver().findElement(By.id("name")).sendKeys(pipelineName);
+
+        WebElement pipeline = getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob"));
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", pipeline);
+        pipeline.click();
+
+        getDriver().findElement(By.id("ok-button")).click();
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.name("description"))).sendKeys(description);
+        getDriver().findElement(By.name("Submit")).click();
+
+        Assert.assertTrue(getDriver().getCurrentUrl().endsWith("/job/" + pipelineName + "/"));
+        Assert.assertTrue(
+                getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("description"))).getText().contains(description)
         );
     }
 }

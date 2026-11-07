@@ -22,85 +22,61 @@ public class ThemeTest extends BaseTest {
 
     @Test
     public void testChangeThemeFromHomePage() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
         new Actions(getDriver()).moveToElement(userIcon).perform();
 
-        WebElement themeButton = wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector(".tm-account-theme-picker-select")));
-        themeButton.click();
-
-        WebElement darkThemeIcon = wait.until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//*[normalize-space(text())='Dark']")
-        ));
-        darkThemeIcon.click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector(".tm-account-theme-picker-select"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//*[normalize-space(text())='Dark']"))).click();
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-
         Assert.assertTrue(isDarkTheme);
     }
 
     @Test
     public void testChangeThemeFromAppearance() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
         WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
         new Actions(getDriver()).moveToElement(userIcon).perform();
 
-        WebElement appearanceButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href=\"/user/admin/appearance\"]")));
-        appearanceButton.click();
-
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href=\"/user/admin/appearance\"]"))).click();
         getDriver().findElement(By.xpath("//label[@for=\"radio-block-1\"]")).click();
         getDriver().findElement(By.name("Submit")).click();
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-
         Assert.assertTrue(isDarkTheme);
     }
-    @Ignore
+
     @Test
     public void testCheckingThemeAfterLogOut() {
         changeTheme();
 
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
 
         JenkinsUtils.logout(getDriver());
         getDriver().get(ProjectUtils.getUrl() + "login");
         JenkinsUtils.login(getDriver());
 
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='app-jenkins-logo']")));
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='app-jenkins-logo']")));
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-
         Assert.assertTrue(isDarkTheme);
     }
 
     private void changeTheme() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
-        WebElement userButton = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
+        WebElement userButton = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
 
         Actions actions = new Actions(getDriver());
         actions.moveToElement(userButton).perform();
 
-        WebElement appearanceButton = wait.until(
-                ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']")));
-        appearanceButton.click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']"))).click();
+        getWait10().until(ExpectedConditions.urlContains("/appearance"));
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("label[for='radio-block-1']"))).click();
+        getWait10().until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
 
-        wait.until(ExpectedConditions.urlContains("/appearance"));
-
-        wait.until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("label[for='radio-block-1']"))).click();
-
-        wait.until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
-
-        WebElement submitButton = wait.until(
-                ExpectedConditions.elementToBeClickable(By.name("Submit")));
+        WebElement submitButton = getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
         submitButton.click();
-        wait.until(ExpectedConditions.stalenessOf(submitButton));
+        getWait10().until(ExpectedConditions.stalenessOf(submitButton));
     }
 }
