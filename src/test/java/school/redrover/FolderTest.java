@@ -1,6 +1,7 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -136,5 +137,18 @@ public class FolderTest extends BaseTest {
         WebElement folderElement = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href^='/job/']")));
 
         Assert.assertEquals(folderElement.getText(), "Test_Folder");
+    }
+
+    @Test
+    public void testErrorMessageAfterClearingNameField() {
+        getDriver().findElement(By.cssSelector("a.task-link")).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.id("name")));
+        getDriver().findElement(By.id("name")).sendKeys("abc");
+        getDriver().findElement(By.id("name")).sendKeys(Keys.CONTROL + "a", Keys.DELETE);
+        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+
+        WebElement error = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("error")));
+        Assert.assertEquals(error.getText(),"This field cannot be empty, please enter a valid name");
+
     }
 }
