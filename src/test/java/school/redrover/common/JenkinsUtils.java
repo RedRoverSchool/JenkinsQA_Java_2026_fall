@@ -251,6 +251,26 @@ public final class JenkinsUtils {
                         getCrumbAsString()));
     }
 
+    private static void resetSecurityToDefaultRememberMe() {
+        String url = ProjectUtils.getUrl() + "configureSecurity/configSubmit";
+
+        String jsonPayload = "{"
+                + "\"disableRememberMe\": false,"
+                + "\"agentProtocolConfiguration\": {"
+                + "\"protocols\": [\"JNLP4-connect\"]"
+                + "},"
+                + "\"remotingCLI\": {"
+                + "\"enabled\": false"
+                + "}"
+                + "}";
+
+        String encodedJson = URLEncoder.encode(jsonPayload, StandardCharsets.UTF_8);
+        String body = String.format("%s&json=%s&Submit=Submit&core:apply=true",
+                getCrumbAsString(), encodedJson);
+
+        postHttp(url, body);
+    }
+
     static void clearData() {
         JenkinsUtils.deleteViews();
         JenkinsUtils.deleteJobs();
@@ -263,6 +283,7 @@ public final class JenkinsUtils {
         JenkinsUtils.deleteDomains();
         JenkinsUtils.resetTheme();
         JenkinsUtils.resetGlobalTheme();
+        JenkinsUtils.resetSecurityToDefaultRememberMe();
     }
 
     public static void login(WebDriver driver, String userName, String password) {
