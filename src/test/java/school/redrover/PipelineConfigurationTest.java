@@ -4,7 +4,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -44,7 +43,7 @@ public class PipelineConfigurationTest extends BaseTest {
                 "Disabled icon is not displayed"
         );
     }
-@Ignore
+
     @Test
     public void testEnableProjectByButton(){
         createPipeline();
@@ -57,7 +56,7 @@ public class PipelineConfigurationTest extends BaseTest {
                 "Ссылка 'Build Now' не отображается на странице!"
         );
     }
-@Ignore
+
     @Test
     public void testEnableProjectByToggle(){
         createPipeline();
@@ -66,7 +65,7 @@ public class PipelineConfigurationTest extends BaseTest {
         getDriver().findElement(By.className("app-jenkins-logo")).click();
 
         getWait10().until(ExpectedConditions.elementToBeClickable(By.className("jenkins-menu-dropdown-chevron"))).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href*=\"configure\"]"))).click();
+        getDriver().findElement(By.cssSelector("a[href*='configure']")).click();
 
         disableProject();
         Assert.assertTrue(
