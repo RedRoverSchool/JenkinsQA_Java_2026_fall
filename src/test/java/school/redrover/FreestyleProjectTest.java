@@ -76,16 +76,10 @@ public class FreestyleProjectTest extends BaseTest {
 
         js.executeScript(
                 "var el = arguments[0];" +
-                        "var editorContainer = el.nextSibling || el.parentNode.querySelector('.CodeMirror');" +
-                        "if (editorContainer && editorContainer.CodeMirror) {" +
-                        "    editorContainer.CodeMirror.setValue('H H * * *');" +
-                        "} else if (el.CodeMirror) {" +
-                        "    el.CodeMirror.setValue('H H * * *');" +
-                        "} else {" +
-                        "    el.value = 'H H * * *';" +
-                        "}" +
+                        "el.value = 'H H * * *';" +
                         "el.dispatchEvent(new Event('input', { bubbles: true }));" +
-                        "el.dispatchEvent(new Event('change', { bubbles: true }));",
+                        "el.dispatchEvent(new Event('change', { bubbles: true }));" +
+                        "el.dispatchEvent(new Event('blur', { bubbles: true }));",
                 specField
         );
 
