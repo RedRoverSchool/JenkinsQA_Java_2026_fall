@@ -149,6 +149,20 @@ public class FolderTest extends BaseTest {
 
         WebElement error = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("error")));
         Assert.assertEquals(error.getText(),"This field cannot be empty, please enter a valid name");
+    }
 
+    @Test
+    public void testCreateFolderWithoutOptionalFields() {
+        getDriver().findElement(By.cssSelector("a.task-link")).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.id("name")));
+        getDriver().findElement(By.id("name")).sendKeys("PlainFolder");
+        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"),"Configuration"));
+        getDriver().findElement(By.name("Submit")).click();
+
+        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), "PlainFolder"));
+        Assert.assertEquals(getDriver().findElement(By.tagName("h1")).getText(), "PlainFolder");
     }
 }
