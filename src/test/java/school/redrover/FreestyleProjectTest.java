@@ -1,11 +1,14 @@
 package school.redrover;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.time.Duration;
 
 public class FreestyleProjectTest extends BaseTest {
     final String ITEM_NAME = "test";
@@ -57,6 +60,7 @@ public class FreestyleProjectTest extends BaseTest {
 
     @Test
     public void testBuildPeriodicallyPositive(){
+        WebDriverWait longWait = new WebDriverWait(getDriver(), Duration.ofSeconds(20));
         getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
@@ -66,17 +70,22 @@ public class FreestyleProjectTest extends BaseTest {
                 "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript(
-                "if (arguments[0].CodeMirror) {" +
-                        "    arguments[0].CodeMirror.setValue('H H * * *');" +
+                "var el = arguments[0];" +
+                        "var cm = el.CodeMirror || (el.nextSibling && el.nextSibling.CodeMirror) || (el.parentNode && el.parentNode.querySelector('.CodeMirror')?.CodeMirror);" +
+                        "if (cm) {" +
+                        "    cm.setValue('H H * * *');" +
+                        "    cm.save();" +
                         "} else {" +
-                        "    arguments[0].value = 'H H * * *';" +
-                        "    arguments[0].dispatchEvent(new Event('input', { bubbles: true }));" +
-                        "    arguments[0].dispatchEvent(new Event('change', { bubbles: true }));" +
-                        "}",
-                getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec"))));
+                        "    el.value = 'H H * * *';" +
+                        "}" +
+                        "el.dispatchEvent(new Event('input', { bubbles: true }));" +
+                        "el.dispatchEvent(new Event('change', { bubbles: true }));",
+                getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("_.spec"))));
         getDriver().findElement(By.tagName("body")).click();
 
-        Assert.assertTrue(getWait5().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
+        Assert.assertTrue(
+                longWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")),
+                "Текст валидации не появился в блоке div.ok за 20 секунд");
     }
 
     @Test
