@@ -23,6 +23,19 @@ public class BuildHistoryTest extends BaseTest {
         Assert.assertTrue(outConsole.isDisplayed());
     }
 
+    @Test
+    public void testConteinsConsoleOutput() {
+        createFreestyleProject(PROJECT_NAME);
+        createBuildHistory();
+        openConsoleOutput();
+        WebElement consoleText = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("out")));
+        String consoleOutputText = consoleText.getText();
+
+        Assert.assertTrue(consoleOutputText.contains("Started by user"));
+        Assert.assertTrue(consoleOutputText.contains("Building in workspace"));
+        Assert.assertTrue(consoleOutputText.contains("Finished"));
+    }
+
     private void createFreestyleProject(String name) {
         getDriver().findElement(By.cssSelector("a[href*='newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(name);
