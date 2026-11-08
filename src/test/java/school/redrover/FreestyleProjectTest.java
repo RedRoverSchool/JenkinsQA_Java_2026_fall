@@ -1,6 +1,5 @@
 package school.redrover;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
@@ -70,28 +69,27 @@ public class FreestyleProjectTest extends BaseTest {
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
 
-        WebElement specField = getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec")));
-        specField.click();
-
-        specField.sendKeys("H H * * *");
-        specField.sendKeys(Keys.SPACE);
-        specField.sendKeys(Keys.BACK_SPACE);
+        WebElement specField = getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("_.spec")));
 
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", specField);
+
         js.executeScript(
                 "var el = arguments[0];" +
-                        "var cm = el.CodeMirror || (el.nextSibling && el.nextSibling.CodeMirror) || (el.parentNode && el.parentNode.querySelector('.CodeMirror')?.CodeMirror);" +
-                        "if (cm) {" +
-                        "    cm.setValue('H H * * *');" +
-                        "    cm.save();" +
+                        "var editorContainer = el.nextSibling || el.parentNode.querySelector('.CodeMirror');" +
+                        "if (editorContainer && editorContainer.CodeMirror) {" +
+                        "    editorContainer.CodeMirror.setValue('H H * * *');" +
+                        "} else if (el.CodeMirror) {" +
+                        "    el.CodeMirror.setValue('H H * * *');" +
                         "} else {" +
                         "    el.value = 'H H * * *';" +
                         "}" +
                         "el.dispatchEvent(new Event('input', { bubbles: true }));" +
-                        "el.dispatchEvent(new Event('change', { bubbles: true }));" +
-                        "el.dispatchEvent(new Event('blur', { bubbles: true }));",
-                specField);
-                getDriver().findElement(By.tagName("body")).click();
+                        "el.dispatchEvent(new Event('change', { bubbles: true }));",
+                specField
+        );
+
+        getDriver().findElement(By.tagName("body")).click();
 
         Assert.assertTrue(
                 longWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
