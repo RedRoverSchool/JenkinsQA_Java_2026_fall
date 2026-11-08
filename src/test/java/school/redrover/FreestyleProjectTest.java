@@ -1,11 +1,14 @@
 package school.redrover;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+
+import java.time.Duration;
 
 public class FreestyleProjectTest extends BaseTest {
     final String ITEM_NAME = "test";
@@ -57,6 +60,7 @@ public class FreestyleProjectTest extends BaseTest {
 
     @Test
     public void testBuildPeriodicallyPositive(){
+        WebDriverWait longWait = new WebDriverWait(getDriver(), Duration.ofSeconds(15));
         getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
@@ -64,15 +68,16 @@ public class FreestyleProjectTest extends BaseTest {
 
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
+        WebElement specField = getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec")));
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript(
                 "arguments[0].value = 'H H * * *';" +
                         "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));" +
                         "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
-                getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec"))));
+                specField);
         getDriver().findElement(By.tagName("body")).click();
 
-        Assert.assertTrue(getWait5().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
+        Assert.assertTrue(longWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
     }
 
     @Test
