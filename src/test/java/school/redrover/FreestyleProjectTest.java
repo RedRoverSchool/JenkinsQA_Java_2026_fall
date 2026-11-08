@@ -83,10 +83,18 @@ public class FreestyleProjectTest extends BaseTest {
                 specField
         );
 
-        getDriver().findElement(By.tagName("body")).click();
+        WebElement applyButton = getDriver().findElement(By.name("Apply"));
+        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", applyButton);
+        applyButton.click();
 
-        Assert.assertTrue(
-                longWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
+        Assert.assertEquals(
+                getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(),
+                "Saved"
+        );
+
+        WebElement validationBlock = longWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.ok")));
+
+        Assert.assertTrue(validationBlock.getText().contains("Would last have run"));
     }
 
     @Test
