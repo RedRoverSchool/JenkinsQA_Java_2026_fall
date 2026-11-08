@@ -1,5 +1,6 @@
 package school.redrover;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
@@ -68,6 +69,14 @@ public class FreestyleProjectTest extends BaseTest {
 
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
+
+        WebElement specField = getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec")));
+        specField.click();
+
+        specField.sendKeys("H H * * *");
+        specField.sendKeys(Keys.SPACE);
+        specField.sendKeys(Keys.BACK_SPACE);
+
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript(
                 "var el = arguments[0];" +
@@ -79,13 +88,13 @@ public class FreestyleProjectTest extends BaseTest {
                         "    el.value = 'H H * * *';" +
                         "}" +
                         "el.dispatchEvent(new Event('input', { bubbles: true }));" +
-                        "el.dispatchEvent(new Event('change', { bubbles: true }));",
-                getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("_.spec"))));
-        getDriver().findElement(By.tagName("body")).click();
+                        "el.dispatchEvent(new Event('change', { bubbles: true }));" +
+                        "el.dispatchEvent(new Event('blur', { bubbles: true }));",
+                specField);
+                getDriver().findElement(By.tagName("body")).click();
 
         Assert.assertTrue(
-                longWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")),
-                "Текст валидации не появился в блоке div.ok за 20 секунд");
+                longWait.until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
     }
 
     @Test
