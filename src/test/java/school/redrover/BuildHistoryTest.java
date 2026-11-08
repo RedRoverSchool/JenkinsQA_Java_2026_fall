@@ -12,6 +12,7 @@ import school.redrover.common.BaseTest;
 public class BuildHistoryTest extends BaseTest {
 
     private static final String PROJECT_NAME = "BuildHistoryTest";
+    private final By TEXT_LINK = By.cssSelector("#main-panel > div > div.jenkins-app-bar__controls > a:nth-child(4)");
 
     @Test
     public void testBuildHistoryConsoleOutput() {
@@ -34,6 +35,18 @@ public class BuildHistoryTest extends BaseTest {
         Assert.assertTrue(consoleOutputText.contains("Started by user"));
         Assert.assertTrue(consoleOutputText.contains("Building in workspace"));
         Assert.assertTrue(consoleOutputText.contains("Finished"));
+    }
+
+    @Test
+    public void testTextConsoleOutput() {
+        createFreestyleProject(PROJECT_NAME);
+        createBuildHistory();
+        openConsoleOutput();
+        WebElement textButtom = getWait5().until(ExpectedConditions.elementToBeClickable(TEXT_LINK));
+        textButtom.click();
+        getWait2().until(ExpectedConditions.urlContains("consoleText"));
+
+        Assert.assertTrue(getDriver().getCurrentUrl().endsWith("consoleText"), "Текстовая страница не обнаружена");
     }
 
     private void createFreestyleProject(String name) {
