@@ -56,6 +56,27 @@ public class FreestyleProjectTest extends BaseTest {
     }
 
     @Test
+    public void testBuildPeriodicallyPositive() {
+        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
+        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        WebElement triggerSection = getDriver().findElement(
+                By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
+        JavascriptExecutor js = (JavascriptExecutor) getDriver();
+        js.executeScript("arguments[0].click();", triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")));
+        js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
+        triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("H H * * *");
+        getDriver().findElement(By.name("Apply")).click();
+        WebElement infoMessage = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//div[@class='ok' and contains(text(), 'Would last have run at')]")));
+
+        Assert.assertEquals(getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
+        Assert.assertTrue(infoMessage.getText().contains("Would last have run at"));
+    }
+
+    @Test
     public void testAddPostBuildAction() {
         testCreate();
 
