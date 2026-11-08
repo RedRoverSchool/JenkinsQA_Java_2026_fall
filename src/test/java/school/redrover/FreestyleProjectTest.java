@@ -6,71 +6,60 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-import java.time.Duration;
 
 public class FreestyleProjectTest extends BaseTest {
-    final String itemName = "test";
-    final String description = "test description";
+    final String ITEM_NAME = "test";
+    final String DESCRIPTION = "test description";
 
     @Test
-    public void testCreateFreestyleProject() {
-        getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span")).click();
-        getDriver().findElement(By.id("name")).sendKeys(itemName);
+    public void testCreate() {
+        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
+        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        getDriver().findElement(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/div[2]/div/div[2]/textarea")).sendKeys(description);
-        getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.jenkins-submit-button.jenkins-button--primary")).click();
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#page-header > div.jenkins-header__main > div > a > span"))).click();
+        getDriver().findElement(By.name("description")).sendKeys(DESCRIPTION);
+        getDriver().findElement(By.name("Submit")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
 
         Assert.assertEquals(
-                getDriver().findElement(By.cssSelector("#job_test > td:nth-child(3) > a > span")).getText(),
-                itemName);
+                getDriver().findElement(By.cssSelector("#job_" + ITEM_NAME + " a.model-link")).getText(), ITEM_NAME);
     }
+
     @Test
     public void testApplyButton() {
-        getDriver().findElement(By.cssSelector("#tasks > div:nth-child(1) > span")).click();
-        getDriver().findElement(By.id("name")).sendKeys(itemName);
-        getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
+        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
+        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        getDriver().findElement(By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")).click();
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(5));
-        WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
+        getDriver().findElement(By.name("description")).sendKeys(DESCRIPTION);
+        getDriver().findElement(By.name("Apply")).click();
 
-        Assert.assertEquals(notification.getText(), "Saved");
+        Assert.assertEquals(getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
     }
+
     @Test
-    public void testTriggerBuildsRemotely() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector("#main-panel > div:nth-child(3) > div > section:nth-child(3) > ul > li > a"))).click();
-        getDriver().findElement(By.id("name")).sendKeys(itemName);
-        getDriver().findElement(By.xpath("/html/body/div[2]/div/div/form/fieldset/div/div/div[1]/label/div[2]")).click();
+    public void testIsTriggerSectionAvailable() {
+        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
+        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        ((JavascriptExecutor) getDriver()).executeScript(
-                "var el = document.querySelector('.bottom-sticker');" +
-                        "if (el) { el.style.position = 'static'; }"
-        );
-        WebElement label = wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.xpath("//span[.//input[@name='pseudoRemoteTrigger']]/label")));
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", label);
+        WebElement triggerSection = getDriver().findElement(
+                By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
 
-        WebElement applyBtn = wait.until(ExpectedConditions.presenceOfElementLocated(
-                By.cssSelector("#bottom-sticker > div > button.jenkins-button.apply-button")));
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].click();", applyBtn);
-
-        WebElement notification = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#notification-bar")));
-
-        Assert.assertEquals(notification.getText(), "Saved");
-        Assert.assertTrue(getDriver().findElement(By.name("authToken")).isDisplayed());
+        Assert.assertTrue(triggerSection.isDisplayed());
+        Assert.assertTrue(triggerSection.findElement(By.name("pseudoRemoteTrigger")).isDisplayed());
+        Assert.assertTrue(triggerSection.findElement(By.name("com-cloudbees-jenkins-GitHubPushTrigger")).isDisplayed());
+        Assert.assertTrue(triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")).isDisplayed());
+        Assert.assertTrue(triggerSection.findElement(By.name("jenkins-triggers-ReverseBuildTrigger")).isDisplayed());
+        Assert.assertTrue(triggerSection.findElement(By.name("hudson-triggers-SCMTrigger")).isDisplayed());
     }
 
     @Test
     public void testAddPostBuildAction() {
-        testCreateFreestyleProject();
+        testCreate();
 
-        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("#job_" + itemName + " a"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("#job_" + ITEM_NAME + " a"))).click();
         getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='configure']"))).click();
 
         By addButton = By.xpath("//button[contains(., 'Add post-build action')]");
