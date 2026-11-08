@@ -68,7 +68,7 @@ public class FreestyleProjectTest extends BaseTest {
         getDriver().findElement(By.name("Apply")).click();
 
         Assert.assertEquals(getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
-        Assert.assertTrue(getWait2().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
+        Assert.assertTrue(getWait5().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
     }
 
     @Test
