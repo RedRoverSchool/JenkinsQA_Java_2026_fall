@@ -56,6 +56,22 @@ public class FreestyleProjectTest extends BaseTest {
     }
 
     @Test
+    public void testBuildPeriodicallyPositive(){
+        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
+        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        ((JavascriptExecutor) getDriver()).executeScript(
+                "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec"))).sendKeys("H H * * *");
+        getDriver().findElement(By.name("Apply")).click();
+
+        Assert.assertEquals(getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
+        Assert.assertTrue(getWait2().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
+    }
+
+    @Test
     public void testAddPostBuildAction() {
         testCreate();
 
