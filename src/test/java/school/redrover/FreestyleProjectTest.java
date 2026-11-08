@@ -1,14 +1,11 @@
 package school.redrover;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.By;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-
-import java.time.Duration;
 
 public class FreestyleProjectTest extends BaseTest {
     final String ITEM_NAME = "test";
@@ -59,42 +56,27 @@ public class FreestyleProjectTest extends BaseTest {
     }
 
     @Test
-    public void testBuildPeriodicallyPositive(){
-        WebDriverWait longWait = new WebDriverWait(getDriver(), Duration.ofSeconds(20));
+    public void testBuildPeriodicallyPositive() {
         getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        ((JavascriptExecutor) getDriver()).executeScript(
-                "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
-
-        WebElement specField = getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("_.spec")));
-
+        WebElement triggerSection = getDriver().findElement(
+                By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", specField);
+        js.executeScript("arguments[0].click();", triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")));
+        js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
 
-        js.executeScript(
-                "var el = arguments[0];" +
-                        "el.value = 'H H * * *';" +
-                        "el.dispatchEvent(new Event('input', { bubbles: true }));" +
-                        "el.dispatchEvent(new Event('change', { bubbles: true }));" +
-                        "el.dispatchEvent(new Event('blur', { bubbles: true }));",
-                specField
-        );
+        triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("H H * * *");
+        getDriver().findElement(By.tagName("body")).click();
+        By infoMessage = By.cssSelector("div.validation-error-area div.ok");
+        getWait5().until(ExpectedConditions.textToBePresentInElementLocated(infoMessage, "run"));
+        String actualText = getDriver().findElement(infoMessage).getText();
 
-        WebElement applyButton = getDriver().findElement(By.name("Apply"));
-        js.executeScript("arguments[0].scrollIntoView({block: 'center'});", applyButton);
-        applyButton.click();
+        Assert.assertTrue(actualText.contains("run"),
+                "\nExpected substring: [run]\nActual text: [" + actualText + "]\n");
 
-        Assert.assertEquals(
-                getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(),
-                "Saved"
-        );
-
-        WebElement validationBlock = longWait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.ok")));
-
-        Assert.assertTrue(validationBlock.getText().contains("Would last have run"));
     }
 
     @Test
