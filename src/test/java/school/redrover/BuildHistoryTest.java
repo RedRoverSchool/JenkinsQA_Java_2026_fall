@@ -13,6 +13,7 @@ public class BuildHistoryTest extends BaseTest {
 
     private static final String PROJECT_NAME = "BuildHistoryTest";
     private final By TEXT_LINK = By.cssSelector("#main-panel > div > div.jenkins-app-bar__controls > a:nth-child(4)");
+    private final By DOWNLOAD_LINK = By.cssSelector("#main-panel > div > div.jenkins-app-bar__controls > a:nth-child(1)");
 
     @Test
     public void testBuildHistoryConsoleOutput() {
@@ -47,6 +48,16 @@ public class BuildHistoryTest extends BaseTest {
         getWait2().until(ExpectedConditions.urlContains("consoleText"));
 
         Assert.assertTrue(getDriver().getCurrentUrl().endsWith("consoleText"), "Текстовая страница не обнаружена");
+    }
+
+    @Test
+    public void testDownloadHistory() {
+        createFreestyleProject(PROJECT_NAME);
+        createBuildHistory();
+        openConsoleOutput();
+        WebElement downButton = getWait5().until(ExpectedConditions.elementToBeClickable(DOWNLOAD_LINK));
+
+        Assert.assertTrue(downButton.getAttribute("href").endsWith("/consoleText"), "Ссылка не ведет на файл лога");
     }
 
     private void createFreestyleProject(String name) {
