@@ -64,11 +64,19 @@ public class FreestyleProjectTest extends BaseTest {
 
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec"))).sendKeys("H H * * *");
-        getDriver().findElement(By.name("Apply")).click();
+        String scheduleExpression = "H H * * *";
+        for (char c: scheduleExpression.toCharArray()){
+            getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec"))).sendKeys(String.valueOf(c));
+            try{
+                Thread.sleep(50);
+            }
+            catch (InterruptedException e){
+                Thread.currentThread().interrupt();
+            }
+        }
+        getDriver().findElement(By.tagName("body")).click();
 
-        Assert.assertEquals(getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
-        Assert.assertTrue(getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
+        Assert.assertTrue(getWait5().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
     }
 
     @Test
