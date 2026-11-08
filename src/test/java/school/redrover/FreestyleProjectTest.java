@@ -68,15 +68,18 @@ public class FreestyleProjectTest extends BaseTest {
         js.executeScript("arguments[0].click();", triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")));
         js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
 
-        triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("H H * * *");
-        getDriver().findElement(By.tagName("body")).click();
+        WebElement textarea = triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated"));
+        textarea.sendKeys("H H * * *");
+        textarea.sendKeys(org.openqa.selenium.Keys.TAB);
+
         By infoMessage = By.cssSelector("div.validation-error-area div.ok");
-        getWait5().until(ExpectedConditions.textToBePresentInElementLocated(infoMessage, "run"));
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(infoMessage));
+        getWait5().until(driver -> !driver.findElement(infoMessage).getText().trim().isEmpty());
+
         String actualText = getDriver().findElement(infoMessage).getText();
 
         Assert.assertTrue(actualText.contains("run"),
                 "\nExpected substring: [run]\nActual text: [" + actualText + "]\n");
-
     }
 
     @Test
