@@ -251,6 +251,43 @@ public final class JenkinsUtils {
                         getCrumbAsString()));
     }
 
+    private static void resetSecurity() {
+        String url = ProjectUtils.getUrl() + "configureSecurity/configSubmit";
+
+        String jsonPayload = """
+        {
+          "disableRememberMe": false,
+          "useBrowserWorkspaceViewer": false,
+          "org.jenkinsci.plugins.gitclient.GitHooksConfiguration": {
+            "allowedOnController": false
+          },
+          "jenkins.security.TokenConfiguration": {
+            "tokenGenerationOnCreationEnabled": false
+          },
+          "org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript$DescriptorImpl": {
+            "sandboxConfig": {
+              "enabled": true
+            }
+          },
+          "remotingCLI": {
+            "enabled": false
+          },
+          "org.jenkinsci.plugins.gitclient.GitHostKeyVerificationConfiguration": {
+            "sshHostKeyVerificationStrategy": {
+              "stapler-class": "org.jenkinsci.plugins.gitclient.trilead.KnownHostsFileVerificationStrategy",
+              "$class": "org.jenkinsci.plugins.gitclient.trilead.KnownHostsFileVerificationStrategy"
+            }
+          }
+        }
+        """;
+
+        String encodedJson = URLEncoder.encode(jsonPayload, StandardCharsets.UTF_8);
+        String body = String.format("%s&json=%s&Submit=Submit&core:apply=true",
+                getCrumbAsString(), encodedJson);
+
+        postHttp(url, body);
+    }
+
     static void clearData() {
         JenkinsUtils.deleteViews();
         JenkinsUtils.deleteJobs();
@@ -263,6 +300,7 @@ public final class JenkinsUtils {
         JenkinsUtils.deleteDomains();
         JenkinsUtils.resetTheme();
         JenkinsUtils.resetGlobalTheme();
+        JenkinsUtils.resetSecurity();
     }
 
     public static void login(WebDriver driver, String userName, String password) {
