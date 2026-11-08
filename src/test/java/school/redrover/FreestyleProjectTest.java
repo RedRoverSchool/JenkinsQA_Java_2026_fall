@@ -69,9 +69,10 @@ public class FreestyleProjectTest extends BaseTest {
         js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
         triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("H H * * *");
         getDriver().findElement(By.name("Apply")).click();
-        WebElement infoMessage = getDriver().findElement(By.xpath("//div[@class='ok' and contains(text(), 'Would last have run at')]"));
+        WebElement infoMessage = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//div[@class='ok' and contains(text(), 'Would last have run at')]")));
 
-        Assert.assertEquals(getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
+        Assert.assertEquals(getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
         Assert.assertTrue(infoMessage.getText().contains("Would last have run at"));
     }
 
