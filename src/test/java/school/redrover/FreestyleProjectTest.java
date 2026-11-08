@@ -64,16 +64,12 @@ public class FreestyleProjectTest extends BaseTest {
 
         ((JavascriptExecutor) getDriver()).executeScript(
                 "arguments[0].click();", getWait2().until(ExpectedConditions.presenceOfElementLocated(By.name("hudson-triggers-TimerTrigger"))));
-        String scheduleExpression = "H H * * *";
-        for (char c: scheduleExpression.toCharArray()){
-            getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec"))).sendKeys(String.valueOf(c));
-            try{
-                Thread.sleep(50);
-            }
-            catch (InterruptedException e){
-                Thread.currentThread().interrupt();
-            }
-        }
+        JavascriptExecutor js = (JavascriptExecutor) getDriver();
+        js.executeScript(
+                "arguments[0].value = 'H H * * *';" +
+                        "arguments[0].dispatchEvent(new Event('input', { bubbles: true }));" +
+                        "arguments[0].dispatchEvent(new Event('change', { bubbles: true }));",
+                getWait2().until(ExpectedConditions.elementToBeClickable(By.name("_.spec"))));
         getDriver().findElement(By.tagName("body")).click();
 
         Assert.assertTrue(getWait5().until(ExpectedConditions.textToBePresentInElementLocated(By.cssSelector("div.ok"), "Would last have run")));
