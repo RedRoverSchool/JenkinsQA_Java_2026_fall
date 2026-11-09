@@ -13,7 +13,8 @@ import java.time.Duration;
 
 public class FolderTest extends BaseTest {
 
-    private static String FOLDER_NAME = "NewFolder";
+    private static final String FOLDER_NAME = "NewFolder";
+    private static final String RENAMED_FOLDER_NAME = "RenamedFolder";
 
     @Test
     public void createFolder() {
@@ -165,4 +166,24 @@ public class FolderTest extends BaseTest {
         getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), "PlainFolder"));
         Assert.assertEquals(getDriver().findElement(By.tagName("h1")).getText(), "PlainFolder");
     }
+
+    @Test(dependsOnMethods = "createFolder")
+    public void testRenameFolder() {
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getDriver().findElement(By.id("command-bar")).sendKeys(FOLDER_NAME);
+        getDriver().findElement(By.xpath("//a[contains(@href, '/job/" + FOLDER_NAME + "')]")).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, '/confirm-rename')]"))).click();
+        getDriver().findElement(By.cssSelector("div.setting-main > input")).clear();
+        getDriver().findElement(By.cssSelector("div.setting-main > input")).sendKeys(RENAMED_FOLDER_NAME);
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.className("jenkins-submit-button"))).click();
+
+        Assert.assertEquals(
+                getDriver().findElement(By.className("job-index-headline")).getText(),
+                RENAMED_FOLDER_NAME);
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
+        Assert.assertEquals(
+                getDriver().findElement(By.cssSelector(".jenkins-table__link> span:first-child")).getText(),
+                RENAMED_FOLDER_NAME);
+    }
+
 }
