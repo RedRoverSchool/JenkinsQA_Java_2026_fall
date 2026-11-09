@@ -16,6 +16,7 @@ public class SearchSettingsFieldTest extends BaseTest {
     private static final By SEARCH_SETTINGS_FIELD = By.id("settings-search-bar");
     private static final By SEARCH_SETTINGS_DROPDOWN_ITEMS = By.cssSelector(".jenkins-search__results-container .jenkins-dropdown__item");
     private static final By MANAGE_JENKINS_BUTTON = By.id("root-action-ManageJenkinsAction");
+    private static final By NO_RESULTS_LABEL = By.className("jenkins-search__results__no-results-label");
 
     private boolean isElementClickable(By locator) {
         try {
@@ -31,7 +32,7 @@ public class SearchSettingsFieldTest extends BaseTest {
         getDriver().findElement(MANAGE_JENKINS_BUTTON).click();
     }
 
-    @DataProvider(name = "searchScenarios")
+    @DataProvider(name = "positiveSearchScenarios")
     private Object[][] searchScenarios() {
         return new Object[][]{
                 {"System", List.of("System", "System Information")},
@@ -43,6 +44,14 @@ public class SearchSettingsFieldTest extends BaseTest {
         };
     }
 
+    @DataProvider(name = "negativeSearchScenarios")
+    private Object[] negativeSearchScenarios() {
+        return new Object[] {
+                "123", "OOGABOOGA", "@!!!!%%"
+        };
+    }
+
+
     @Test
     public void testVisibilityAndClickability() {
         openManageJenkins();
@@ -50,9 +59,8 @@ public class SearchSettingsFieldTest extends BaseTest {
         Assert.assertTrue(isElementClickable(SEARCH_SETTINGS_FIELD));
     }
 
-    @Test(dataProvider = "searchScenarios")
+    @Test(dataProvider = "positiveSearchScenarios")
     public void testValidInput(String searchText, List<String> expectedSuggestions) {
-
         openManageJenkins();
         getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
         getWait5().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(SEARCH_SETTINGS_DROPDOWN_ITEMS));
@@ -63,5 +71,14 @@ public class SearchSettingsFieldTest extends BaseTest {
         }
 
         Assert.assertEquals(actualSuggestions, expectedSuggestions);
+    }
+
+    @Test(dataProvider = "negativeSearchScenarios")
+    public void testInvalidInput(String searchText) {
+        openManageJenkins();
+        getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(NO_RESULTS_LABEL));
+
+        Assert.assertEquals(getDriver().findElement(NO_RESULTS_LABEL).getText(), "No results");
     }
 }
