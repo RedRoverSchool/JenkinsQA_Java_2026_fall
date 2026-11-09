@@ -3,11 +3,16 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import school.redrover.common.BaseTest;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ConfigurationMatrixTest extends BaseTest {
@@ -26,6 +31,11 @@ public class ConfigurationMatrixTest extends BaseTest {
   private static final By COMBINATION_FILTER_HELP_ICON = By.cssSelector("a[helpurl='/plugin/matrix-project/help/matrix/combinationfilter.html']");
   private static final By COMBINATION_FILTER_HELP_BLOCK = By.cssSelector("div.optionalBlock-container:has(input[name='hasCombinationFilter']) div.help-area > div.help");
   private static final By COMBINATION_FILTER_FIELD = By.cssSelector("input[name='combinationFilter']");
+
+  private static final By EXECUTE_TOUCHSTONE_CHECKBOX = By.cssSelector("input[name='_.hasTouchStoneCombinationFilter'] + label");
+  private static final By EXECUTE_TOUCHSTONE_FILTER_FIELD = By.name("_.touchStoneCombinationFilter");
+  private static final By EXECUTE_TOUCHSTONE_REQUIRED_RESULT_SELECT = By.name("touchStoneResultCondition");
+
 
 
   private void createNewMultiConfigurationItem() {
@@ -61,8 +71,8 @@ public class ConfigurationMatrixTest extends BaseTest {
     createNewMultiConfigurationItem();
     final WebDriver driver = getDriver();
 
-    boolean isCheckboxCombinationFilterChecked = driver.findElement(COMBINATION_FILTER_CHECKBOX).isSelected();
-    Assert.assertFalse(isCheckboxCombinationFilterChecked);
+    boolean isCheckboxCombinationFilterSelected = driver.findElement(COMBINATION_FILTER_CHECKBOX).isSelected();
+    Assert.assertFalse(isCheckboxCombinationFilterSelected);
   }
 
   @Test
@@ -81,4 +91,56 @@ public class ConfigurationMatrixTest extends BaseTest {
     Assert.assertTrue(driver.findElement(COMBINATION_FILTER_HELP_BLOCK).isDisplayed());
     Assert.assertTrue(driver.findElement(COMBINATION_FILTER_FIELD).isDisplayed());
   }
+
+  @Test
+  public void checkInitialStateCheckboxExecuteTouchstone() {
+    createNewMultiConfigurationItem();
+    final WebDriver driver = getDriver();
+
+    boolean isCheckboxExecuteTouchstoneSelected = driver.findElement(EXECUTE_TOUCHSTONE_CHECKBOX).isSelected();
+    Assert.assertFalse(isCheckboxExecuteTouchstoneSelected);
+  }
+
+  @Test
+  public void checkStructureSelectedExecuteTouchstone() {
+    createNewMultiConfigurationItem();
+    final WebDriver driver = getDriver();
+
+    List<String> executeTouchstoneRequiredResultNeededSelect= List.of("Stable", "Unstable");
+
+
+    ((JavascriptExecutor) driver).executeScript(
+        "arguments[0].scrollIntoView({block: 'center'});",
+        driver.findElement(EXECUTE_TOUCHSTONE_CHECKBOX)
+    );
+    driver.findElement(EXECUTE_TOUCHSTONE_CHECKBOX).click();
+
+    WebElement executeTouchstoneFilterField = driver.findElement(EXECUTE_TOUCHSTONE_FILTER_FIELD);
+    WebElement selectElement = driver.findElement(EXECUTE_TOUCHSTONE_REQUIRED_RESULT_SELECT);
+
+    boolean isExecuteTouchstoneFilterField = executeTouchstoneFilterField.isDisplayed();
+    boolean isSelectElement = selectElement.isDisplayed();
+
+    Select executeTouchstoneRequiredResultSelect = new Select(selectElement);
+    ArrayList<String> actualExecuteTouchstoneSelectElements = new ArrayList<>();
+
+    executeTouchstoneRequiredResultSelect.getOptions().forEach(
+        elem -> actualExecuteTouchstoneSelectElements.add(elem.getText())
+    );
+
+    executeTouchstoneRequiredResultSelect.selectByVisibleText(executeTouchstoneRequiredResultNeededSelect.get(1));
+    String newSelectedValue = executeTouchstoneRequiredResultSelect.getFirstSelectedOption().getText();
+
+    driver.findElement(EXECUTE_TOUCHSTONE_CHECKBOX).click();
+    boolean isFilterFieldDisplayed = driver.findElement(EXECUTE_TOUCHSTONE_FILTER_FIELD).isDisplayed();
+    boolean isRequiredResultSelectDisplayed = driver.findElement(EXECUTE_TOUCHSTONE_REQUIRED_RESULT_SELECT).isDisplayed();
+
+    Assert.assertTrue(isExecuteTouchstoneFilterField);
+    Assert.assertTrue(isSelectElement);
+    Assert.assertEquals(actualExecuteTouchstoneSelectElements, executeTouchstoneRequiredResultNeededSelect);
+    Assert.assertEquals(newSelectedValue, executeTouchstoneRequiredResultNeededSelect.get(1));
+    Assert.assertFalse(isFilterFieldDisplayed);
+    Assert.assertFalse(isRequiredResultSelectDisplayed);
+  }
 }
+
