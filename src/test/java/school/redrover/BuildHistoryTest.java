@@ -14,6 +14,7 @@ public class BuildHistoryTest extends BaseTest {
     private static final String PROJECT_NAME = "BuildHistoryTest";
     private final By TEXT_LINK = By.cssSelector("#main-panel > div > div.jenkins-app-bar__controls > a:nth-child(4)");
     private final By DOWNLOAD_LINK = By.cssSelector("#main-panel > div > div.jenkins-app-bar__controls > a:nth-child(1)");
+    private final By COPY_LINK = By.cssSelector("#main-panel > div > div.jenkins-app-bar__controls > span > button");
 
     @Test
     public void testBuildHistoryConsoleOutput() {
@@ -58,6 +59,18 @@ public class BuildHistoryTest extends BaseTest {
         WebElement downButton = getWait5().until(ExpectedConditions.elementToBeClickable(DOWNLOAD_LINK));
 
         Assert.assertTrue(downButton.getAttribute("href").endsWith("/consoleText"), "Ссылка не ведет на файл лога");
+    }
+
+    @Test
+    public void testCopyHistory() {
+        createFreestyleProject(PROJECT_NAME);
+        createBuildHistory();
+        openConsoleOutput();
+        WebElement copyButton = getWait5().until(ExpectedConditions.elementToBeClickable(COPY_LINK));
+        copyButton.click();
+        String buttomClass = copyButton.getAttribute("class");
+
+        Assert.assertTrue(buttomClass.contains("jenkins-copy-button--copied"), "Кнопка COPY не стала зеленой, значит текст не скопировался");
     }
 
     private void createFreestyleProject(String name) {
