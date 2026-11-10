@@ -25,4 +25,16 @@ public class FreeStyleProject1Test extends BaseTest {
                 getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(),
                 "test");
     }
+
+    @Test
+    public void testEnvironmentAvailable() {
+        getDriver().findElement(By.className("content-block__link")).click();
+        getDriver().findElement(By.id("name")).sendKeys("test");
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+
+        Assert.assertEquals(
+                getDriver().findElement(By.xpath("(//*[@class='task-link-text'])[4]")).getText(),
+                "Environment");
+    }
 }
