@@ -4,79 +4,38 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
-import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 
 public class PipelineProjectTest extends BaseTest {
+
     private static final String PROJECT_NAME = "NewPipeline";
-    private static final By NEW_ITEM_ICON = By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]");
-    private static final By ITEM_NAME_FIELD = By.id("name");
-    private static final By JOB_ITEM_TYPE = By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob");
-    private static final By SUBMIT_BUTTON = By.id("ok-button");
+    private static final String NEW_PROJECT_NAME = "testNewName";
+    private static final String DESCRIPTION = "New description";
 
     @Test
     public void testCreate() {
-        clickNewItemIcon();
-        inputJobName(PROJECT_NAME);
-        selectPipelineItemType();
-        clickSubmitButton();
-        goToMainPage();
+        getDriver().findElement(By.xpath("//a[.//span[text()='New Item']]")).click();
+        getDriver().findElement(By.id("name")).sendKeys(PROJECT_NAME);
+        getDriver().findElement(By.xpath("//span[@class='jenkins-choice-list__item__label' and text()='Pipeline']")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        getDriver().findElement(By.xpath(String.format("//a[contains(text(), '%s')]//ancestor::div//a[@class='app-jenkins-logo']", PROJECT_NAME))).click();
 
         assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), PROJECT_NAME);
     }
 
-    @Test
-    public void testDelete() {
-        clickNewItemIcon();
-        inputJobName(PROJECT_NAME);
-        selectPipelineItemType();
-        clickSubmitButton();
-        goToMainPage();
-        openJobDropDownMenu();
-        deleteJobFromDropDownMenu();
-
-        assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(), "Welcome to Jenkins!");
-    }
-
-    @Test
-    public void testRename() {
-        final String newProjectName = "testNewName";
-
-        clickNewJobLink();
-        inputJobName(PROJECT_NAME);
-        selectPipelineItemType();
-        clickSubmitButton();
-        goToMainPage();
-        openJobDropDownMenu();
-        clickRenameBtnInDropDownMenu();
-        renameJob(newProjectName);
-
-        assertEquals(getDriver().findElement((By.tagName("h1"))).getText(), newProjectName);
-    }
-
-    @Ignore
-    @Test
+    @Test (dependsOnMethods = "testCreate")
     public void testCreateWithExistingName() {
 
-        String projectName = "ExistingPipeline";
-
-        getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
-        getDriver().findElement(By.id("name")).sendKeys(projectName);
-        getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable((By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
-        getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
-        getDriver().findElement(By.id("name")).sendKeys(projectName);
+        getDriver().findElement(By.xpath("//a[.//span[text()='New Item']]")).click();
+        getDriver().findElement(By.id("name")).sendKeys(PROJECT_NAME);
         getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
 
         WebElement errorMessage = getDriver().findElement(By.xpath("//*[contains(text(), 'A job already exists')]"));
@@ -86,19 +45,70 @@ public class PipelineProjectTest extends BaseTest {
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
-    @Test
-    public void testSkipConfigurationAndReturnToDashboard() {
-        String projectName = "SkipConfigPipeline";
+    @Test(dependsOnMethods = "testCreateWithExistingName")
+    public void testRename() {
 
-        getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
-        getDriver().findElement(By.id("name")).sendKeys(projectName);
-        getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable((By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
+        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.partialLinkText("Rename"))).click();
 
-        WebElement itemInList = getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child"));
+        WebElement newNameBtn = getDriver().findElement(By.name("newName"));
+        newNameBtn.clear();
+        newNameBtn.sendKeys(NEW_PROJECT_NAME);
+        getDriver().findElement(By.xpath("//button[@value='Rename']")).click();
 
-        Assert.assertEquals(itemInList.getText(), projectName, "Созданный проект не отображается на Dashboard!");
+        getWait2().until(ExpectedConditions.textToBe(By.tagName("h1"), NEW_PROJECT_NAME));
+        getDriver().findElement(By.xpath("//a[@class='app-jenkins-logo']")).click();
+
+        assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), NEW_PROJECT_NAME);
+    }
+
+    @Test(dependsOnMethods = "testRename")
+    public void testVisibilityNotificationAfterAddDescriptionAndApply() {
+
+        getDriver().findElement(By.className("jenkins-menu-dropdown-chevron")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
+        getDriver().findElement(By.name("description")).sendKeys(DESCRIPTION);
+        getDriver().findElement(By.name("Apply")).click();
+        String notificationBar = getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='notification-bar']/span"))).getText();
+
+        assertEquals(notificationBar, "Saved", "Changes were not applied");
+    }
+
+    @Test (dependsOnMethods = "testVisibilityNotificationAfterAddDescriptionAndApply")
+    public void testSaveDescription() {
+
+        getDriver().findElement(By.className("jenkins-menu-dropdown-chevron")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
+        getDriver().findElement(By.name("Submit")).click();
+        WebElement newTestDescription = getDriver().findElement(By.xpath("//*[@id='description']"));
+
+        assertEquals(newTestDescription.getText(), DESCRIPTION, "The description does not match");
+    }
+
+    @Test(dependsOnMethods = "testSaveDescription")
+    public void testDefinePipelineScriptFromSample() {
+
+        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
+        getDriver().findElement(By.xpath("//span[@class='task-link-text' and contains(text(), 'Pipeline')]/ancestor::button")).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
+        Select select = new Select(getDriver().findElement(By.id("workflow-editor-samples")));
+        select.selectByValue("hello");
+
+        assertEquals(
+                getDriver().findElement(By.xpath("//span[@class='ace_identifier']")).getText(),
+                "pipeline");
+    }
+
+    @Test(dependsOnMethods = "testDefinePipelineScriptFromSample")
+    public void testDelete() {
+
+        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(normalize-space(.), 'Delete Pipeline')]"))).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dialog[@class='jenkins-dialog']")));
+        getDriver().findElement(By.xpath("//button[@data-id='ok']")).click();
+
+        assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(), "Welcome to Jenkins!");
     }
 
     @DataProvider(name = "unsupportedCharacters")
@@ -115,138 +125,12 @@ public class PipelineProjectTest extends BaseTest {
     public void testCreateWithUnsupportedCharacters(String invalidPipelineName) {
         String expectedErrorMsg = String.format("‘%s’ is an unsafe character", invalidPipelineName);
 
-        clickNewItemIcon();
-        inputJobName("test" + invalidPipelineName);
-        selectPipelineItemType();
+        getDriver().findElement(By.xpath("//a[.//span[text()='New Item']]")).click();
+        getDriver().findElement(By.id("name")).sendKeys("test" + invalidPipelineName);
+        getDriver().findElement(By.xpath("//span[@class='jenkins-choice-list__item__label' and text()='Pipeline']")).click();
         String errorElementText = getWait2().until(
                 ExpectedConditions.visibilityOfElementLocated((By.xpath("//div[@class='error']")))).getText();
 
         assertEquals(errorElementText, expectedErrorMsg);
-    }
-
-    @Test
-    public void testDefinePipelineScriptFromSample() {
-        String projectName = "testPipeline";
-
-        clickNewItemIcon();
-        inputJobName(projectName);
-        selectPipelineItemType();
-        clickSubmitButton();
-        clickConfigurePipelineLink();
-        Select select = new Select(getDriver().findElement(By.id("workflow-editor-samples")));
-        select.selectByValue("hello");
-
-        assertEquals(
-                getDriver().findElement(By.xpath("//span[@class='ace_identifier']")).getText(),
-                "pipeline");
-    }
-
-    @Test
-    public void testSaveButton() {
-
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        final String pipelineName = "New test";
-        final String addDescription = "New description";
-
-        getDriver().findElement(NEW_ITEM_ICON).click();
-        getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
-        getDriver().findElement(JOB_ITEM_TYPE).click();
-        wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
-
-        WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
-        chevronOpen.click();
-        WebElement configureOpen = getDriver().findElement(By.cssSelector("#tippy-4 > div > div > div > a:nth-child(4)"));
-        wait.until(ExpectedConditions.elementToBeClickable((configureOpen)));
-        configureOpen.click();
-        WebElement generalDescription = getDriver().findElement(By.name("description"));
-        generalDescription.sendKeys(addDescription);
-        WebElement submitButton = getDriver().findElement(By.name("Submit"));
-        submitButton.click();
-        WebElement newTestDescription = getDriver().findElement(By.xpath("//*[@id='description']"));
-
-        assertEquals(newTestDescription.getText(), addDescription, "The description does not match");
-    }
-
-    @Ignore
-    @Test
-    public void testApplyButton() {
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
-        final String pipelineName = "New test";
-        final String addDescription = "New description";
-
-        getDriver().findElement(NEW_ITEM_ICON).click();
-        getDriver().findElement(ITEM_NAME_FIELD).sendKeys(pipelineName);
-        getDriver().findElement(JOB_ITEM_TYPE).click();
-        wait.until(ExpectedConditions.elementToBeClickable(SUBMIT_BUTTON)).click();
-        wait.until(ExpectedConditions.elementToBeClickable((By.xpath("//span[contains(text(), 'Configure')]//ancestor::div//a[@class='app-jenkins-logo']")))).click();
-
-        WebElement chevronOpen = getDriver().findElement(By.cssSelector("#job_New\\ test > td:nth-child(3) > a > button"));
-        chevronOpen.click();
-        WebElement configureOpen = getDriver().findElement(By.cssSelector("#tippy-4 > div > div > div > a:nth-child(4)"));
-        wait.until(ExpectedConditions.elementToBeClickable((configureOpen)));
-        configureOpen.click();
-        WebElement generalDescription = getDriver().findElement(By.name("description"));
-        generalDescription.sendKeys(addDescription);
-        WebElement applyButton = getDriver().findElement(By.name("Apply"));
-        applyButton.click();
-        WebElement notificationBar = getDriver().findElement(By.xpath("//*[@id='notification-bar']/span"));
-        wait.until(ExpectedConditions.visibilityOf(notificationBar));
-
-        assertEquals(notificationBar.getText(), "Saved", "Changes were not applied");
-    }
-
-    private void clickNewItemIcon() {
-        getDriver().findElement(By.xpath("//span[contains(text(),'New Item')]/preceding-sibling::span[1]")).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(), 'New Item')]")));
-    }
-
-    private void clickNewJobLink() {
-        getDriver().findElement(By.xpath("//a[@href='newJob']")).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//h1[contains(text(), 'New Item')]")));
-    }
-
-    private void inputJobName(String jobName) {
-        getDriver().findElement(By.id("name")).sendKeys(jobName);
-    }
-
-    private void selectPipelineItemType() {
-        getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
-    }
-
-    private void clickSubmitButton() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-    }
-
-    private void clickConfigurePipelineLink() {
-        getDriver().findElement(By.xpath("//span[@class='task-link-text' and contains(text(), 'Pipeline')]/ancestor::button")).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
-    }
-
-    private void goToMainPage() {
-        String selector = String.format("//a[contains(text(), '%s')]//ancestor::div//a[@class='app-jenkins-logo']", PROJECT_NAME);
-        getDriver().findElement(By.xpath(selector)).click();
-    }
-
-    private void openJobDropDownMenu() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))).click();
-    }
-
-    private void deleteJobFromDropDownMenu() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='jenkins-dropdown__item' and contains(normalize-space(.), 'Delete Pipeline')]"))).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dialog[@class='jenkins-dialog']")));
-        getDriver().findElement(By.xpath("//button[@data-id='ok']")).click();
-    }
-
-    private void renameJob(String newProjectName) {
-        WebElement newNameBtn = getDriver().findElement(By.name("newName"));
-        newNameBtn.clear();
-        newNameBtn.sendKeys(newProjectName);
-        getDriver().findElement(By.xpath("//button[@value='Rename']")).click();
-        getWait5().until(ExpectedConditions.textToBe(By.tagName("h1"), newProjectName));
-    }
-
-    private void clickRenameBtnInDropDownMenu() {
-        getDriver().findElement(By.partialLinkText("Rename")).click();
     }
 }
