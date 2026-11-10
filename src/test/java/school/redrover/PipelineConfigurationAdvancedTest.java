@@ -7,8 +7,8 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
-public class PipelineAdvancedConfigurationTest extends BaseTest {
-    private static final String PIPELINE_NAME = "Pipeline 1";
+public class PipelineConfigurationAdvancedTest extends BaseTest {
+    private static final String PIPELINE_NAME = "Pipeline_testing";
     private static final String QP_POSITIVE = "10";
     private static final String QP_NEGATIVE = "-2";
     private static final String QP_NOT_INTEGER = "5.5";
@@ -35,23 +35,52 @@ public class PipelineAdvancedConfigurationTest extends BaseTest {
         Assert.assertEquals(textInParagraphs, TEXT_UNDER_QUESTION_MARK);
     }
 
-    @Test
+    @Test(dependsOnMethods = "testQuietPeriodShowsTextUnderQuestionMark")
     public void testDisplayNameShowsTextUnderQuestionMark() {
-        createPipeline();
+        getWait2().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//tr[contains(@id, '" + PIPELINE_NAME + "')]//a[@href and not(@tooltip)]"
+                ))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//a[contains (@href, '" + PIPELINE_NAME + "/configure')]"
+                ))).click();
         openAdvancedDropdown();
         getWait2().until(ExpectedConditions.elementToBeClickable(
                 By.xpath("//a[contains(@helpurl, 'displayNameOrNull')]")
         )).click();
 
         WebElement paragraph = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//a[contains(@helpurl, 'displayNameOrNull')]/ancestor::div[contains(@class, 'jenkins-form-item')]//div[@class='help']")
-        ));
+                By.xpath("//a[contains(@helpurl, 'displayNameOrNull')]/ancestor::div[contains(@class, 'jenkins-form-item')]//div[@style='display: block;']//div[@class='help']"
+                )));
         String textInParagraph = paragraph.getText();
         boolean isLink = !paragraph.findElements(By.xpath("//a[contains(@href, 'workflow-job')]"))
                 .isEmpty();
 
         Assert.assertEquals(textInParagraph, TEXT_UNDER_DISPLAY_NAME);
         Assert.assertTrue(isLink);
+    }
+
+    @Test(dependsOnMethods = {
+            "testQuietPeriodShowsTextUnderQuestionMark",
+            "testDisplayNameShowsTextUnderQuestionMark",
+    })
+    public void testQuietPeriodAcceptsPositiveValue() {
+        getWait2().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//tr[contains(@id, '" + PIPELINE_NAME + "')]//a[@href and not(@tooltip)]"
+                ))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//a[contains (@href, '" + PIPELINE_NAME + "/configure')]"
+                ))).click();
+        setQuietPeriod(QP_POSITIVE);
+        getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(
+                        By.cssSelector("a[href$=configure]")))
+                .click();
+        openAdvancedDropdown();
+        String getQuietPeriodSeconds = getDriver().findElement(
+                By.cssSelector("input[name='quiet_period']"
+                )).getAttribute("value");
+
+        Assert.assertEquals(getQuietPeriodSeconds, QP_POSITIVE);
     }
 
     @DataProvider(name = "Display Name")
@@ -77,29 +106,16 @@ public class PipelineAdvancedConfigurationTest extends BaseTest {
     public void testDisplayNameSetUp(String displayName) {
         createPipeline();
         openAdvancedDropdown();
-        setDisplayName(displayName);
+        WebElement displayNameInput = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("input[checkurl$='checkDisplayNameOrNull']")
+        ));
+        displayNameInput.sendKeys(displayName, Keys.TAB);
         getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
         getWait2().until(ExpectedConditions.not(
                 ExpectedConditions.urlContains("/configure")));
         String displayNameOnPage = getDriver().findElement(By.cssSelector("h1")).getText();
 
         Assert.assertEquals(displayNameOnPage, displayName.trim());
-    }
-
-    @Test
-    public void testQuietPeriodAcceptsPositiveValue() {
-        createPipeline();
-        setQuietPeriod(QP_POSITIVE);
-        getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("a[href$=configure]")))
-                .click();
-        openAdvancedDropdown();
-        String getQuietPeriodSeconds = getDriver().findElement(
-                By.cssSelector("input[name='quiet_period']"
-                )).getAttribute("value");
-
-        Assert.assertEquals(getQuietPeriodSeconds, QP_POSITIVE);
     }
 
     @DataProvider(name = "NegativeAndNonIntegerValues")
@@ -177,12 +193,5 @@ public class PipelineAdvancedConfigurationTest extends BaseTest {
         quietPeriodSeconds.clear();
         quietPeriodSeconds.sendKeys(seconds);
         quietPeriodSeconds.sendKeys(Keys.TAB);
-    }
-
-    private void setDisplayName(String displayName) {
-        WebElement displayNameInput = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("input[checkurl$='checkDisplayNameOrNull']")
-        ));
-        displayNameInput.sendKeys(displayName, Keys.TAB);
     }
 }
