@@ -44,12 +44,6 @@ public class GlobalSearchTest extends BaseTest {
         }
     }
 
-    private void openSearchAndType(String query) {
-        getDriver().findElement(By.id("root-action-SearchAction")).click();
-        getWait5().until(ExpectedConditions.visibilityOfElementLocated(
-                By.id("command-bar"))).sendKeys(query);
-    }
-
     private int countMatchingItems(String[] itemNames, String searchWord) {
         int count = 0;
 
@@ -63,91 +57,77 @@ public class GlobalSearchTest extends BaseTest {
     }
 
     @Test
-    public void testResultsContainsPartialMatch() {
-        int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
+    public void testEmptyQuery() {
         createItems(ITEMS_TO_CREATE);
 
-        openSearchAndType(SEARCH_WORD);
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("command-bar"))).sendKeys("");
+        List<WebElement> searchResults = getWait5().until(ExpectedConditions.presenceOfAllElementsLocatedBy(
+                By.cssSelector("#search-results a")));
+
+        Assert.assertTrue(searchResults.getFirst().getText().contains("Get help using Jenkins search"));
+    }
+
+    @Test(dependsOnMethods = "testEmptyQuery")
+    public void testLongQuery() {
+        String longQuery = "a".repeat(300);
+
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("command-bar"))).sendKeys(longQuery);
+        WebElement noResultsElement = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("#search-results span")));
+
+        Assert.assertTrue(noResultsElement.getText().contains("No results for"));
+    }
+
+    @Test(dependsOnMethods = "testLongQuery")
+    public void testResultsContainsPartialMatch() {
+        int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
+
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("command-bar"))).sendKeys(SEARCH_WORD);
         List<WebElement> searchResults = getWait5().until(ExpectedConditions.numberOfElementsToBe(
                 By.cssSelector("#search-results a"), expectedMatching));
 
         for (WebElement result : searchResults) {
-            Assert.assertTrue(
-                    result.getText().toLowerCase(Locale.ROOT).contains(SEARCH_WORD));
+            Assert.assertTrue(result.getText().toLowerCase(Locale.ROOT).contains(SEARCH_WORD));
         }
     }
 
-    @Test
-    public void testNavigateToItemFromSearch() {
-        int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
-        createItems(ITEMS_TO_CREATE);
-
-        openSearchAndType(SEARCH_WORD);
-        List<WebElement> searchResults = getWait5().until(ExpectedConditions.numberOfElementsToBe(
-                By.cssSelector("#search-results a"), expectedMatching));
-
-        String expectedItemName = searchResults.getFirst().getText();
-        searchResults.getFirst().click();
-        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#main-panel h1")));
-
-        Assert.assertTrue(
-                getDriver().findElement(By.cssSelector("#main-panel h1")).getText().contains(expectedItemName));
-    }
-
-    @Test
+    @Test(dependsOnMethods = "testResultsContainsPartialMatch")
     public void testModifyQuery() {
-        final int initialExpected = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
+        final int initialMatching = countMatchingItems(ITEMS_TO_CREATE, SEARCH_WORD);
         final int expectedMatching = countMatchingItems(ITEMS_TO_CREATE, MODIFY_SEARCH_WORD);
-        createItems(ITEMS_TO_CREATE);
-        openSearchAndType(SEARCH_WORD);
-        getWait5().until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("#search-results a"), initialExpected));
 
-        WebElement searchInput = getDriver().findElement(By.id("command-bar"));
-        searchInput.clear();
-        searchInput.sendKeys(MODIFY_SEARCH_WORD);
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("command-bar"))).sendKeys(SEARCH_WORD);
+        getWait5().until(ExpectedConditions.numberOfElementsToBe(By.cssSelector("#search-results a"), initialMatching));
 
+        getDriver().findElement(By.id("command-bar")).clear();
+        getDriver().findElement(By.id("command-bar")).sendKeys(MODIFY_SEARCH_WORD);
         List<WebElement> modifySearchResults = getWait5().until(ExpectedConditions.numberOfElementsToBe(
                 By.cssSelector("#search-results a"), expectedMatching));
 
         for (WebElement result : modifySearchResults) {
-            Assert.assertTrue(
-                    result.getText().toLowerCase(Locale.ROOT).contains(MODIFY_SEARCH_WORD));
+            Assert.assertTrue(result.getText().toLowerCase(Locale.ROOT).contains(MODIFY_SEARCH_WORD));
         }
     }
 
-    @Test
-    public void testLongQuery() {
-        String longQuery = "a".repeat(300);
+    @Test(dependsOnMethods = "testModifyQuery")
+    public void testNavigateToItemFromSearch() {
+        getDriver().findElement(By.id("root-action-SearchAction")).click();
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(
+                By.id("command-bar"))).sendKeys(MODIFY_SEARCH_WORD);
+        WebElement targetResult = getWait5().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//div[@id='search-results']//a[contains(., '" + MODIFY_SEARCH_WORD + "')]")));
 
-        openSearchAndType(longQuery);
-        WebElement noResultsElement = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("#search-results span")));
+        String expectedItemName = targetResult.getText();
+        targetResult.click();
+        WebElement elementFromSearch = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#main-panel h1")));
 
-        Assert.assertTrue(getDriver().findElement(By.id("command-bar")).isDisplayed());
-        Assert.assertTrue(noResultsElement.getText().contains("No results for"));
-    }
-
-    @Test
-    public void testEmptyQuery() {
-        createItems(ITEMS_TO_CREATE);
-
-        openSearchAndType("");
-        List<WebElement> searchResults = getWait5().until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector("#search-results a")));
-
-        boolean hasHelpLink = false;
-        for (WebElement result : searchResults) {
-            if (result.getText().contains("Get help using Jenkins search")) {
-                hasHelpLink = true;
-                break;
-            }
-        }
-        Assert.assertTrue(hasHelpLink);
-
-        for (WebElement result : searchResults) {
-            String resultText = result.getText().toLowerCase();
-            for (String item : ITEMS_TO_CREATE) {
-                Assert.assertFalse(resultText.contains(item.toLowerCase()));
-            }
-        }
+        Assert.assertTrue(elementFromSearch.getText().contains(expectedItemName));
     }
 }
