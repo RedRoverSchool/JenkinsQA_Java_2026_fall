@@ -52,14 +52,14 @@ public class SearchSettingsFieldTest extends BaseTest {
     }
 
 
-    @Test
+    @Test(priority = 1)
     public void testVisibilityAndClickability() {
         openManageJenkins();
 
         Assert.assertTrue(isElementClickable(SEARCH_SETTINGS_FIELD));
     }
 
-    @Test(dataProvider = "positiveSearchScenarios")
+    @Test(dataProvider = "positiveSearchScenarios", priority = 2)
     public void testValidInput(String searchText, List<String> expectedSuggestions) {
         openManageJenkins();
         getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
@@ -73,7 +73,7 @@ public class SearchSettingsFieldTest extends BaseTest {
         Assert.assertEquals(actualSuggestions, expectedSuggestions);
     }
 
-    @Test(dataProvider = "negativeSearchScenarios")
+    @Test(dataProvider = "negativeSearchScenarios", priority = 3)
     public void testInvalidInput(String searchText) {
         openManageJenkins();
         getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
