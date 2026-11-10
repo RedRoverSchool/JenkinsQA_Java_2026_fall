@@ -19,8 +19,12 @@ public class BuildHistoryTest extends BaseTest {
     @Test
     public void testBuildHistoryConsoleOutput() {
         createFreestyleProject(PROJECT_NAME);
-        createBuildHistory();
-        openConsoleOutput();
+
+        getDriver().findElement(By.cssSelector("a[href$='/build?delay=0sec'].task-link")).click();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-build-history")));
+        getDriver().findElement(By.id("jenkins-head-icon")).click();
+        getDriver().findElement(By.cssSelector("a[href$='/view/all/builds']")).click();
+        getDriver().findElement(By.cssSelector("a.jenkins-button[href$='/console']")).click();
 
         WebElement outConsole = getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("out")));
         Assert.assertTrue(outConsole.isDisplayed());
@@ -91,6 +95,13 @@ public class BuildHistoryTest extends BaseTest {
     private void createBuildHistory() {
         getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='/build?delay=0sec'].task-link"))).click();
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-build-history")));
+    }
+
+    private void clickJenkinsLogo() {
+        String baseXpath = "//span[contains(text(), '%s')]//ancestor::div//a[@class='app-jenkins-logo']";
+        String finalXpath = String.format(baseXpath, PROJECT_NAME);
+        WebElement logo = getWait5().until(ExpectedConditions.elementToBeClickable(By.xpath(finalXpath)));
+        logo.click();
     }
 
     private void openConsoleOutput() {
