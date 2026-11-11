@@ -14,13 +14,13 @@ import java.util.List;
 public class SearchSettingsFieldTest extends BaseTest {
 
     private static final By SEARCH_SETTINGS_FIELD = By.id("settings-search-bar");
-    private static final By SEARCH_SETTINGS_DROPDOWN_ITEMS = By.cssSelector(".jenkins-search__results-container .jenkins-dropdown__item");
+    private static final By SEARCH_SUGGESTIONS = By.cssSelector(".jenkins-search__results-container .jenkins-dropdown__item");
     private static final By MANAGE_JENKINS_BUTTON = By.id("root-action-ManageJenkinsAction");
     private static final By NO_RESULTS_LABEL = By.className("jenkins-search__results__no-results-label");
 
     private boolean isElementClickable(By locator) {
         try {
-            super.getWait5().until(ExpectedConditions.elementToBeClickable(locator));
+            getWait5().until(ExpectedConditions.elementToBeClickable(locator));
             return true;
         } catch (TimeoutException e) {
             return false;
@@ -28,7 +28,7 @@ public class SearchSettingsFieldTest extends BaseTest {
     }
 
     private void openManageJenkins() {
-        super.getWait5().until(ExpectedConditions.elementToBeClickable(MANAGE_JENKINS_BUTTON));
+        getWait5().until(ExpectedConditions.elementToBeClickable(MANAGE_JENKINS_BUTTON));
         getDriver().findElement(MANAGE_JENKINS_BUTTON).click();
     }
 
@@ -51,7 +51,6 @@ public class SearchSettingsFieldTest extends BaseTest {
         };
     }
 
-
     @Test(priority = 1)
     public void testVisibilityAndClickability() {
         openManageJenkins();
@@ -62,11 +61,13 @@ public class SearchSettingsFieldTest extends BaseTest {
     @Test(dataProvider = "positiveSearchScenarios", priority = 2)
     public void testValidInput(String searchText, List<String> expectedSuggestions) {
         openManageJenkins();
+
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(SEARCH_SETTINGS_FIELD));
         getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
-        getWait5().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(SEARCH_SETTINGS_DROPDOWN_ITEMS));
+        getWait5().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(SEARCH_SUGGESTIONS));
 
         List<String> actualSuggestions = new ArrayList<>();
-        for (WebElement suggestion : getDriver().findElements(SEARCH_SETTINGS_DROPDOWN_ITEMS)) {
+        for (WebElement suggestion : getDriver().findElements(SEARCH_SUGGESTIONS)) {
             actualSuggestions.add(suggestion.getText());
         }
 
@@ -76,6 +77,8 @@ public class SearchSettingsFieldTest extends BaseTest {
     @Test(dataProvider = "negativeSearchScenarios", priority = 3)
     public void testInvalidInput(String searchText) {
         openManageJenkins();
+
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(SEARCH_SETTINGS_FIELD));
         getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
         getWait5().until(ExpectedConditions.visibilityOfElementLocated(NO_RESULTS_LABEL));
 
