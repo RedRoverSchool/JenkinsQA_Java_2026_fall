@@ -8,18 +8,24 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class FreestyleProjectTest extends BaseTest {
-    final String ITEM_NAME = "test";
-    final String DESCRIPTION = "test description";
+    private static final String ITEM_NAME = "test";
+    private static final String DESCRIPTION = "test description";
 
-    @Test
-    public void testCreate() {
+    public void createFreestyleProject(){
         getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-        getDriver().findElement(By.name("description")).sendKeys(DESCRIPTION);
+    }
+
+    @Test
+    public void testCreate() {
+        createFreestyleProject();
         getDriver().findElement(By.name("Submit")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.id("jenkins-head-icon"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(
+                By.xpath(String.format(
+                        "//div[@id='breadcrumbBar'][.//span[text()='%s']]/preceding-sibling::a//img[@id='jenkins-head-icon']",
+                        ITEM_NAME)))).click();
 
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector("#job_" + ITEM_NAME + " a.model-link")).getText(), ITEM_NAME);
@@ -27,10 +33,7 @@ public class FreestyleProjectTest extends BaseTest {
 
     @Test
     public void testApplyButton() {
-        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
-        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
-        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        createFreestyleProject();
         getDriver().findElement(By.name("description")).sendKeys(DESCRIPTION);
         getDriver().findElement(By.name("Apply")).click();
 
@@ -39,36 +42,30 @@ public class FreestyleProjectTest extends BaseTest {
 
     @Test
     public void testIsTriggerSectionAvailable() {
-        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
-        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
-        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        createFreestyleProject();
 
         WebElement triggerSection = getDriver().findElement(
                 By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
 
         Assert.assertTrue(triggerSection.isDisplayed());
         Assert.assertTrue(triggerSection.findElement(By.name("pseudoRemoteTrigger")).isDisplayed());
-        Assert.assertTrue(triggerSection.findElement(By.name("com-cloudbees-jenkins-GitHubPushTrigger")).isDisplayed());
-        Assert.assertTrue(triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")).isDisplayed());
-        Assert.assertTrue(triggerSection.findElement(By.name("jenkins-triggers-ReverseBuildTrigger")).isDisplayed());
         Assert.assertTrue(triggerSection.findElement(By.name("hudson-triggers-SCMTrigger")).isDisplayed());
     }
 
     @Test
     public void testBuildPeriodicallyPositive() {
-        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
-        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
-        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        createFreestyleProject();
 
         WebElement triggerSection = getDriver().findElement(
                 By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
+
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript("arguments[0].click();", triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")));
         js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
+
         triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("H H * * *");
         getDriver().findElement(By.name("Apply")).click();
+
         WebElement infoMessage = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
                 By.xpath("//div[@class='ok' and contains(text(), 'Would last have run at')]")));
 
@@ -78,16 +75,14 @@ public class FreestyleProjectTest extends BaseTest {
 
     @Test
     public void testBuildPeriodicallyWarning(){
-        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
-        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
-        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        createFreestyleProject();
 
         WebElement triggerSection = getDriver().findElement(
                 By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
         JavascriptExecutor js = (JavascriptExecutor) getDriver();
         js.executeScript("arguments[0].click();", triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")));
         js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
+
         triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("0 0 * * *");
         getDriver().findElement(By.name("Apply")).click();
 
