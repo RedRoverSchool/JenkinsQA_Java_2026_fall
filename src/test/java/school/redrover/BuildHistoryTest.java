@@ -30,11 +30,10 @@ public class BuildHistoryTest extends BaseTest {
         Assert.assertTrue(outConsole.isDisplayed());
     }
 
-    @Test
+    @Test (dependsOnMethods = "testBuildHistoryConsoleOutput")
     public void testConteinsConsoleOutput() {
-        createFreestyleProject(PROJECT_NAME);
-        createBuildHistory();
-        openConsoleOutput();
+        getDriver().findElement(By.cssSelector("a[href$='/view/all/builds']")).click();
+        getDriver().findElement(By.cssSelector("a.jenkins-button[href$='/console']")).click();
         WebElement consoleText = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("out")));
         String consoleOutputText = consoleText.getText();
 
@@ -80,12 +79,14 @@ public class BuildHistoryTest extends BaseTest {
     private void createFreestyleProject(String name) {
         getDriver().findElement(By.cssSelector("a[href*='newJob']")).click();
         getDriver().findElement(By.id("name")).sendKeys(name);
-        getDriver().findElement(By.cssSelector("#items .hudson_model_FreeStyleProject")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("#items .hudson_model_FreeStyleProject"))).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+        getWait10().until(ExpectedConditions.urlContains("/configure"));
 
         for (int i = 0; i < 3; i++) {
             try {
                 getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("#bottom-sticker button.jenkins-button--primary"))).click();
+                getWait5().until(ExpectedConditions.not(ExpectedConditions.urlContains("/configure")));
                 break;
             } catch (StaleElementReferenceException | TimeoutException e) {
             }
