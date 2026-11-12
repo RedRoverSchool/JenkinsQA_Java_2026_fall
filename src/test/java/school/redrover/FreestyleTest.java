@@ -19,12 +19,13 @@ public class FreestyleTest extends BaseTest {
 
     private void createProject() {
 
-        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[1]/span/a")).click();
-        getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(PROJECT_NAME);
+        getDriver().findElement(By.xpath("//*[@id='tasks']/div[1]/span/a")).click();
+        getDriver().findElement(By.xpath("//*[@id='name']")).sendKeys(PROJECT_NAME);
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
         getDriver().findElement(By.id("ok-button")).click();
-
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-app-bar__content")));
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-app-bar")));
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("permalinks-header")));
         getDriver().findElement(By.className("app-jenkins-logo")).click();
     }
 
@@ -33,32 +34,31 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.xpath("//a[contains(@class, 'task-link') and contains(@href, 'configure')]")).click();
         getDriver().findElement(By.cssSelector("label[for='enable-disable-project']")).click();
         getDriver().findElement(By.name("Submit")).click();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("permalinks-header")));
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("warning")));
     }
 
-    @Ignore
     @Test
     public void testCreateProject() {
         createProject();
 
-        Assert.assertEquals(getDriver().findElement(By.xpath("//*[@id=\"job_Elena Freestyle project\"]/td[3]/a")).getText(),
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("task-link-no-confirm")));
+        Assert.assertEquals(getDriver().findElement(By.xpath("//*[@id='job_Elena Freestyle project']/td[3]/a")).getText(),
                 PROJECT_NAME);
     }
 
-    @Test
+    @Test(dependsOnMethods = "testCreateProject")
     public void testDisableProject() {
 
         final String disableText = "This project is currently disabled";
-        createProject();
         disableProject();
 
         String actualText = getDriver().findElement(By.className("warning")).getAttribute("innerText");
         Assert.assertTrue(actualText.contains(disableText));
     }
 
-    @Test
+    @Test(dependsOnMethods = "testCreateProject")
     public void testEnableProject() {
-        createProject();
         disableProject();
 
         getDriver().findElement(By.name("Submit")).click();
@@ -73,14 +73,12 @@ public class FreestyleTest extends BaseTest {
         Assert.assertTrue(isWarningGone);
     }
 
-    @Ignore
-    @Test
+    @Test(dependsOnMethods = "testCreateProject")
     public void testNewItemCopyFrom(){
-        createProject();
 
         getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']"))).click();
         getDriver().findElement(By.id("name")).sendKeys("Copied item");
-        getDriver().findElement(By.xpath("//*[@id=\"duplicate-job\"]/div[2]")).click();
+        getDriver().findElement(By.xpath("//*[@id='duplicate-job']/div[2]")).click();
         getDriver().findElement(By.id("from")).sendKeys(PROJECT_NAME);
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.name("Submit")).click();
@@ -96,7 +94,7 @@ public class FreestyleTest extends BaseTest {
     public void testTriggerBuildsRemotely(){
         getDriver().findElement(By.className("task-link-no-confirm")).click();
         getDriver().findElement(By.id("name")).sendKeys("new item");
-        getDriver().findElement(By.xpath("//*[@id=\"items\"]/div[2]/label/span")).click();
+        getDriver().findElement(By.xpath("//*[@id='items']/div[2]/label/span")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
         WebElement checkBox = getDriver().findElement(By.xpath("//input[@name='pseudoRemoteTrigger']/following-sibling::label"));
@@ -108,15 +106,14 @@ public class FreestyleTest extends BaseTest {
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("page-headline")));
         getDriver().findElement(By.className("app-jenkins-logo")).click();
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table[@id='projectstatus']//a[normalize-space()='new item']"))).click();
-        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[6]/span/a")).click();
+        getDriver().findElement(By.xpath("//*[@id='tasks']/div[6]/span/a")).click();
 
         WebElement checkBox2 = getWait10().until(ExpectedConditions.presenceOfElementLocated(By.name("pseudoRemoteTrigger")));
         Assert.assertTrue(checkBox2.isSelected());
     }
 
-    @Test
+    @Test(dependsOnMethods = "testCreateProject")
     public void testBuildIfAProjectExist(){
-        createProject();
 
         getDriver().findElement(By.className("task-link-no-confirm")).click();
         getDriver().findElement(By.id("name")).sendKeys("new item");
@@ -144,14 +141,14 @@ public class FreestyleTest extends BaseTest {
         getDriver().findElement(By.cssSelector("#items > div.hudson_model_FreeStyleProject.jenkins-choice-list__item > label > span")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        WebElement buildStep = getDriver().findElement(By.xpath("//*[@id=\"main-panel\"]/form/div[1]/section[5]/div[3]/span/button"));
+        WebElement buildStep = getDriver().findElement(By.xpath("//*[@id='main-panel']/form/div[1]/section[5]/div[3]/span/button"));
         ((JavascriptExecutor)getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", buildStep);
         buildStep.click();
 
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#tippy-5 > div > div > div > div.jenkins-dropdown.jenkins-dropdown--compact > button:nth-child(1)"))).click();
         getDriver().findElement(By.className("fixed-width")).sendKeys("any command");
         getDriver().findElement(By.name("Submit")).click();
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"tasks\"]/div[6]/span/a"))).click();
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='tasks']/div[6]/span/a"))).click();
 
         WebElement buildStep2 = getDriver().findElement(By.className("fixed-width"));
         ((JavascriptExecutor)getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", buildStep2);

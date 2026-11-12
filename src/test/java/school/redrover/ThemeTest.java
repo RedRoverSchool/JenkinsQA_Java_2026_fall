@@ -17,7 +17,6 @@ import school.redrover.common.ProjectUtils;
 import java.time.Duration;
 import java.util.List;
 
-
 public class ThemeTest extends BaseTest {
 
     @Test
@@ -39,8 +38,8 @@ public class ThemeTest extends BaseTest {
         WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
         new Actions(getDriver()).moveToElement(userIcon).perform();
 
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href=\"/user/admin/appearance\"]"))).click();
-        getDriver().findElement(By.xpath("//label[@for=\"radio-block-1\"]")).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/user/admin/appearance']"))).click();
+        getDriver().findElement(By.xpath("//label[@for='radio-block-1']")).click();
         getDriver().findElement(By.name("Submit")).click();
 
         boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
