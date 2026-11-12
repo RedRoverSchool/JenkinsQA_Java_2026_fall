@@ -42,11 +42,12 @@ public class BuildHistoryTest extends BaseTest {
         Assert.assertTrue(consoleOutputText.contains("Finished"));
     }
 
-    @Test
+    @Test (dependsOnMethods = "testConteinsConsoleOutput")
     public void testTextConsoleOutput() {
-        createFreestyleProject(PROJECT_NAME);
-        createBuildHistory();
-        openConsoleOutput();
+
+        getDriver().findElement(By.cssSelector("a[href$='/view/all/builds']")).click();
+        getDriver().findElement(By.cssSelector("a.jenkins-button[href$='/console']")).click();
+        WebElement consoleText = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("out")));
         WebElement textButtom = getWait5().until(ExpectedConditions.elementToBeClickable(TEXT_LINK));
         textButtom.click();
         getWait2().until(ExpectedConditions.urlContains("consoleText"));
