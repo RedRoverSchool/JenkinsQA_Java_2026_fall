@@ -44,10 +44,8 @@ public class BuildHistoryTest extends BaseTest {
 
     @Test (dependsOnMethods = "testConteinsConsoleOutput")
     public void testTextConsoleOutput() {
-
         getDriver().findElement(By.cssSelector("a[href$='/view/all/builds']")).click();
         getDriver().findElement(By.cssSelector("a.jenkins-button[href$='/console']")).click();
-        WebElement consoleText = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("out")));
         WebElement textButtom = getWait5().until(ExpectedConditions.elementToBeClickable(TEXT_LINK));
         textButtom.click();
         getWait2().until(ExpectedConditions.urlContains("consoleText"));
@@ -55,11 +53,10 @@ public class BuildHistoryTest extends BaseTest {
         Assert.assertTrue(getDriver().getCurrentUrl().endsWith("consoleText"), "Текстовая страница не обнаружена");
     }
 
-    @Test
+    @Test (dependsOnMethods =  "testTextConsoleOutput")
     public void testDownloadHistory() {
-        createFreestyleProject(PROJECT_NAME);
-        createBuildHistory();
-        openConsoleOutput();
+        getDriver().findElement(By.cssSelector("a[href$='/view/all/builds']")).click();
+        getDriver().findElement(By.cssSelector("a.jenkins-button[href$='/console']")).click();
         WebElement downButton = getWait5().until(ExpectedConditions.elementToBeClickable(DOWNLOAD_LINK));
 
         Assert.assertTrue(downButton.getAttribute("href").endsWith("/consoleText"), "Ссылка не ведет на файл лога");
@@ -97,13 +94,6 @@ public class BuildHistoryTest extends BaseTest {
     private void createBuildHistory() {
         getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='/build?delay=0sec'].task-link"))).click();
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-build-history")));
-    }
-
-    private void clickJenkinsLogo() {
-        String baseXpath = "//span[contains(text(), '%s')]//ancestor::div//a[@class='app-jenkins-logo']";
-        String finalXpath = String.format(baseXpath, PROJECT_NAME);
-        WebElement logo = getWait5().until(ExpectedConditions.elementToBeClickable(By.xpath(finalXpath)));
-        logo.click();
     }
 
     private void openConsoleOutput() {
