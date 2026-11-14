@@ -2,34 +2,40 @@ package school.redrover;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import java.util.List;
 
 public class NodesTest extends BaseTest {
-    private static final String NODE_NAME = "windows-agent";
+    private final static String NODE_NAME = "TestAgent";
+    private static final By NODE_NAME_ROW = By.xpath("//table[@id='computers']//tr[contains(@id, '" + NODE_NAME + "')]");
 
     @Test
     public void testOpenManageNodesPage() {
-        getDriver().findElement(By.xpath("//a[@id='root-action-ManageJenkinsAction']//*[name()='svg']")).click();
-        getDriver().findElement(By.xpath("//a[.//dt[normalize-space()='Nodes']]")).click();
+        openNodesPage();
 
         Assert.assertTrue(
                 getDriver().findElement(By.tagName("h1")).getText().contains("Nodes"),
                 "Manage Nodes page is not opened"
         );
     }
-    @Test
-    public void testCreate() {
-        getDriver().findElement(By.xpath("//a[@id='root-action-ManageJenkinsAction']//*[name()='svg']")).click();
-        getDriver().findElement(By.xpath("//a[.//dt[normalize-space()='Nodes']]")).click();
-        getDriver().findElement(By.xpath("//a[@href='new']")).click();
-        getDriver().findElement(By.xpath("//input[@id='name']")).sendKeys(NODE_NAME);
-        getDriver().findElement(By.xpath("//label[@class='jenkins-radio__label' and text()='Permanent Agent']")).click();
-        getDriver().findElement(By.xpath("//button[@value='Create']")).click();
-        getDriver().findElement(By.xpath("//button[@value='Save']")).click();
 
-        Assert.assertTrue(getDriver().findElement(By.xpath("//tr[@id='node_windows-agent']")).isDisplayed());
+    @Test(dependsOnMethods = "testOpenManageNodesPage")
+    public void testCreate() {
+        openNodesPage();
+        createPermanentAgent();
+        WebElement nodeRow = getWait2().until(ExpectedConditions.visibilityOfElementLocated(NODE_NAME_ROW));
+        List<WebElement> manageNodeLinks = nodeRow.findElements(
+                By.xpath(".//a[contains(@href, '" + NODE_NAME + "')]"));
+        List<String> manageNodeText = manageNodeLinks.stream()
+                .map(WebElement::getText)
+                .map(String::trim)
+                .toList();
+
+        Assert.assertTrue(manageNodeText.contains(NODE_NAME));
     }
 
     @Test(dependsOnMethods = "testCreate")
@@ -49,5 +55,33 @@ public class NodesTest extends BaseTest {
         getDriver().findElement(By.xpath("//button[@value='Save']")).click();
 
         Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(), "Agent " + NODE_NAME);
+    }
+
+    @Test(dependsOnMethods = "testConfigure")
+    public void testDeleteFromConfigurePage() {
+        openNodesPage();
+        getDriver().findElement(By.xpath("//button[contains(@data-href, '" + NODE_NAME + "')]")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(
+                By.xpath("//a[contains(@href, '" + NODE_NAME + "') and normalize-space()='" + NODE_NAME + "']")
+        )).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@data-url='doDelete']"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@data-id='ok']"))).click();
+        getWait2().until(ExpectedConditions.invisibilityOfElementLocated(NODE_NAME_ROW));
+        boolean isNodeNameDeleted = getDriver().findElements(NODE_NAME_ROW).isEmpty();
+
+        Assert.assertTrue(isNodeNameDeleted);
+    }
+
+    private void createPermanentAgent() {
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='new']"))).click();
+        getDriver().findElement(By.xpath("//input[@id='name']")).sendKeys(NODE_NAME);
+        getDriver().findElement(By.xpath("//label[@class='jenkins-radio__label' and text()='Permanent Agent']")).click();
+        getDriver().findElement(By.xpath("//button[@value='Create']")).click();
+        getDriver().findElement(By.xpath("//button[@value='Save']")).click();
+    }
+
+    private void openNodesPage() {
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='root-action-ManageJenkinsAction']//*[name()='svg']"))).click();
+        getDriver().findElement(By.xpath("//a[.//dt[normalize-space()='Nodes']]")).click();
     }
 }
