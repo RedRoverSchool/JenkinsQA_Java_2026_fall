@@ -8,6 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NodesTest extends BaseTest {
@@ -71,6 +72,21 @@ public class NodesTest extends BaseTest {
         boolean isNodeNameDeleted = getDriver().findElements(NODE_NAME_ROW).isEmpty();
 
         Assert.assertTrue(isNodeNameDeleted);
+    }
+
+    @Test(dependsOnMethods = "testOpenManageNodesPage")
+    public void testVerifyNoDeleteOptionForBuiltInNode() {
+        openNodesPage();
+        getDriver().findElement(By.cssSelector("a[href$='(built-in)/']"));
+        getDriver().findElement(By.cssSelector("button.jenkins-menu-dropdown-chevron")).click();
+        List<String> list = new ArrayList<>();
+        list.add(getDriver().findElement(By.cssSelector("a.jenkins-dropdown__item[href$='configure']")).getText());
+        list.add(getDriver().findElement(By.cssSelector("a.jenkins-dropdown__item[href$='builds']")).getText());
+        list.add(getDriver().findElement(By.cssSelector("a.jenkins-dropdown__item[href$='load-statistics']")).getText());
+        list.add(getDriver().findElement(By.cssSelector("a.jenkins-dropdown__item[href$='script']")).getText());
+        for (String element : list) {
+            Assert.assertNotEquals(element, "Delete Agent");
+        }
     }
 
     private void createPermanentAgent() {
