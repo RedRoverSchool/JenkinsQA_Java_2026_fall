@@ -62,11 +62,10 @@ public class BuildHistoryTest extends BaseTest {
         Assert.assertTrue(downButton.getAttribute("href").endsWith("/consoleText"), "Ссылка не ведет на файл лога");
     }
 
-    @Test
+    @Test (dependsOnMethods = "testTextConsoleOutput")
     public void testCopyHistory() {
-        createFreestyleProject(PROJECT_NAME);
-        createBuildHistory();
-        openConsoleOutput();
+        getDriver().findElement(By.cssSelector("a[href$='/view/all/builds']")).click();
+        getDriver().findElement(By.cssSelector("a.jenkins-button[href$='/console']")).click();
         WebElement copyButton = getWait5().until(ExpectedConditions.elementToBeClickable(COPY_LINK));
         copyButton.click();
         String buttomClass = copyButton.getAttribute("class");
@@ -89,14 +88,5 @@ public class BuildHistoryTest extends BaseTest {
             } catch (StaleElementReferenceException | TimeoutException e) {
             }
         }
-    }
-
-    private void createBuildHistory() {
-        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='/build?delay=0sec'].task-link"))).click();
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-build-history")));
-    }
-
-    private void openConsoleOutput() {
-        getDriver().get(school.redrover.common.ProjectUtils.getUrl() + "job/" + PROJECT_NAME + "/lastBuild/console");
     }
 }
