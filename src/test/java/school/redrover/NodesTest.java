@@ -1,12 +1,13 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+
 import java.util.List;
 
 public class NodesTest extends BaseTest {
@@ -24,7 +25,7 @@ public class NodesTest extends BaseTest {
     }
 
     @Test(dependsOnMethods = "testOpenManageNodesPage")
-    public void testCreatePermanentAgent() {
+    public void testCreate() {
         openNodesPage();
         createPermanentAgent();
         WebElement nodeRow = getWait2().until(ExpectedConditions.visibilityOfElementLocated(NODE_NAME_ROW));
@@ -38,8 +39,27 @@ public class NodesTest extends BaseTest {
         Assert.assertTrue(manageNodeText.contains(NODE_NAME));
     }
 
-    @Test(dependsOnMethods = "testCreatePermanentAgent")
-    public void deletePermanentAgentFromConfigurePage() {
+    @Test(dependsOnMethods = "testCreate")
+    public void testConfigure() {
+        final String description = "windows-тачка";
+
+        getDriver().findElement(By.xpath(String.format("//span[text()='%s']", NODE_NAME))).click();
+        getDriver().findElement(By.xpath("//span[text()='Configure']/ancestor::div[@class='task ']")).click();
+
+        getDriver().findElement(By.xpath("//textarea[@name='nodeDescription']")).sendKeys(description);
+        getDriver().findElement(By.xpath("//div[text()='Remote root directory']/following-sibling::*//input[@type='text']")).sendKeys("c:\\jenkins");
+        getDriver().findElement(By.xpath("//input[@name='_.labelString']")).sendKeys("windows");
+        Select selectMode = new Select(getDriver().findElement(By.name("mode")));
+        selectMode.selectByVisibleText("Use this node as much as possible");
+        Select selectLaunchMethod = new Select(getDriver().findElement(By.xpath("//div[normalize-space(text())='Launch method']/following-sibling::*/select[@class='jenkins-select__input dropdownList']")));
+        selectLaunchMethod.selectByVisibleText("Launch agent by connecting it to the controller");
+        getDriver().findElement(By.xpath("//button[@value='Save']")).click();
+
+        Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(), "Agent " + NODE_NAME);
+    }
+
+    @Test(dependsOnMethods = "testConfigure")
+    public void testDeleteFromConfigurePage() {
         openNodesPage();
         getDriver().findElement(By.xpath("//button[contains(@data-href, '" + NODE_NAME + "')]")).click();
         getWait2().until(ExpectedConditions.elementToBeClickable(
@@ -54,16 +74,10 @@ public class NodesTest extends BaseTest {
     }
 
     private void createPermanentAgent() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//a[@class='jenkins-button jenkins-button--primary']")
-        )).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='new']"))).click();
         getDriver().findElement(By.xpath("//input[@id='name']")).sendKeys(NODE_NAME);
-        getDriver().findElement(By.xpath("//label[@for='hudson.slaves.DumbSlave']")).click();
-        getDriver().findElement(By.xpath("//button[@id='ok']")).click();
-        WebElement saveButton = getWait2().until(ExpectedConditions.presenceOfElementLocated(
-                By.xpath("//button[@value='Save']")));
-        ((JavascriptExecutor) getDriver())
-                .executeScript("arguments[0].scrollIntoView({block: 'center'});", saveButton);
+        getDriver().findElement(By.xpath("//label[@class='jenkins-radio__label' and text()='Permanent Agent']")).click();
+        getDriver().findElement(By.xpath("//button[@value='Create']")).click();
         getDriver().findElement(By.xpath("//button[@value='Save']")).click();
     }
 
@@ -71,5 +85,4 @@ public class NodesTest extends BaseTest {
         getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@id='root-action-ManageJenkinsAction']//*[name()='svg']"))).click();
         getDriver().findElement(By.xpath("//a[.//dt[normalize-space()='Nodes']]")).click();
     }
-
 }
