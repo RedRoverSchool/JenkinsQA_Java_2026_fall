@@ -9,6 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
+import javax.swing.*;
 import java.time.Duration;
 
 public class FolderTest extends BaseTest {
@@ -184,6 +185,15 @@ public class FolderTest extends BaseTest {
         Assert.assertEquals(
                 getDriver().findElement(By.cssSelector(".jenkins-table__link> span:first-child")).getText(),
                 RENAMED_FOLDER_NAME);
+    }
+
+    @Test(dependsOnMethods = "testCreateFolder")
+    public void testOpenConfiguration() {
+        getDriver().findElement(By.cssSelector("a[href='job/Test_Folder/']")).click();
+        getDriver().findElement(By.cssSelector("a[href='/job/Test_Folder/configure']")).click();
+        String health = getDriver().findElement(By.xpath("//span[@class='task-link-text' and normalize-space()='Health metrics']")).getText();
+
+        Assert.assertEquals(health, "Health metrics");
     }
 
 }
