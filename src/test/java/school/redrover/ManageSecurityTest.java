@@ -22,6 +22,10 @@ public class ManageSecurityTest extends BaseTest {
     @Test
     public void testDisable() {
         testOpen();
+        if (getDriver().findElement(By.name("_.disableRememberMe")).isSelected()) {
+            getDriver().findElement(By.name("_.disableRememberMe")).sendKeys(Keys.SPACE);
+        }
+
         getDriver().findElement(By.name("_.disableRememberMe")).sendKeys(Keys.SPACE);
         getDriver().findElement(By.cssSelector(".jenkins-submit-button")).click();
 
