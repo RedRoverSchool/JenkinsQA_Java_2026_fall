@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+
 import java.util.List;
 
 public class NodesTest extends BaseTest {
@@ -42,7 +43,7 @@ public class NodesTest extends BaseTest {
     public void testConfigure() {
         final String description = "windows-тачка";
 
-        getDriver().findElement(By.xpath("//span[text()='windows-agent']")).click();
+        getDriver().findElement(By.xpath(String.format("//span[text()='%s']", NODE_NAME))).click();
         getDriver().findElement(By.xpath("//span[text()='Configure']/ancestor::div[@class='task ']")).click();
 
         getDriver().findElement(By.xpath("//textarea[@name='nodeDescription']")).sendKeys(description);
