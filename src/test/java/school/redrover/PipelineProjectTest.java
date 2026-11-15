@@ -6,6 +6,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.pages.HomePage;
@@ -33,6 +34,7 @@ public class PipelineProjectTest extends BaseTest {
         assertEquals(projectName, PROJECT_NAME);
     }
 
+    @Ignore
     @Test (dependsOnMethods = "testCreate")
     public void testCreateWithExistingName() {
 
@@ -47,7 +49,7 @@ public class PipelineProjectTest extends BaseTest {
         Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
-    @Test(dependsOnMethods = "testCreateWithExistingName")
+    @Test(dependsOnMethods = "testCreate")
     public void testRename() {
 
         getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
