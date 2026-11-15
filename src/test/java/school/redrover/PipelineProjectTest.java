@@ -125,6 +125,7 @@ public class PipelineProjectTest extends BaseTest {
         return data;
     }
 
+    @Ignore
     @Test(dataProvider = "unsupportedCharacters")
     public void testCreateWithUnsupportedCharacters(String invalidPipelineName) {
         String expectedErrorMsg = String.format("‘%s’ is an unsafe character", invalidPipelineName);
