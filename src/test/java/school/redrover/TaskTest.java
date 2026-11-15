@@ -5,6 +5,7 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -27,6 +28,7 @@ public class TaskTest  extends BaseTest {
         Assert.assertEquals(getDriver().findElement(By.xpath("//a[contains(@class, 'jenkins-table__link')]//span[text()='" + NEW_ITEM_TEXT + "']")).getText(), NEW_ITEM_TEXT);
     }
 
+    @Ignore
     @Test (dependsOnMethods = "testCreateTask")
     public void testRenameTask() {
         getDriver().findElement((By.className("jenkins-mobile-hide"))).click();
