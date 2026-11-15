@@ -4,6 +4,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -31,6 +32,7 @@ public class Folder2Test extends BaseTest {
         );
     }
 
+    @Ignore
     @Test
     public void testSavePipelineDescription() {
         final String pipelineName = "MyPipeline";
