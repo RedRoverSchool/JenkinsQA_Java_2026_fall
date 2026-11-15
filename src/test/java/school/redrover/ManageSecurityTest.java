@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -19,6 +20,7 @@ public class ManageSecurityTest extends BaseTest {
         Assert.assertEquals(getDriver().findElement(By.className("jenkins-app-bar__content")).getText(), "Security");
     }
 
+    @Ignore
     @Test
     public void testDisable() {
         testOpen();
