@@ -77,10 +77,8 @@ public class FolderTest extends BaseTest {
         Assert.assertTrue(actualDescriptionElement.isDisplayed(), "Описание не отобразилось на странице!");
     }
 
-    @Test
+    @Test(dependsOnMethods = "createFolder")
     public void testApplyChanges() {
-        createFolder();
-
         getDriver().findElement(By.cssSelector("a[href$='" + FOLDER_NAME + "/']")).click();
         getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
         getDriver().findElement(By.cssSelector("a[href$='configure']")).click();
