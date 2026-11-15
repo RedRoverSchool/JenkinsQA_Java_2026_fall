@@ -90,10 +90,8 @@ public class FreestyleProjectTest extends BaseTest {
         Assert.assertTrue(getDriver().findElement(By.className("warning")).getText().contains("Spread load evenly by using"));
     }
 
-    @Test
+    @Test(dependsOnMethods = "testCreate")
     public void testAddPostBuildAction() {
-        testCreate();
-
         getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("#job_" + ITEM_NAME + " a"))).click();
         getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href$='configure']"))).click();
 
