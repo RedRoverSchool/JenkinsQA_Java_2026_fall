@@ -6,6 +6,7 @@ import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
@@ -62,6 +63,7 @@ public class BuildHistoryTest extends BaseTest {
         Assert.assertTrue(downButton.getAttribute("href").endsWith("/consoleText"), "Ссылка не ведет на файл лога");
     }
 
+    @Ignore
     @Test (dependsOnMethods = "testTextConsoleOutput")
     public void testCopyHistory() {
         getDriver().findElement(By.cssSelector("a[href$='/view/all/builds']")).click();

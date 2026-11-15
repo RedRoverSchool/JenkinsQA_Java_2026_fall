@@ -43,14 +43,22 @@ public class FilterUtils {
         Set<String> affectedFiles = new HashSet<>();
 
         for (String changedFile : changedFiles) {
-            Set<String> directDeps = reversedGraph.getOrDefault(changedFile, Collections.emptySet());
+            Set<String> visitedFiles = new HashSet<>();
+            Deque<String> pendingFiles = new ArrayDeque<>(List.of(changedFile));
 
-            Set<String> directTests = directDeps.stream()
+            while (!pendingFiles.isEmpty()) {
+                String file = pendingFiles.removeFirst();
+                if (visitedFiles.add(file)) {
+                    pendingFiles.addAll(reversedGraph.getOrDefault(file, Collections.emptySet()));
+                }
+            }
+
+            Set<String> affectedTests = visitedFiles.stream()
                     .filter(testFiles::contains)
                     .collect(Collectors.toSet());
 
-            if (!directTests.isEmpty()) {
-                affectedFiles.addAll(directTests);
+            if (!affectedTests.isEmpty()) {
+                affectedFiles.addAll(affectedTests);
             } else {
                 affectedFiles.add(changedFile);
             }
