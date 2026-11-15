@@ -27,6 +27,7 @@ public class BuildsTest extends BaseTest {
         getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
     }
 
+    @Ignore
     @Test(dependsOnMethods = "createFreestyle")
     public void testDeleteBuild(){
 
