@@ -191,7 +191,7 @@ public class FolderTest extends BaseTest {
     public void testOpenConfiguration() {
         getDriver().findElement(By.cssSelector("a[href='job/Test_Folder/']")).click();
         getDriver().findElement(By.cssSelector("a[href='/job/Test_Folder/configure']")).click();
-        String health = getDriver().findElement(By.xpath("//span[@class='task-link-text' and normalize-space()='Health metrics']")).getText();
+        String health = getDriver().findElement(By.id("48-65-61-6c-74-68-20-6d-65-74-72-69-63-73")).getText();
 
         Assert.assertEquals(health, "Health metrics");
     }
