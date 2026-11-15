@@ -8,6 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.HomePage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,13 +23,14 @@ public class PipelineProjectTest extends BaseTest {
 
     @Test
     public void testCreate() {
-        getDriver().findElement(By.xpath("//a[.//span[text()='New Item']]")).click();
-        getDriver().findElement(By.id("name")).sendKeys(PROJECT_NAME);
-        getDriver().findElement(By.xpath("//span[@class='jenkins-choice-list__item__label' and text()='Pipeline']")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-        getDriver().findElement(By.xpath(String.format("//a[contains(text(), '%s')]//ancestor::div//a[@class='app-jenkins-logo']", PROJECT_NAME))).click();
+        String projectName = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(PROJECT_NAME)
+                .selectPipelineAndClickOk()
+                .gotoHomePage()
+                .getFirstProjectName();
 
-        assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), PROJECT_NAME);
+        assertEquals(projectName, PROJECT_NAME);
     }
 
     @Test (dependsOnMethods = "testCreate")
