@@ -24,6 +24,10 @@ public class ConfigurationMatrixTest extends BaseTest {
   private static final By MATRIX_CONFIGURATION_BUTTON = By.cssSelector("button[data-section-id='43-6f-6e-66-69-67-75-72-61-74-69-6f-6e-20-4d-61-74-72-69-78']");
 
   private static final By BUTTON_ADD_AXIS = By.cssSelector(".config-table button.hetero-list-add[suffix='axis']");
+  private static final By USER_DEFINED_AXIS_MENU_ITEM = By.cssSelector("button.jenkins-dropdown__item");
+  private static final By USER_DEFINED_AXIS_NAME = By.cssSelector(".repeated-chunk[name='axis'] input[name='_.name']");
+  private static final By USER_DEFINED_AXIS_VALUES = By.cssSelector("input[name='_.valueString']");
+
   private static final By COMBINATION_FILTER_CHECKBOX = By.cssSelector("input[name='hasCombinationFilter'] + label");
   private static final By RUN_EACH_CONFIGURATION_SEQUENTIALLY_CHECKBOX = By.name("_.runSequentially");
   private static final By EXECUTE_TOUCHSTONE_BUILDS_FIRST_CHECKBOX = By.name("_.hasTouchStoneCombinationFilter");
@@ -35,6 +39,11 @@ public class ConfigurationMatrixTest extends BaseTest {
   private static final By EXECUTE_TOUCHSTONE_CHECKBOX = By.cssSelector("input[name='_.hasTouchStoneCombinationFilter'] + label");
   private static final By EXECUTE_TOUCHSTONE_FILTER_FIELD = By.name("_.touchStoneCombinationFilter");
   private static final By EXECUTE_TOUCHSTONE_REQUIRED_RESULT_SELECT = By.name("touchStoneResultCondition");
+
+  private static final By SUBMIT_FORM_BUTTON = By.cssSelector("button[name='Submit']");
+
+  private static final By CONFIGURE_ITEM_MENU = By.cssSelector("a[data-task-post][href$='/configure']");
+
 
 
 
@@ -141,6 +150,54 @@ public class ConfigurationMatrixTest extends BaseTest {
     Assert.assertEquals(newSelectedValue, executeTouchstoneRequiredResultNeededSelect.get(1));
     Assert.assertFalse(isFilterFieldDisplayed);
     Assert.assertFalse(isRequiredResultSelectDisplayed);
+  }
+
+  @Test
+  public void checkCombinationFilterSettings() {
+    createNewMultiConfigurationItem();
+    final WebDriver driver = getDriver();
+
+    ((JavascriptExecutor) driver).executeScript(
+        "arguments[0].scrollIntoView({block: 'center'});",
+        driver.findElement(BUTTON_ADD_AXIS)
+    );
+
+    driver.findElement(BUTTON_ADD_AXIS).click();
+    driver.findElement(USER_DEFINED_AXIS_MENU_ITEM).click();
+    driver.findElement(USER_DEFINED_AXIS_NAME).sendKeys("OS");
+    driver.findElement(USER_DEFINED_AXIS_VALUES).sendKeys("Linux Windows");
+
+    ((JavascriptExecutor) driver).executeScript(
+        "arguments[0].scrollIntoView({block: 'center'});",
+        driver.findElement(COMBINATION_FILTER_CHECKBOX)
+    );
+
+    driver.findElement(COMBINATION_FILTER_CHECKBOX).click();
+
+    driver.findElement(COMBINATION_FILTER_FIELD).sendKeys("OS == 'Linux'");
+    String combinationFilterFieldTextLinux = driver.findElement(COMBINATION_FILTER_FIELD).getDomProperty("value");
+
+    driver.findElement(COMBINATION_FILTER_FIELD).clear();
+    String combinationFilterFieldTextEmpty = driver.findElement(COMBINATION_FILTER_FIELD).getDomProperty("value");
+
+    driver.findElement(COMBINATION_FILTER_FIELD).sendKeys("OS == 'Windows'");
+    String combinationFilterFieldTextWindows = driver.findElement(COMBINATION_FILTER_FIELD).getDomProperty("value");
+    driver.findElement(COMBINATION_FILTER_FIELD).clear();
+
+    driver.findElement(COMBINATION_FILTER_FIELD).sendKeys("OS == 'Linux'");
+    driver.findElement(SUBMIT_FORM_BUTTON).click();
+
+    getWait5().until(ExpectedConditions.elementToBeClickable(CONFIGURE_ITEM_MENU)).click();
+    getWait5().until(ExpectedConditions.elementToBeClickable(MATRIX_CONFIGURATION_BUTTON)).click();
+
+    boolean isCombinationFilterCheckboxSelected = driver.findElement(COMBINATION_FILTER_FIELD).isDisplayed();
+    String combinationFilterFieldText = driver.findElement(COMBINATION_FILTER_FIELD).getDomProperty("value");
+
+    Assert.assertEquals(combinationFilterFieldTextLinux, "OS == 'Linux'");
+    Assert.assertEquals(combinationFilterFieldTextEmpty, "");
+    Assert.assertEquals(combinationFilterFieldTextWindows, "OS == 'Windows'");
+    Assert.assertTrue(isCombinationFilterCheckboxSelected);
+    Assert.assertEquals(combinationFilterFieldText, "OS == 'Linux'");
   }
 }
 
