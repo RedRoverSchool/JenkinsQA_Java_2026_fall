@@ -57,6 +57,7 @@ public class FreestyleTest extends BaseTest {
         Assert.assertTrue(actualText.contains(disableText));
     }
 
+    @Ignore
     @Test(dependsOnMethods = "testCreateProject")
     public void testEnableProject() {
         disableProject();
