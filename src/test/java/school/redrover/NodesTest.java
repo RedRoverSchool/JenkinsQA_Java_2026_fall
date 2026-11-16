@@ -24,6 +24,32 @@ public class NodesTest extends BaseTest {
         );
     }
 
+    @Test
+    public void testNodeInformationInNodesTable() {
+        openNodesPage();
+
+        List<String> headers = getWait2().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(
+                        By.xpath("//table[@id='computers']/thead//th")))
+                .stream()
+                .map(WebElement::getText)
+                .map(text -> text.replaceAll("[^A-Za-z ]", "").trim())
+                .toList();
+        String nodeStatus = getDriver().findElement(By.xpath(
+                        "//table[@id='computers']//tr[starts-with(@id, 'node_')]//span[@class='jenkins-visually-hidden']"))
+                .getAttribute("textContent");
+        boolean hasEmptyNodeInfo = getDriver().findElements(By.xpath(
+                        "//table[@id='computers']//tr[starts-with(@id, 'node_')]/td[position() > 1 and position() < last()]"))
+                .stream()
+                .map(WebElement::getText)
+                .anyMatch(String::isBlank);
+
+        Assert.assertTrue(headers.containsAll(List.of("Name", "Architecture", "Free Disk Space", "Response Time")),
+                "Nodes table headers: " + headers);
+        Assert.assertTrue(nodeStatus.contains("online") || nodeStatus.contains("offline"),
+                "Unexpected node status: " + nodeStatus);
+        Assert.assertFalse(hasEmptyNodeInfo, "Some node information is empty");
+    }
+
     @Test(dependsOnMethods = "testOpenManageNodesPage")
     public void testCreate() {
         openNodesPage();
