@@ -34,4 +34,34 @@ public class HomePage extends BasePage {
 
         return new LoginPage(getDriver());
     }
+
+    public HomePage openJobsDropDownMenu() {
+        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
+
+        return this;
+    }
+
+    public RenamePage clickRenameInDropDownMenu() {
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.partialLinkText("Rename"))).click();
+
+        return new RenamePage(getDriver());
+    }
+
+    public PipelineConfigurationPage clickConfigureInDropDownMenu() {
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
+
+        return new PipelineConfigurationPage(getDriver());
+    }
+
+    public HomePage deleteJobFromDropDownMenu() {
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(normalize-space(.), 'Delete')]"))).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dialog[@class='jenkins-dialog']")));
+        getDriver().findElement(By.xpath("//button[@data-id='ok']")).click();
+
+        return this;
+    }
+
+    public String getTitle() {
+        return getDriver().findElement(By.xpath("//h1")).getText();
+    }
 }

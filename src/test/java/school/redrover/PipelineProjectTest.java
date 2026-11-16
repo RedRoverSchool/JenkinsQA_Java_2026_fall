@@ -1,9 +1,7 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Ignore;
@@ -15,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 public class PipelineProjectTest extends BaseTest {
 
@@ -34,85 +33,78 @@ public class PipelineProjectTest extends BaseTest {
         assertEquals(projectName, PROJECT_NAME);
     }
 
-    @Ignore
-    @Test (dependsOnMethods = "testCreate")
+    @Test(dependsOnMethods = "testCreate")
     public void testCreateWithExistingName() {
 
-        getDriver().findElement(By.xpath("//a[.//span[text()='New Item']]")).click();
-        getDriver().findElement(By.id("name")).sendKeys(PROJECT_NAME);
-        getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob")).click();
+        String errorMessageText = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(PROJECT_NAME)
+                .selectPipeline()
+                .getErrorMessageText();
 
-        WebElement errorMessage = getDriver().findElement(By.xpath("//*[contains(text(), 'A job already exists')]"));
-        WebElement okButton = getDriver().findElement(By.id("ok-button"));
-
-        Assert.assertTrue(errorMessage.isDisplayed(), "Сообщение об ошибке не появилось!");
-        Assert.assertFalse(okButton.isEnabled(), "Кнопка ОК должна быть неактивна!");
+        assertTrue(errorMessageText.contains("A job already exists"), "Сообщение об ошибке не появилось!");
+        Assert.assertFalse(getDriver().findElement(By.id("ok-button")).isEnabled(), "Кнопка ОК должна быть неактивна!");
     }
 
-    @Test(dependsOnMethods = "testCreate")
+    @Test(dependsOnMethods = "testCreateWithExistingName")
     public void testRename() {
 
-        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.partialLinkText("Rename"))).click();
+        String newProjectName = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickRenameInDropDownMenu()
+                .renameWithCorrectName(NEW_PROJECT_NAME)
+                .getPageTitle();
 
-        WebElement newNameBtn = getDriver().findElement(By.name("newName"));
-        newNameBtn.clear();
-        newNameBtn.sendKeys(NEW_PROJECT_NAME);
-        getDriver().findElement(By.xpath("//button[@value='Rename']")).click();
-
-        getWait2().until(ExpectedConditions.textToBe(By.tagName("h1"), NEW_PROJECT_NAME));
-        getDriver().findElement(By.xpath("//a[@class='app-jenkins-logo']")).click();
-
-        assertEquals(getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText(), NEW_PROJECT_NAME);
+        assertEquals(newProjectName, NEW_PROJECT_NAME);
     }
 
     @Test(dependsOnMethods = "testRename")
-    public void testVisibilityNotificationAfterAddDescriptionAndApply() {
+    public void testNotificationAfterAddDescriptionAndApply() {
 
-        getDriver().findElement(By.className("jenkins-menu-dropdown-chevron")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
-        getDriver().findElement(By.name("description")).sendKeys(DESCRIPTION);
-        getDriver().findElement(By.name("Apply")).click();
-        String notificationBar = getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='notification-bar']/span"))).getText();
+        String notificationText = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
+                .addDescription(DESCRIPTION)
+                .clickApplyButton()
+                .getNotificationText();
 
-        assertEquals(notificationBar, "Saved", "Changes were not applied");
+        assertEquals(notificationText, "Saved", "Changes were not applied");
     }
 
-    @Test (dependsOnMethods = "testVisibilityNotificationAfterAddDescriptionAndApply")
+    @Test(dependsOnMethods = "testNotificationAfterAddDescriptionAndApply")
     public void testSaveDescription() {
 
-        getDriver().findElement(By.className("jenkins-menu-dropdown-chevron")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
-        getDriver().findElement(By.name("Submit")).click();
-        WebElement newTestDescription = getDriver().findElement(By.xpath("//*[@id='description']"));
+        String newTestDescription = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
+                .clickSaveButton()
+                .getDescription();
 
-        assertEquals(newTestDescription.getText(), DESCRIPTION, "The description does not match");
+        assertEquals(newTestDescription, DESCRIPTION, "The description does not match");
     }
 
     @Test(dependsOnMethods = "testSaveDescription")
     public void testDefinePipelineScriptFromSample() {
 
-        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
-        getDriver().findElement(By.xpath("//span[@class='task-link-text' and contains(text(), 'Pipeline')]/ancestor::button")).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("workflow-editor-samples")));
-        Select select = new Select(getDriver().findElement(By.id("workflow-editor-samples")));
-        select.selectByValue("hello");
+        List<String> scriptLines = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
+                .clickPipelineButtonInSidePanel()
+                .selectHelloWorldScriptFromSample()
+                .getTextFromScript();
 
-        assertEquals(
-                getDriver().findElement(By.xpath("//span[@class='ace_identifier']")).getText(),
-                "pipeline");
+        assertTrue(scriptLines.contains("Hello World"));
     }
 
     @Test(dependsOnMethods = "testDefinePipelineScriptFromSample")
     public void testDelete() {
 
-        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(normalize-space(.), 'Delete Pipeline')]"))).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dialog[@class='jenkins-dialog']")));
-        getDriver().findElement(By.xpath("//button[@data-id='ok']")).click();
+        String titleText = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .deleteJobFromDropDownMenu()
+                .getTitle();
 
-        assertEquals(getDriver().findElement(By.xpath("//h1[contains(text(), 'Welcome to Jenkins!')]")).getText(), "Welcome to Jenkins!");
+        assertEquals(titleText, "Welcome to Jenkins!");
     }
 
     @DataProvider(name = "unsupportedCharacters")
