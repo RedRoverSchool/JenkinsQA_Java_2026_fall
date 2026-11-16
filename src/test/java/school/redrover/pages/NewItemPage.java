@@ -16,13 +16,23 @@ public class NewItemPage extends BasePage {
         return this;
     }
 
+    public NewItemPage selectPipeline() {
+        getDriver().findElement(By.xpath("//label//span[text()='Pipeline']")).click();
+
+        return this;
+    }
+
     public PipelineConfigurationPage selectPipelineAndClickOk() {
-        getDriver().findElement(By.xpath("//span[@class='jenkins-choice-list__item__label' and text()='Pipeline']")).click();
+        getDriver().findElement(By.xpath("//label//span[text()='Pipeline']")).click();
         getWait2().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
 
         // waiting for the new page
         getWait10().until(ExpectedConditions.presenceOfElementLocated(By.id("side-panel")));
 
         return new PipelineConfigurationPage(getDriver());
+    }
+
+    public String getErrorMessageText() {
+        return getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='error']"))).getText();
     }
 }
