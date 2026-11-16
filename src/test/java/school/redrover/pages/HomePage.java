@@ -23,7 +23,7 @@ public class HomePage extends BasePage {
     }
 
     public LoginPage clickSignOut() {
-        // Наводим мышку на иконку пользователя
+
         WebElement userMenuButton = getDriver().findElement(By.id("root-action-UserAction"));
         Actions actions = new Actions(getDriver());
         actions.moveToElement(userMenuButton).perform();
