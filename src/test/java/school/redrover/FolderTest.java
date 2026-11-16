@@ -10,6 +10,7 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
+import javax.swing.*;
 import java.time.Duration;
 
 public class FolderTest extends BaseTest {
@@ -76,10 +77,11 @@ public class FolderTest extends BaseTest {
 
         Assert.assertTrue(actualDescriptionElement.isDisplayed(), "Описание не отобразилось на странице!");
     }
-
     @Ignore
-    @Test(dependsOnMethods = "createFolder")
+    @Test
     public void testApplyChanges() {
+        createFolder();
+
         getDriver().findElement(By.cssSelector("a[href$='" + FOLDER_NAME + "/']")).click();
         getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
         getDriver().findElement(By.cssSelector("a[href$='configure']")).click();
@@ -185,4 +187,15 @@ public class FolderTest extends BaseTest {
                 getDriver().findElement(By.cssSelector(".jenkins-table__link> span:first-child")).getText(),
                 RENAMED_FOLDER_NAME);
     }
+
+    @Test(dependsOnMethods = "testCreateFolder")
+    public void testOpenConfiguration() {
+        getDriver().findElement(By.cssSelector("a[href='job/Test_Folder/']")).click();
+        getDriver().findElement(By.cssSelector("a[href='/job/Test_Folder/configure']")).click();
+
+        String health = getDriver().findElement(By.id("48-65-61-6c-74-68-20-6d-65-74-72-69-63-73")).getText();
+
+        Assert.assertEquals(health, "Health metrics");
+    }
+
 }
