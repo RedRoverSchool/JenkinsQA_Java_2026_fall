@@ -61,6 +61,18 @@ public class HomePage extends BasePage {
         return this;
     }
 
+    public HomePage clickSceduleABuild(){
+        getWait10().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']")))).click();
+
+        return this;
+    }
+
+    public BuildHistoryPage clickBuildsHistory(){
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']"))).click();
+
+        return new BuildHistoryPage(getDriver());
+    }
+
     public String getTitle() {
         return getDriver().findElement(By.xpath("//h1")).getText();
     }

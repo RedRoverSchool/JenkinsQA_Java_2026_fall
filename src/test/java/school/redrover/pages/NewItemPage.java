@@ -32,6 +32,21 @@ public class NewItemPage extends BasePage {
         return new PipelineConfigurationPage(getDriver());
     }
 
+    public NewItemPage selectFreestyle() {
+        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
+
+        return this;
+    }
+
+    public FreestyleConfigurationPage clickOK(){
+        getDriver().findElement(By.id("ok-button")).click();
+
+        //waiting for the new page
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-app-bar")));
+
+        return new FreestyleConfigurationPage(getDriver());
+    }
+
     public String getErrorMessageText() {
         return getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='error']"))).getText();
     }
