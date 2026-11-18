@@ -32,13 +32,8 @@ public class NewItemPage extends BasePage {
         return new PipelineConfigurationPage(getDriver());
     }
 
-    public NewItemPage selectFreestyle() {
+    public FreestyleConfigurationPage selectFreestyleAndClickOK() {
         getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
-
-        return this;
-    }
-
-    public FreestyleConfigurationPage clickOK(){
         getDriver().findElement(By.id("ok-button")).click();
 
         //waiting for the new page

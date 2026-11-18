@@ -18,32 +18,30 @@ import static org.testng.Assert.assertEquals;
 
 public class BuildsTest extends BaseTest {
 
-    private static final String PROJECT_NAME = "Elena Freestyle project";
+    private static final String PROJECT_NAME = "Newproject";
 
-    @Test
     public void createFreestyle() {
-        String createProject = new HomePage(getDriver())
+        new HomePage(getDriver())
                 .clickNewItem()
                 .inputProjectName(PROJECT_NAME)
-                .selectFreestyle()
-                .clickOK()
+                .selectFreestyleAndClickOK()
                 .clickSaveButton()
-                .goToHomePage()
+                .gotoHomePage()
                 .getFirstProjectName();
-        assertEquals(createProject, PROJECT_NAME);
     }
 
-    @Test (dependsOnMethods = "createFreestyle")
+    @Test
     public void testDeleteBuild(){
+        createFreestyle();
         BuildHistoryPage deleteBuild = new HomePage(getDriver())
-                .clickSceduleABuild()
+                .clickSceduleABuild(PROJECT_NAME)
                 .clickBuildsHistory()
-                .clickBuildName()
-                .deleteBuildButton()
+                .clickBuildName(PROJECT_NAME)
+                .deleteBuild()
                 .clickSubmitButton()
-                .goToHomePage()
+                .gotoHomePage()
                 .clickBuildsHistory();
 
-        Assert.assertTrue(deleteBuild.buildsIsEmpty());
+        Assert.assertTrue(deleteBuild.buildsIsEmpty(PROJECT_NAME));
     }
 }

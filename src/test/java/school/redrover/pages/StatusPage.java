@@ -21,9 +21,4 @@ public class StatusPage extends BasePage {
         return getDriver().findElement(description).getText();
     }
 
-    public HomePage goToHomePage(){
-        getDriver().findElement(By.id("jenkins-head-icon")).click();
-
-        return new HomePage(getDriver());
-    }
 }
