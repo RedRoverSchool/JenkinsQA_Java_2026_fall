@@ -8,9 +8,13 @@ import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.BuildHistoryPage;
+import school.redrover.pages.HomePage;
 
 import java.time.Duration;
 import java.util.List;
+
+import static org.testng.Assert.assertEquals;
 
 public class BuildsTest extends BaseTest {
 
@@ -18,30 +22,28 @@ public class BuildsTest extends BaseTest {
 
     @Test
     public void createFreestyle() {
-
-        getDriver().findElement(By.xpath("//*[@id=\"tasks\"]/div[1]/span/a")).click();
-        getDriver().findElement(By.xpath("//*[@id=\"name\"]")).sendKeys(PROJECT_NAME);
-        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
-        getDriver().findElement(By.id("ok-button")).click();
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-app-bar")));
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
+        String createProject = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(PROJECT_NAME)
+                .selectFreestyle()
+                .clickOK()
+                .clickSaveButton()
+                .goToHomePage()
+                .getFirstProjectName();
+        assertEquals(createProject, PROJECT_NAME);
     }
 
-    @Ignore
-    @Test(dependsOnMethods = "createFreestyle")
+    @Test (dependsOnMethods = "createFreestyle")
     public void testDeleteBuild(){
+        BuildHistoryPage deleteBuild = new HomePage(getDriver())
+                .clickSceduleABuild()
+                .clickBuildsHistory()
+                .clickBuildName()
+                .deleteBuildButton()
+                .clickSubmitButton()
+                .goToHomePage()
+                .clickBuildsHistory();
 
-        getWait10().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']")))).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']"))).click();
-        getDriver().findElement(By.xpath("//a[contains(@href, 'project/1')]")).click();
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@href, 'confirmDelete')]"))).click();
-        getDriver().findElement(By.name("Submit")).click();
-
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("permalinks-header")));
-        getDriver().findElement(By.className("app-jenkins-logo")).click();
-        getDriver().findElement(By.xpath("//a[@href='/view/all/builds']")).click();
-
-        List<WebElement> builds = getDriver().findElements(By.xpath("//a[contains(@href, '/job/Elena%20Freestyle%20project/1/')]"));
-        Assert.assertTrue(builds.isEmpty());
+        Assert.assertTrue(deleteBuild.buildsIsEmpty());
     }
 }
