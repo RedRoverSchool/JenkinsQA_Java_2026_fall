@@ -61,8 +61,8 @@ public class HomePage extends BasePage {
         return this;
     }
 
-    public HomePage clickSceduleABuild(){
-        getWait10().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for Elena Freestyle project']")))).click();
+    public HomePage clickSceduleABuild(String projectName){
+        getWait10().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for " + projectName + "']")))).click();
 
         return this;
     }

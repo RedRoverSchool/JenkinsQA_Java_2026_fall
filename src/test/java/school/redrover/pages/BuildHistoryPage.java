@@ -11,20 +11,19 @@ public class BuildHistoryPage extends BasePage{
 
     public BuildHistoryPage(WebDriver driver) {super(driver);}
 
-    public BuildHistoryPage clickBuildName(){
-        getDriver().findElement(By.xpath("//a[contains(@href, 'project/1')]")).click();
-
+    public BuildHistoryPage clickBuildName(String projectName){
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath( "//button[contains(@data-href, 'job/" + projectName + "/') and contains(@data-href, '/1/')]"))).click();
         return this;
     }
 
-    public DeleteBuildPage deleteBuildButton(){
+    public DeleteBuildPage deleteBuild(){
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@href, 'confirmDelete')]"))).click();
 
         return new DeleteBuildPage(getDriver());
     }
 
-    public boolean buildsIsEmpty(){
-        List<WebElement> builds = getDriver().findElements(By.xpath("//a[contains(@href, '/job/Elena%20Freestyle%20project/1/')]"));
+    public boolean buildsIsEmpty(String projectName){
+        List<WebElement> builds = getDriver().findElements(By.xpath("//a[contains(@href, 'job/" + projectName + "/')]"));
 
         return builds.isEmpty();
     }
