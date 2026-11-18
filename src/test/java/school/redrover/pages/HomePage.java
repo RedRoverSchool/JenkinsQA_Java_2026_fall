@@ -13,7 +13,7 @@ public class HomePage extends BasePage {
     }
 
     public NewItemPage clickNewItem() {
-        getDriver().findElement(By.xpath("//a[.//span[text()='New Item']]")).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[.//span[text()='New Item']]"))).click();
 
         return new NewItemPage(getDriver());
     }

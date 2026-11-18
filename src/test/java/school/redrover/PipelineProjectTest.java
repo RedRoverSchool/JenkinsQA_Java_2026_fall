@@ -8,6 +8,7 @@ import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.pages.HomePage;
+import school.redrover.pages.PipelineConfigurationPage;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +54,7 @@ public class PipelineProjectTest extends BaseTest {
                 .openJobsDropDownMenu()
                 .clickRenameInDropDownMenu()
                 .renameWithCorrectName(NEW_PROJECT_NAME)
-                .getPageTitle();
+                .getMainHeading();
 
         assertEquals(newProjectName, NEW_PROJECT_NAME);
     }
@@ -89,7 +90,7 @@ public class PipelineProjectTest extends BaseTest {
         List<String> scriptLines = new HomePage(getDriver())
                 .openJobsDropDownMenu()
                 .clickConfigureInDropDownMenu()
-                .clickPipelineButtonInSidePanel()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.PIPELINE)
                 .selectHelloWorldScriptFromSample()
                 .getTextFromScript();
 
