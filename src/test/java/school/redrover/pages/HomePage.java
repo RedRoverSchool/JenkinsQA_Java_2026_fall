@@ -13,13 +13,16 @@ public class HomePage extends BasePage {
     }
 
     public NewItemPage clickNewItem() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[.//span[text()='New Item']]"))).click();
+        getWait2().until(
+                ExpectedConditions.elementToBeClickable(By.xpath("//a[.//span[text()='New Item']]")))
+            .click();
 
         return new NewItemPage(getDriver());
     }
 
     public String getFirstProjectName() {
-        return getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText();
+        return getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child"))
+            .getText();
     }
 
     public LoginPage clickSignOut() {
@@ -28,7 +31,8 @@ public class HomePage extends BasePage {
         Actions actions = new Actions(getDriver());
         actions.moveToElement(userMenuButton).perform();
 
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/logout']"))).click();
+        getWait10().until(
+            ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/logout']"))).click();
 
         getWait10().until(ExpectedConditions.urlContains("login"));
 
@@ -36,44 +40,71 @@ public class HomePage extends BasePage {
     }
 
     public HomePage openJobsDropDownMenu() {
-        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']")).click();
+        getDriver().findElement(By.xpath("//button[@class='jenkins-menu-dropdown-chevron']"))
+            .click();
 
         return this;
     }
 
     public RenamePage clickRenameInDropDownMenu() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.partialLinkText("Rename"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.partialLinkText("Rename")))
+            .click();
 
         return new RenamePage(getDriver());
     }
 
     public PipelineConfigurationPage clickConfigureInDropDownMenu() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]"))).click();
+        getWait2().until(
+                ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(@href, 'configure')]")))
+            .click();
 
         return new PipelineConfigurationPage(getDriver());
     }
 
     public HomePage deleteJobFromDropDownMenu() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(normalize-space(.), 'Delete')]"))).click();
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//dialog[@class='jenkins-dialog']")));
+        getWait2().until(ExpectedConditions.elementToBeClickable(
+            By.xpath("//button[contains(normalize-space(.), 'Delete')]"))).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//dialog[@class='jenkins-dialog']")));
         getDriver().findElement(By.xpath("//button[@data-id='ok']")).click();
 
         return this;
     }
 
-    public HomePage clickSceduleABuild(String projectName){
-        getWait10().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for " + projectName + "']")))).click();
+    public HomePage clickSceduleABuild(String projectName) {
+        getWait10().until(ExpectedConditions.elementToBeClickable(
+            (By.xpath("//a[@title='Schedule a Build for " + projectName + "']")))).click();
 
         return this;
     }
 
-    public BuildHistoryPage clickBuildsHistory(){
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']"))).click();
+    public BuildHistoryPage clickBuildsHistory() {
+        getWait10().until(
+                ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']")))
+            .click();
 
         return new BuildHistoryPage(getDriver());
     }
 
     public String getTitle() {
         return getDriver().findElement(By.xpath("//h1")).getText();
+    }
+
+    public String getJenkinsVersion() {
+        return getDriver().findElement(By.className("jenkins_ver")).getText();
+    }
+
+    public String getDashboardDescriptionText() {
+        return getDriver().findElement(By.id("description-content")).getText();
+    }
+
+    public String getDashboardDescriptionButtonText() {
+        return getDriver().findElement(By.id("description-link")).getText();
+    }
+
+    public DescriptionDialog openDescriptionDialog() {
+        getDriver().findElement(By.id("description-link")).click();
+
+        return new DescriptionDialog(getDriver()).waitUntilOpened();
     }
 }
