@@ -76,4 +76,36 @@ public class HomePage extends BasePage {
     public String getTitle() {
         return getDriver().findElement(By.xpath("//h1")).getText();
     }
+
+    public AppearancePage clickAppearanceButton(){
+        WebElement userButton = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
+
+        Actions actions = new Actions(getDriver());
+        actions.moveToElement(userButton).perform();
+
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']"))).click();
+
+        return new AppearancePage(getDriver());
+    }
+
+    public HomePage clickThemeButton(){
+        WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
+        new Actions(getDriver()).moveToElement(userIcon).perform();
+
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector(".tm-account-theme-picker-select"))).click();
+        return this;
+    }
+
+    public HomePage clickDarkThemeOnHomePage(){
+        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//*[normalize-space(text())='Dark']"))).click();
+
+        return this;
+    }
+
+    public boolean isDarkThemeEnabled(){
+        return !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
+    }
+
+
+
 }
