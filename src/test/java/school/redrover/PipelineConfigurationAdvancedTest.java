@@ -1,11 +1,12 @@
 package school.redrover;
 
 import org.openqa.selenium.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.HomePage;
+import school.redrover.pages.PipelineConfigurationPage;
 
 public class PipelineConfigurationAdvancedTest extends BaseTest {
     private static final String PIPELINE_NAME = "Pipeline_testing";
@@ -20,43 +21,32 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
     private static final String TEXT_UNDER_DISPLAY_NAME = "If set, the optional display name is shown for the project throughout the Jenkins web GUI. As it is for display purposes only, the display name is not required to be unique amongst projects.\n" +
             "If the display name is not set, the Jenkins web GUI will default to showing the project name.\n" +
             "(from Pipeline: Job)";
+    private static final String DISPLAY_NAME = "Display Name";
+    private static final String QUIET_PERIOD = "Quiet period";
 
     @Test
     public void testQuietPeriodShowsTextUnderQuestionMark() {
-        createPipeline();
-        openAdvancedDropdown();
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("a[aria-label='Help for feature: Quiet period'] > span"
-                ))).click();
-        String textInParagraphs = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("div[class = 'help'] div")
-        )).getText();
+        String helpText = createPipeline()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .clickOnHelpIcon(QUIET_PERIOD)
+                .getHelpContent(QUIET_PERIOD).text();
 
-        Assert.assertEquals(textInParagraphs, TEXT_UNDER_QUESTION_MARK);
+        Assert.assertEquals(helpText, TEXT_UNDER_QUESTION_MARK);
     }
 
     @Test(dependsOnMethods = "testQuietPeriodShowsTextUnderQuestionMark")
     public void testDisplayNameShowsTextUnderQuestionMark() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//tr[contains(@id, '" + PIPELINE_NAME + "')]//a[@href and not(@tooltip)]"
-                ))).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//a[contains (@href, '" + PIPELINE_NAME + "/configure')]"
-                ))).click();
-        openAdvancedDropdown();
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//a[contains(@helpurl, 'displayNameOrNull')]")
-        )).click();
+        PipelineConfigurationPage.HelpContent helpContent = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .clickOnHelpIcon(DISPLAY_NAME)
+                .getHelpContent(DISPLAY_NAME);
 
-        WebElement paragraph = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//a[contains(@helpurl, 'displayNameOrNull')]/ancestor::div[contains(@class, 'jenkins-form-item')]//div[@style='display: block;']//div[@class='help']"
-                )));
-        String textInParagraph = paragraph.getText();
-        boolean isLink = !paragraph.findElements(By.xpath("//a[contains(@href, 'workflow-job')]"))
-                .isEmpty();
-
-        Assert.assertEquals(textInParagraph, TEXT_UNDER_DISPLAY_NAME);
-        Assert.assertTrue(isLink);
+        Assert.assertEquals(helpContent.text(), TEXT_UNDER_DISPLAY_NAME);
+        Assert.assertTrue(helpContent.hasLinkContaining("workflow-job"));
     }
 
     @Test(dependsOnMethods = {
@@ -64,21 +54,17 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
             "testDisplayNameShowsTextUnderQuestionMark",
     })
     public void testQuietPeriodAcceptsPositiveValue() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//tr[contains(@id, '" + PIPELINE_NAME + "')]//a[@href and not(@tooltip)]"
-                ))).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//a[contains (@href, '" + PIPELINE_NAME + "/configure')]"
-                ))).click();
-        setQuietPeriod(QP_POSITIVE);
-        getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("a[href$=configure]")))
-                .click();
-        openAdvancedDropdown();
-        String getQuietPeriodSeconds = getDriver().findElement(
-                By.cssSelector("input[name='quiet_period']"
-                )).getAttribute("value");
+       String getQuietPeriodSeconds = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .setQuietPeriod(QP_POSITIVE)
+                .clickSaveButton()
+                .openConfigurationPage()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .getQuietPeriod();
 
         Assert.assertEquals(getQuietPeriodSeconds, QP_POSITIVE);
     }
@@ -104,16 +90,12 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
 
     @Test(dataProvider = "Display Name")
     public void testDisplayNameSetUp(String displayName) {
-        createPipeline();
-        openAdvancedDropdown();
-        WebElement displayNameInput = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("input[checkurl$='checkDisplayNameOrNull']")
-        ));
-        displayNameInput.sendKeys(displayName, Keys.TAB);
-        getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
-        getWait2().until(ExpectedConditions.not(
-                ExpectedConditions.urlContains("/configure")));
-        String displayNameOnPage = getDriver().findElement(By.cssSelector("h1")).getText();
+        String displayNameOnPage = createPipeline()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .setDisplayName(displayName)
+                .clickSaveButton()
+                .getMainHeading();
 
         Assert.assertEquals(displayNameOnPage, displayName.trim());
     }
@@ -128,12 +110,11 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
 
     @Test(dataProvider = "NegativeAndNonIntegerValues")
     public void testQuietPeriodRejectsNegativeAndNonIntegerValues(String value, String expectedError) {
-        createPipeline();
-        setQuietPeriod(value);
-        String error = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath(
-                        "//input[@name='quiet_period']/ancestor::div[contains(@class,'jenkins-form-item')]/descendant::div[@class='error']"
-                ))).getText();
+        String error = createPipeline()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .setQuietPeriod(value)
+                .getQuietPeriodError();
 
         Assert.assertEquals(error, expectedError);
     }
@@ -149,49 +130,21 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
 
     @Test(dataProvider = "InvalidValues")
     public void testQuietPeriodLettersAndSymbolsCanNotBeEntered(String invalidValue) {
-        createPipeline();
-        setQuietPeriod(invalidValue);
-        String input = getDriver().findElement(By.cssSelector("input[name='quiet_period']")).getDomProperty("value");
+        String input = createPipeline()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .setQuietPeriod(invalidValue)
+                .getQuietPeriod();
+
         String inputExpected = invalidValue.replaceAll("[^0-9]", "");
 
         Assert.assertEquals(input, inputExpected);
     }
 
-    private void createPipeline() {
-        getWait2().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']"))).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable(
-                By.cssSelector("input[value='org.jenkinsci.plugins.workflow.job.WorkflowJob'] + span"
-                ))).click();
-        getDriver().findElement(By.id("name")).sendKeys(PIPELINE_NAME);
-        getDriver().findElement(By.id("ok-button")).click();
-    }
-
-    private void openAdvancedDropdown() {
-        int maxAttempts = 2;
-        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            getWait5().until(ExpectedConditions.elementToBeClickable(
-                            By.xpath("//span[contains(text(),'Advanced')]/ancestor::button")))
-                    .click();
-            try {
-                getWait5().until(ExpectedConditions.invisibilityOfElementLocated(By.cssSelector(".jenkins-bottom-app-bar__shadow--stuck")));
-                break;
-            } catch (TimeoutException e) {
-                if (attempt == maxAttempts) {
-                    throw new RuntimeException("После " + maxAttempts + " кликов по боковой панели страница не доскроллилась до низа, Save перекрывает Advanced", e);
-                }
-            }
-        }
-        getDriver().findElement(By.cssSelector(".jenkins-section button.advancedButton")).click();
-    }
-
-    private void setQuietPeriod(String seconds) {
-        openAdvancedDropdown();
-        getWait5().until(ExpectedConditions.elementToBeClickable(
-                        By.cssSelector("input[name='hasCustomQuietPeriod'] + label")))
-                .click();
-        WebElement quietPeriodSeconds = getDriver().findElement(By.cssSelector("input[name='quiet_period']"));
-        quietPeriodSeconds.clear();
-        quietPeriodSeconds.sendKeys(seconds);
-        quietPeriodSeconds.sendKeys(Keys.TAB);
+    private PipelineConfigurationPage createPipeline() {
+        return new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(PIPELINE_NAME)
+                .selectPipelineAndClickOk();
     }
 }
