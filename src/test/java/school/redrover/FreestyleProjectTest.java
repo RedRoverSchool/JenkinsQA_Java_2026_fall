@@ -6,88 +6,79 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import school.redrover.pages.FreestyleConfigurationPage;
+import school.redrover.pages.HomePage;
 
 public class FreestyleProjectTest extends BaseTest {
     private static final String ITEM_NAME = "test";
     private static final String DESCRIPTION = "test description";
 
-    public void createFreestyleProject(){
-        getDriver().findElement(By.cssSelector("#tasks a[href$='/newJob']")).click();
-        getDriver().findElement(By.id("name")).sendKeys(ITEM_NAME);
-        getDriver().findElement(By.className("hudson_model_FreeStyleProject")).click();
-        getDriver().findElement(By.id("ok-button")).click();
-    }
-
     @Test
     public void testCreate() {
-        createFreestyleProject();
-        getDriver().findElement(By.name("Submit")).click();
-        getWait2().until(ExpectedConditions.elementToBeClickable(
-                By.xpath(String.format(
-                        "//div[@id='breadcrumbBar'][.//span[text()='%s']]/preceding-sibling::a//img[@id='jenkins-head-icon']",
-                        ITEM_NAME)))).click();
+        String projectName = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(ITEM_NAME)
+                .selectFreestyleAndClickOK()
+                .gotoHomePage()
+                .getFirstProjectName();
 
-        Assert.assertEquals(
-                getDriver().findElement(By.cssSelector("#job_" + ITEM_NAME + " a.model-link")).getText(), ITEM_NAME);
+        Assert.assertEquals(projectName, ITEM_NAME);
     }
 
     @Test
     public void testApplyButton() {
-        createFreestyleProject();
-        getDriver().findElement(By.name("description")).sendKeys(DESCRIPTION);
-        getDriver().findElement(By.name("Apply")).click();
+        String notificationText = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(ITEM_NAME)
+                .selectFreestyleAndClickOK()
+                .addDescription(DESCRIPTION)
+                .clickApplyButton()
+                .getNotificationText();
 
-        Assert.assertEquals(getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
+        Assert.assertEquals(notificationText, "Saved", "Changes were not applied");
     }
 
     @Test
     public void testIsTriggerSectionAvailable() {
-        createFreestyleProject();
+        FreestyleConfigurationPage configPage = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(ITEM_NAME)
+                .selectFreestyleAndClickOK();
 
-        WebElement triggerSection = getDriver().findElement(
-                By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
-
-        Assert.assertTrue(triggerSection.isDisplayed());
-        Assert.assertTrue(triggerSection.findElement(By.name("pseudoRemoteTrigger")).isDisplayed());
-        Assert.assertTrue(triggerSection.findElement(By.name("hudson-triggers-SCMTrigger")).isDisplayed());
+        Assert.assertTrue(
+                configPage.isTriggerSectionDisplayed(), "Секция Triggers не отображается");
+        Assert.assertTrue(
+                configPage.areTriggerCheckboxesDisplayed("pseudoRemoteTrigger", "hudson-triggers-SCMTrigger"),
+                "Один из чекбоксов не отображается");
     }
 
     @Test
     public void testBuildPeriodicallyPositive() {
-        createFreestyleProject();
+        FreestyleConfigurationPage configPage = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(ITEM_NAME)
+                .selectFreestyleAndClickOK()
+                .checkBuildPeriodically()
+                .inputSchedule("H H * * *")
+                .clickApplyButton();
 
-        WebElement triggerSection = getDriver().findElement(
-                By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
-
-        JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        js.executeScript("arguments[0].click();", triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")));
-        js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
-
-        triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("H H * * *");
-        getDriver().findElement(By.name("Apply")).click();
-
-        WebElement infoMessage = getWait5().until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//div[@class='ok' and contains(text(), 'Would last have run at')]")));
-
-        Assert.assertEquals(getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
-        Assert.assertTrue(infoMessage.getText().contains("Would last have run at"));
+        Assert.assertEquals(configPage.getNotificationText(), "Saved");
+        Assert.assertTrue(configPage.getScheduleValidationMessage().contains("Would last have run at"));
     }
 
     @Test
     public void testBuildPeriodicallyWarning(){
-        createFreestyleProject();
+        FreestyleConfigurationPage configPage = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(ITEM_NAME)
+                .selectFreestyleAndClickOK()
+                .checkBuildPeriodically()
+                .inputSchedule("0 0 * * *")
+                .clickApplyButton();
 
-        WebElement triggerSection = getDriver().findElement(
-                By.xpath("//section[div[contains(@class, 'jenkins-section__title') and contains(text(), 'Triggers')]]"));
-        JavascriptExecutor js = (JavascriptExecutor) getDriver();
-        js.executeScript("arguments[0].click();", triggerSection.findElement(By.name("hudson-triggers-TimerTrigger")));
-        js.executeScript("arguments[0].click();", triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")));
-
-        triggerSection.findElement(By.cssSelector("textarea.jenkins-input.validated")).sendKeys("0 0 * * *");
-        getDriver().findElement(By.name("Apply")).click();
-
-        Assert.assertEquals(getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("notification-bar"))).getText(), "Saved");
-        Assert.assertTrue(getDriver().findElement(By.className("warning")).getText().contains("Spread load evenly by using"));
+        Assert.assertEquals(configPage.getNotificationText(), "Saved");
+        Assert.assertTrue(configPage.getScheduleValidationMessage().contains("Would last have run at"));
+        Assert.assertTrue(configPage.getScheduleWarningMessage().contains("Spread load evenly by using"));
     }
 
     @Test(dependsOnMethods = "testCreate")
