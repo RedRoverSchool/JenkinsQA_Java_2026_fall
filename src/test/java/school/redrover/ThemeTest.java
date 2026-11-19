@@ -13,69 +13,45 @@ import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.common.JenkinsUtils;
 import school.redrover.common.ProjectUtils;
+import school.redrover.pages.HomePage;
 
 import java.time.Duration;
 import java.util.List;
 
 public class ThemeTest extends BaseTest {
 
+    private void changeTheme() {
+        new HomePage(getDriver())
+                .clickAppearanceButton()
+                .clickDarkOnAppearance()
+                .clickSaveOnAppearance();
+    }
+
     @Test
     public void testChangeThemeFromHomePage() {
+        HomePage homePage = new HomePage(getDriver())
+                .clickThemeButton()
+                .clickDarkThemeOnHomePage();
 
-        WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
-        new Actions(getDriver()).moveToElement(userIcon).perform();
-
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector(".tm-account-theme-picker-select"))).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//*[normalize-space(text())='Dark']"))).click();
-
-        boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-        Assert.assertTrue(isDarkTheme);
+        Assert.assertTrue(homePage.isDarkThemeEnabled());
     }
 
     @Test
     public void testChangeThemeFromAppearance() {
+        changeTheme();
+        HomePage homePage = new HomePage(getDriver());
 
-        WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
-        new Actions(getDriver()).moveToElement(userIcon).perform();
-
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/user/admin/appearance']"))).click();
-        getDriver().findElement(By.xpath("//label[@for='radio-block-1']")).click();
-        getDriver().findElement(By.name("Submit")).click();
-
-        boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-        Assert.assertTrue(isDarkTheme);
+        Assert.assertTrue(homePage.isDarkThemeEnabled());
     }
 
     @Test
     public void testCheckingThemeAfterLogOut() {
+        HomePage homePage = new HomePage(getDriver());
         changeTheme();
-
-        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
-
         JenkinsUtils.logout(getDriver());
         getDriver().get(ProjectUtils.getUrl() + "login");
         JenkinsUtils.login(getDriver());
 
-        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.xpath("//a[@class='app-jenkins-logo']")));
-
-        boolean isDarkTheme = !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
-        Assert.assertTrue(isDarkTheme);
-    }
-
-    private void changeTheme() {
-
-        WebElement userButton = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
-
-        Actions actions = new Actions(getDriver());
-        actions.moveToElement(userButton).perform();
-
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']"))).click();
-        getWait10().until(ExpectedConditions.urlContains("/appearance"));
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("label[for='radio-block-1']"))).click();
-        getWait10().until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
-
-        WebElement submitButton = getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
-        submitButton.click();
-        getWait10().until(ExpectedConditions.stalenessOf(submitButton));
+        Assert.assertTrue(homePage.isDarkThemeEnabled());
     }
 }
