@@ -32,4 +32,12 @@ public class StatusPage extends BasePage {
 
         return new PipelineConfigurationPage(getDriver());
     }
+
+    public StatusPage clickBuildNow() {
+        getDriver().findElement(
+                By.cssSelector("a[href$='/build?delay=0sec']")
+        ).click();
+
+        return this;
+    }
 }

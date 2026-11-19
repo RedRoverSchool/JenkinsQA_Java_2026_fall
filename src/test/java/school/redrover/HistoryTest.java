@@ -3,101 +3,61 @@ package school.redrover;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.HomePage;
 
-import java.time.Duration;
 import java.util.List;
 
 public class HistoryTest extends BaseTest {
 
-    private static final String PIPELINE_FIRST_NAME = "Pipeline1";
-    private static final String PIPELINE_SECOND_NAME = "Pipeline2";
     private static final String SUCCESS_PIPELINE = "Success";
     private static final String FAIL_PIPELINE = "Fail";
-
 
     @Test
     public void testBuildHistoryInformation() {
 
-        createPipeline(PIPELINE_FIRST_NAME);
-        getDriver().findElement(
-                By.cssSelector(String.format("a[title='Schedule a Build for %s']", PIPELINE_FIRST_NAME)))
-                .click();
-        createPipeline(PIPELINE_SECOND_NAME);
-        getDriver().findElement(
-                        By.cssSelector(String.format("a[title='Schedule a Build for %s']", PIPELINE_SECOND_NAME)))
-                .click();
+        List<WebElement> buildInfoPipelineFirst = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(SUCCESS_PIPELINE)
+                .selectPipelineAndClickOk()
+                .clickSaveButton()
+                .clickBuildNow()
+                .gotoHomePage()
+                .clickBuildsHistory()
+                .waitForBuildsToComplete()
+                .getBuildInfoByName(SUCCESS_PIPELINE);
 
-        getDriver().findElement(By.xpath("//a[@href='/view/all/builds']")).click();
+        Assert.assertEquals(buildInfoPipelineFirst.get(0).getText(), SUCCESS_PIPELINE);
+        Assert.assertEquals(buildInfoPipelineFirst.get(2).getText(), "#1");
+        Assert.assertFalse(buildInfoPipelineFirst.get(3).getText().isBlank());
+        Assert.assertEquals(buildInfoPipelineFirst.get(4).getText(), "stable");
+        Assert.assertTrue(buildInfoPipelineFirst.get(5).isDisplayed());
 
-        By failedBuildIcons = By.cssSelector("svg[aria-label='failure']");
-        new WebDriverWait(getDriver(), Duration.ofSeconds(20))
-                .until(ExpectedConditions.numberOfElementsToBe(failedBuildIcons, 2));
+        List<WebElement> buildInfoPipelineSecond = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(FAIL_PIPELINE)
+                .selectPipelineAndClickOk()
+                .gotoHomePage()
+                .clickSceduleABuild(FAIL_PIPELINE)
+                .clickBuildsHistory()
+                .waitForBuildsToComplete()
+                .getBuildInfoByName(FAIL_PIPELINE);
 
-        List<WebElement> builds = getDriver().findElements(
-                By.cssSelector("a.jenkins-table__link > span")
-        );
+        Assert.assertEquals(buildInfoPipelineSecond.get(0).getText(), FAIL_PIPELINE);
+        Assert.assertEquals(buildInfoPipelineSecond.get(2).getText(), "#1");
+        Assert.assertFalse(buildInfoPipelineSecond.get(3).getText().isBlank());
+        Assert.assertEquals(buildInfoPipelineSecond.get(4).getText(), "broken since this build");
+        Assert.assertTrue(buildInfoPipelineSecond.get(5).isDisplayed());
 
-        List<WebElement> buildNumbers = getDriver().findElements(
-                By.cssSelector(String.format(
-                        "a.jenkins-badge[href='/job/%s/1/'], a.jenkins-badge[href='/job/%s/1/']",
-                        PIPELINE_FIRST_NAME, PIPELINE_SECOND_NAME
-                ))
-        );
-
-        List<WebElement> buildTimes = getDriver().findElements(
-                By.cssSelector("td[data*='T']")
-        );
-
-        List<WebElement> buildStatuses = getDriver().findElements(
-                By.cssSelector("td[style*='var(--red)']")
-        );
-
-        List<WebElement> consoleOutputLinks = getDriver().findElements(
-                By.cssSelector(String.format(
-                        "a[href='/job/%s/1/console'], a[href='/job/%s/1/console']",
-                        PIPELINE_FIRST_NAME, PIPELINE_SECOND_NAME
-                ))
-        );
-
-        Assert.assertEquals(builds.size(), 2);
-        Assert.assertEquals(builds.get(0).getText(), PIPELINE_SECOND_NAME);
-        Assert.assertEquals(builds.get(1).getText(), PIPELINE_FIRST_NAME);
-        Assert.assertEquals(getDriver().findElements(failedBuildIcons).size(), 2);
-        Assert.assertEquals(buildNumbers.size(), 2);
-        Assert.assertEquals(buildNumbers.get(0).getText(), "#1");
-        Assert.assertEquals(buildNumbers.get(1).getText(), "#1");
-        Assert.assertEquals(buildTimes.size(), 2);
-        for (WebElement buildTime : buildTimes) {
-            Assert.assertTrue(buildTime.isDisplayed());
-            Assert.assertFalse(buildTime.getText().isBlank());
-        }
-        Assert.assertEquals(buildStatuses.size(), 2);
-        for (WebElement status : buildStatuses) {
-            Assert.assertEquals(status.getText(), "broken since this build");
-        }
-        for (WebElement link : consoleOutputLinks) {
-            Assert.assertTrue(link.isDisplayed());
-        }
+        assertBuildOrder(FAIL_PIPELINE, SUCCESS_PIPELINE);
     }
 
-    @Test
+    @Test(dependsOnMethods = "testBuildHistoryInformation")
     public void testSortBuildHistory() {
-        createPipelineAndBuildSuccess(SUCCESS_PIPELINE);
-        createPipeline(FAIL_PIPELINE);
 
-        getDriver().findElement(
-                By.cssSelector(String.format(
-                        "a[title='Schedule a Build for %s']",
-                        FAIL_PIPELINE))
-        ).click();
-
-        getDriver().findElement(
-                By.cssSelector("a[href='/view/all/builds']")
-        ).click();
+        new HomePage(getDriver()).clickBuildsHistory();
 
         assertSorting("Time Since", "↓", SUCCESS_PIPELINE, FAIL_PIPELINE);
         assertSorting("Time Since", "↑", FAIL_PIPELINE, SUCCESS_PIPELINE);
@@ -110,30 +70,6 @@ public class HistoryTest extends BaseTest {
 
         assertSorting("Status", "↑", SUCCESS_PIPELINE, FAIL_PIPELINE);
         assertSorting("Status", "↓", FAIL_PIPELINE, SUCCESS_PIPELINE);
-    }
-
-    private void createPipeline(String name) {
-        getDriver().findElement(By.className("task-icon-link")).click();
-        getDriver().findElement(By.id("name")).sendKeys(name);
-        getDriver().findElement(By.className("jenkins-choice-list__item__label")).click();
-        getDriver().findElement(By.id("ok-button")).click();
-
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated((By.name("description"))));
-        getDriver().findElement((By.id("jenkins-head-icon"))).click();
-    }
-
-    private void createPipelineAndBuildSuccess(String name) {
-
-        getDriver().findElement(By.className("task-icon-link")).click();
-        getDriver().findElement(By.id("name")).sendKeys(name);
-        getDriver().findElement(By.className("jenkins-choice-list__item__label")).click();
-        getDriver().findElement(By.id("ok-button")).click();
-        getDriver().findElement(By.cssSelector("button[name='Submit']")).click();
-        getDriver().findElement(
-                By.cssSelector("a[href='/job/" + name + "/build?delay=0sec']")
-        ).click();
-
-        getDriver().findElement((By.id("jenkins-head-icon"))).click();
     }
 
     private void clickSortHeader(String columnName) {
@@ -158,6 +94,7 @@ public class HistoryTest extends BaseTest {
                 By.cssSelector("a.jenkins-table__link > span")
         );
 
+        Assert.assertEquals(builds.size(), 2);
         Assert.assertEquals(builds.get(0).getText(), firstBuild);
         Assert.assertEquals(builds.get(1).getText(), secondBuild);
     }
