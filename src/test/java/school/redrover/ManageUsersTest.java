@@ -1,14 +1,13 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-import java.util.ArrayList;
-import java.util.List;
+import school.redrover.pages.ManageJenkinsPage;
+import school.redrover.pages.UsersPage;
 
 public class ManageUsersTest extends BaseTest {
 
@@ -19,32 +18,19 @@ public class ManageUsersTest extends BaseTest {
 
     @Test
     public void testCreate() {
-        getDriver().findElement(By.cssSelector("a[href='/manage']")).click();
-        getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
-        getDriver().findElement(By.className("jenkins-button--primary")).click();
+        UsersPage usersPage = new ManageJenkinsPage(getDriver())
+                .openManage()
+                .openUsers()
+                .clickCreateUser()
+                .enterUsername(USERNAME)
+                .enterPassword(PASSWORD)
+                .enterFullName(FULL_NAME)
+                .enterEmail(EMAIL)
+                .clickCreateButton()
+                .waitUntilUserCreated(USERNAME);
 
-        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("username"))).sendKeys(USERNAME);
-
-        getDriver().findElement(By.name("password1")).sendKeys(PASSWORD);
-        getDriver().findElement(By.name("password2")).sendKeys(PASSWORD);
-        getDriver().findElement(By.name("fullname")).sendKeys(FULL_NAME);
-        getDriver().findElement(By.name("email")).sendKeys(EMAIL);
-        getDriver().findElement(By.cssSelector(".jenkins-submit-button")).click();
-
-        getWait5().until(ExpectedConditions.presenceOfElementLocated(
-                By.cssSelector("#people a[href='user/" + USERNAME + "/']")
-        ));
-
-        List<WebElement> rows = getDriver().findElements(By.cssSelector("#people tbody tr"));
-        List<String> userList = new ArrayList<>();
-
-        for(WebElement row : rows) {
-            String user = row.findElement(By.cssSelector("td:nth-child(2) a")).getText();
-            userList.add(user);
-        }
-
-        Assert.assertTrue(getDriver().findElement(By.cssSelector("#breadcrumbs > li")).getText().contains("database"));
-        Assert.assertTrue(userList.contains(USERNAME));
+        Assert.assertTrue(usersPage.getFirstBreadcrumbText().contains("database"));
+        Assert.assertTrue(usersPage.getUserList().contains(USERNAME));
     }
 
     @Test
