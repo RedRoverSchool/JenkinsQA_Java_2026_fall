@@ -39,4 +39,17 @@ public class UsersPage extends BasePage {
     public String getFirstBreadcrumbText() {
         return getDriver().findElement(By.cssSelector("#breadcrumbs > li")).getText();
     }
+
+    public UserProfilePage openUser(String username) {
+        getDriver().findElement(By.cssSelector("#people a[href='user/" + username + "/']")).click();
+        return new UserProfilePage(getDriver());
+    }
+
+    public int getUsersCount() {
+        return Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
+    }
+
+    public boolean isUserPresent(String username) {
+        return !getDriver().findElements(By.cssSelector("#people a[href='user/" + username + "/']")).isEmpty();
+    }
 }
