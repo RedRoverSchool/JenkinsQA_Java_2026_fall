@@ -77,6 +77,24 @@ public class HomePage extends BasePage {
         return getDriver().findElement(By.xpath("//h1")).getText();
     }
 
+    public String getJenkinsVersion() {
+        return getDriver().findElement(By.className("jenkins_ver")).getText();
+    }
+
+    public String getDashboardDescriptionText() {
+        return getDriver().findElement(By.id("description-content")).getText();
+    }
+
+    public String getDashboardDescriptionButtonText() {
+        return getDriver().findElement(By.id("description-link")).getText();
+    }
+
+    public DescriptionDialog openDescriptionDialog() {
+        getDriver().findElement(By.id("description-link")).click();
+
+        return new DescriptionDialog(getDriver()).waitUntilOpened();
+    }
+
     public AppearancePage clickAppearanceButton(){
         WebElement userButton = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.id("root-action-UserAction")));
 
@@ -105,7 +123,4 @@ public class HomePage extends BasePage {
     public boolean isDarkThemeEnabled(){
         return !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
     }
-
-
-
 }

@@ -25,7 +25,7 @@ public class StatusPage extends BasePage {
         return getDriver().findElement(description).getText();
     }
 
-    public HomePage goToHomePage() {
+    public HomePage goToHomePage(){
         getDriver().findElement(By.id("jenkins-head-icon")).click();
 
         return new HomePage(getDriver());
@@ -72,6 +72,14 @@ public class StatusPage extends BasePage {
 
     public StatusPage waitForDescriptionText(String text) {
         getWait5().until(ExpectedConditions.textToBePresentInElementLocated(descriptionContent, text));
+
+        return this;
+    }
+
+    public StatusPage clickBuildNow() {
+        getDriver().findElement(
+                By.cssSelector("a[href$='/build?delay=0sec']")
+        ).click();
 
         return this;
     }
