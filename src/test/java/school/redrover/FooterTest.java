@@ -6,6 +6,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 
+
+
 public class FooterTest extends BaseTest {
 
     private static final String JOB_NAME = "my test pipeline";
@@ -25,5 +27,10 @@ public class FooterTest extends BaseTest {
         getDriver().findElement(By.cssSelector("a[href*='api/']")).click();
 
         Assert.assertEquals(getDriver().findElement(By.tagName("h1")).getText(), "REST API");
+    }
+
+    @Test
+    public void testCheckVersion(){
+        Assert.assertEquals(getDriver().findElement(By.cssSelector("button.jenkins_ver")).getText(), "Jenkins 2.580.1");
     }
 }
