@@ -123,4 +123,11 @@ public class HomePage extends BasePage {
     public boolean isDarkThemeEnabled(){
         return !getDriver().findElements(By.cssSelector("html[data-theme='dark']")).isEmpty();
     }
+
+    public StatusPage goToProject(String projectName) {
+        getWait5().until(ExpectedConditions.elementToBeClickable(
+                By.linkText(projectName))).click();
+
+        return new StatusPage(getDriver());
+    }
 }

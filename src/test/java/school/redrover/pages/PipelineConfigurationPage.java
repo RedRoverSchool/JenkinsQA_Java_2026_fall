@@ -1,14 +1,19 @@
 package school.redrover.pages;
 
 import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+
 import java.util.List;
 
 public class PipelineConfigurationPage extends BasePage {
     private final By descriptionField = By.name("description");
     private final By saveButton = By.xpath("//button[@value='Save']");
     private final By applyButton = By.name("Apply");
+    private final By triggerSection = By.xpath("//section[div[contains(@class, 'jenkins-section__title') " +
+            "and normalize-space()='Triggers']]");
+
 
     public PipelineConfigurationPage(WebDriver driver) {
         super(driver);
@@ -139,5 +144,44 @@ public class PipelineConfigurationPage extends BasePage {
                 .toList();
 
         return new HelpContent(help.getText(), hrefs);
+    }
+
+    public By getTriggerBlock(String triggerName) {
+        return By.xpath("//label[contains(normalize-space(.), '" + triggerName + "')]"
+                + "/ancestor::div[contains(@class, 'help-sibling') "
+                + "or contains(@class, 'jenkins-checkbox-help-wrapper')][1]");
+    }
+
+    public boolean isTriggerSectionDisplayed() {
+        return getWait5().until(ExpectedConditions.visibilityOfElementLocated(triggerSection)).isDisplayed();
+    }
+
+    public boolean isTriggerCheckboxPresent(String triggerName) {
+        return !getDriver().findElement(getTriggerBlock(triggerName))
+                .findElements(By.xpath(".//input[@type='checkbox']")).isEmpty();
+    }
+
+    public boolean isTriggerHelpIconPresent(String triggerName) {
+        return !getDriver().findElement(getTriggerBlock(triggerName))
+                .findElements(By.xpath(".//a[contains(@class, 'jenkins-help-button')]")).isEmpty();
+    }
+
+    public PipelineConfigurationPage checkAllTrigger(String triggerName) {
+        WebElement block = getWait5().until(
+                ExpectedConditions.visibilityOfElementLocated(getTriggerBlock(triggerName)));
+        WebElement label = block.findElement(By.tagName("label"));
+        new Actions(getDriver()).scrollToElement(label).scrollByAmount(0, 300).perform();
+        getWait5().until(ExpectedConditions.elementToBeClickable(label)).click();
+        getWait5().until(ExpectedConditions.elementToBeSelected(
+                block.findElement(By.xpath(".//input[@type='checkbox']"))));
+
+        return this;
+    }
+
+    public boolean isTriggerChecked(String triggerName) {
+        WebElement block = getWait5().until(
+                ExpectedConditions.visibilityOfElementLocated(getTriggerBlock(triggerName)));
+
+        return block.findElement(By.xpath(".//input[@type='checkbox']")).isSelected();
     }
 }
