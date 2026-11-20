@@ -16,10 +16,13 @@ public class FreestyleConfigurationPage extends BasePage {
     private final By scheduleTextarea = By.cssSelector("textarea.jenkins-input.validated");
     private final By scheduleValidationMessage = By.xpath("//div[@class='ok' and contains(text(), 'Would last have run at')]");
     private final By scheduleWarningMessage = By.className("warning");
+    private final By previewPoint = By.className("textarea-show-preview");
 
-    public FreestyleConfigurationPage(WebDriver driver) {super(driver);}
+    public FreestyleConfigurationPage(WebDriver driver) {
+        super(driver);
+    }
 
-    public StatusPage clickSaveButton(){
+    public StatusPage clickSaveButton() {
         getWait10().until(ExpectedConditions.elementToBeClickable(saveButton)).click();
 
         return new StatusPage(getDriver());
@@ -81,6 +84,14 @@ public class FreestyleConfigurationPage extends BasePage {
 
     public String getScheduleWarningMessage() {
         return getWait5().until(ExpectedConditions.visibilityOfElementLocated(scheduleWarningMessage)).getText();
+    }
+
+    public boolean isDescriptionFieldDisplayed() {
+        return getWait10().until(ExpectedConditions.visibilityOfElementLocated(descriptionField)).isDisplayed();
+    }
+
+    public boolean isPreviewPointDisplayed() {
+        return getWait5().until(ExpectedConditions.visibilityOfElementLocated(previewPoint)).isDisplayed();
     }
 }
 
