@@ -1,12 +1,10 @@
 package school.redrover;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.pages.ManageJenkinsPage;
+import school.redrover.pages.UserProfilePage;
 import school.redrover.pages.UsersPage;
 
 public class ManageUsersTest extends BaseTest {
@@ -36,59 +34,42 @@ public class ManageUsersTest extends BaseTest {
     @Test
     public void testView() {
         testCreate();
-        getDriver().findElement(By.cssSelector("a[href='/manage']")).click();
-        getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
-        getDriver().findElement(By.cssSelector("#people a[href='user/" + USERNAME + "/']")).click();
+        UserProfilePage userProfilePage = new ManageJenkinsPage(getDriver())
+                .openManage()
+                .openUsers()
+                .openUser(USERNAME);
 
-        Assert.assertTrue(
-                getDriver().findElement(By.cssSelector("#main-panel > div:nth-child(4)")).getText().contains(USERNAME));
-        Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(), FULL_NAME);
+        Assert.assertTrue(userProfilePage.getUserIdText().contains(USERNAME));
+        Assert.assertEquals(userProfilePage.getFullNameHeading(), FULL_NAME);
     }
 
     @Test
     public void testVerify() {
         testCreate();
-        getWait5().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("#people a[href='user/" + USERNAME + "/']"))).click();
+        UserProfilePage userProfilePage = new UsersPage(getDriver())
+                .openUser(USERNAME)
+                .clickMenuItems(USERNAME);
 
-        String[] menu = {
-                "builds",
-                "my-views",
-                "account",
-                "appearance",
-                "preferences",
-                "security",
-                "experiments",
-                "credentials"
-        };
-
-        for (String item : menu) {
-            getDriver().findElement(By.cssSelector("a[href='/user/" + USERNAME + "/" + item + "']")).click();
-            if(item.equals("my-views")) {
-                getDriver().navigate().back();
-            }
-        }
-
-        Assert.assertEquals(getDriver().findElement(By.xpath("//h1")).getText(),"Access Denied");
+        Assert.assertEquals(userProfilePage.getFullNameHeading(),"Access Denied");
     }
 
-    @Ignore
     @Test
     public void testDelete() {
         testCreate();
-        int numOfUsers = Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
+        UsersPage usersPage = new UsersPage(getDriver());
+        int numOfUsers = usersPage.getUsersCount();
 
-        getDriver().findElement(By.cssSelector("#people a[href='user/" + USERNAME + "/']")).click();
-        getDriver().findElement(By.cssSelector(".confirmation-link")).click();
+        UserProfilePage userProfilePage = usersPage.openUser(USERNAME)
+                        .clickDeleteLink();
+        String dialogText = userProfilePage.getConfirmation();
+        boolean isFullNameDisplayed = dialogText.contains(FULL_NAME);
 
-        String dialog = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.className("jenkins-dialog__contents"))).getText();
-        boolean isFullNameDisplayed = dialog.contains(FULL_NAME);
+        UsersPage updatedUsersPage = userProfilePage.confirmDelete()
+                .openManage()
+                .openUsers();
 
-        getDriver().findElement(By.cssSelector("button[data-id='ok']")).click();
-        getWait5().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("a[href='/manage']"))).click();
-        getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
-
-        int usersLeft = Integer.parseInt(getDriver().findElement(By.className("jenkins-app-bar__subtitle")).getText());
-        boolean userExists = !getDriver().findElements(By.cssSelector("#people a[href='user/" + USERNAME + "/']")).isEmpty();
+        int usersLeft = updatedUsersPage.getUsersCount();
+        boolean userExists = updatedUsersPage.isUserPresent(USERNAME);
 
         Assert.assertTrue(isFullNameDisplayed);
         Assert.assertEquals(usersLeft, numOfUsers - 1);
