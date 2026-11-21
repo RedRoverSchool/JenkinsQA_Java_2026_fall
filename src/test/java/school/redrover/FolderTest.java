@@ -9,6 +9,8 @@ import org.testng.Assert;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.FolderPage;
+import school.redrover.pages.HomePage;
 
 import javax.swing.*;
 import java.time.Duration;
@@ -132,14 +134,14 @@ public class FolderTest extends BaseTest {
 
     @Test
     public void testCreateFolder(){
-        getDriver().findElement(By.cssSelector("a.task-link")).click();
-        getDriver().findElement(By.id("name")).sendKeys("Test_Folder");
-        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        String folderName = new HomePage(getDriver())
+                .clickNewItem()
+                .inputFolderName("Test_Folder")
+                .selectFolderAndClickOk()
+                .gotoHomePage()
+                .getFirstProjectName();
 
-        WebElement folderElement = getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("a[href^='/job/']")));
-
-        Assert.assertEquals(folderElement.getText(), "Test_Folder");
+        Assert.assertEquals(folderName, "Test_Folder");
     }
 
     @Test
@@ -190,12 +192,11 @@ public class FolderTest extends BaseTest {
 
     @Test(dependsOnMethods = "testCreateFolder")
     public void testOpenConfiguration() {
-        getDriver().findElement(By.cssSelector("a[href='job/Test_Folder/']")).click();
-        getDriver().findElement(By.cssSelector("a[href='/job/Test_Folder/configure']")).click();
+        FolderPage folderName = new HomePage(getDriver())
+                .openFolder("Test_Folder")
+                .openConfigure();
 
-        String health = getDriver().findElement(By.id("48-65-61-6c-74-68-20-6d-65-74-72-69-63-73")).getText();
-
-        Assert.assertEquals(health, "Health metrics");
+        Assert.assertEquals(folderName.getHealth(), "Health metrics");
     }
 
 }
