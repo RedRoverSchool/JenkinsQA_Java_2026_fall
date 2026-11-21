@@ -8,6 +8,10 @@ public class StatusPage extends BasePage {
     private final By mainHeading = By.xpath("//h1");
     private final By description = By.xpath("//*[@id='description']");
     private final By configureLink = By.cssSelector("a[href$=configure]");
+    private final By descriptionContent = By.id("description-content");
+    private final By editDescriptionLink = By.id("description-link");
+    private final By descriptionTextarea = By.id("description-textarea");
+    private final By descriptionSaveButton = By.cssSelector("#bottom-sticker button.jenkins-button--primary");
 
     public StatusPage(WebDriver driver) {
         super(driver);
@@ -32,6 +36,45 @@ public class StatusPage extends BasePage {
         getDriver().findElement(By.cssSelector("a[href$=configure]")).click();
 
         return new PipelineConfigurationPage(getDriver());
+    }
+
+    public String getDescriptionText() {
+        return getWait5().until(
+                ExpectedConditions.visibilityOfElementLocated(descriptionContent)).getText();
+    }
+
+    public StatusPage clickEditDescription() {
+        getWait5().until(ExpectedConditions.elementToBeClickable(editDescriptionLink)).click();
+
+        return this;
+    }
+
+    public StatusPage inputDescription(String text) {
+        getDriver().findElement(descriptionTextarea).sendKeys(text);
+
+        return this;
+    }
+
+    public StatusPage clickSaveDescription() {
+        getDriver().findElement(descriptionSaveButton).click();
+
+        return this;
+    }
+
+    public String getDescriptionLinkText() {
+        return getWait5().until(ExpectedConditions.visibilityOfElementLocated(editDescriptionLink)).getText();
+    }
+
+    public StatusPage clearDescriptionText() {
+        getWait5().until(ExpectedConditions.elementToBeClickable(descriptionTextarea)).clear();
+
+        return this;
+    }
+
+    public StatusPage waitForDescriptionText(String text) {
+        getWait5().until(ExpectedConditions.textToBePresentInElementLocated(descriptionContent, text));
+
+        return this;
     }
 
     public StatusPage clickBuildNow() {
