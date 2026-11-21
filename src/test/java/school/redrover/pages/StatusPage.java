@@ -7,6 +7,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 public class StatusPage extends BasePage {
     private final By mainHeading = By.xpath("//h1");
     private final By description = By.xpath("//*[@id='description']");
+    private final By configureLink = By.cssSelector("a[href$=configure]");
     private final By descriptionContent = By.id("description-content");
     private final By editDescriptionLink = By.id("description-link");
     private final By descriptionTextarea = By.id("description-textarea");
@@ -82,5 +83,10 @@ public class StatusPage extends BasePage {
         ).click();
 
         return this;
+    }
+
+    public boolean isConfigureLinkDisplayed() {
+        return getWait5().until(
+                ExpectedConditions.visibilityOfElementLocated(configureLink)).isDisplayed();
     }
 }
