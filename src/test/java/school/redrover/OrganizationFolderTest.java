@@ -1,29 +1,22 @@
 package school.redrover;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.HomePage;
 
 public class OrganizationFolderTest extends BaseTest {
+
+    private static final String ORGANIZATION_FOLDER_NAME = "Organization_folder";
+
     @Test
     public void testCreateOrganizationFolder() {
-        final String expectedResult = "Organization_folder";
+        String organizationFolderName = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(ORGANIZATION_FOLDER_NAME)
+                .selectOrganizationFolderAndClickOk()
+                .gotoHomePage()
+                .getFirstProjectName();
 
-        getDriver().findElement(By.xpath("//span[@class='task-link-wrapper ']")).click();
-        getDriver().findElement(By.id("name")).sendKeys(expectedResult);
-
-        WebDriver driver = getDriver();
-        JavascriptExecutor jse = (JavascriptExecutor) driver;
-        jse.executeScript("window.scrollBy(0, 1000)", "");
-        getDriver().findElement(By.className("jenkins_branch_OrganizationFolder")).click();
-        getDriver().findElement(By.id("ok-button")).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//span[contains(text(), 'Configuration')]//ancestor::div//a[@class='app-jenkins-logo']"))).click();
-        String actualResult = getDriver().findElement(By.cssSelector(".jenkins-table__link > span:first-child")).getText();
-
-        Assert.assertEquals(actualResult, expectedResult);
+        Assert.assertEquals(organizationFolderName, ORGANIZATION_FOLDER_NAME);
     }
 }
