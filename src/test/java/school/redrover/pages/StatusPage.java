@@ -38,6 +38,13 @@ public class StatusPage extends BasePage {
         return new PipelineConfigurationPage(getDriver());
     }
 
+    public FolderConfigurationPage openFolderConfigurationPage() {
+        getWait5().until(ExpectedConditions.elementToBeClickable(configureLink)).click();
+        getWait5().until(ExpectedConditions.urlContains("/configure"));
+
+        return new FolderConfigurationPage(getDriver());
+    }
+
     public String getDescriptionText() {
         return getWait5().until(
                 ExpectedConditions.visibilityOfElementLocated(descriptionContent)).getText();

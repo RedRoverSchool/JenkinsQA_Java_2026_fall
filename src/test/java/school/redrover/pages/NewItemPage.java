@@ -56,6 +56,15 @@ public class NewItemPage extends BasePage {
         return new OrganizationFolderConfigurationPage(getDriver());
     }
 
+    public FolderConfigurationPage selectFolderAndOpenConfiguration() {
+        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+
+        getWait5().until(ExpectedConditions.urlContains("/configure"));
+
+        return new FolderConfigurationPage(getDriver());
+    }
+
     public String getErrorMessageText() {
         return getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='error']"))).getText();
     }
