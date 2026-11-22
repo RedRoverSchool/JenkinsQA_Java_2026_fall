@@ -18,7 +18,11 @@ public class LoginPage extends BasePage {
     }
 
     public boolean isRememberMeCheckboxDisplayed() {
-
-        return getDriver().findElement(By.name("remember_me")).isDisplayed();
+        try {
+            return getWait5().until(org.openqa.selenium.support.ui.ExpectedConditions
+                    .visibilityOfElementLocated(By.id("remember_me"))).isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
