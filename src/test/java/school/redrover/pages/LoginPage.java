@@ -10,7 +10,7 @@ public class LoginPage extends BasePage {
     }
 
     public String getUsernameValue() {
-        return getDriver().findElement(By.name("j_username")).getAttribute("value");
+        return getDriver().findElement(By.id("j_username")).getAttribute("value");
     }
 
     public String getPasswordValue() {
@@ -18,6 +18,7 @@ public class LoginPage extends BasePage {
     }
 
     public boolean isRememberMeCheckboxDisplayed() {
-        return !getDriver().findElements(By.className("jenkins-checkbox")).isEmpty();
+
+        return getDriver().findElement(By.name("remember_me")).isDisplayed();
     }
 }

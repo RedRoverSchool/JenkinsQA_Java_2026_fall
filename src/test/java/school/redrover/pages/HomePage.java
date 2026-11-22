@@ -23,14 +23,12 @@ public class HomePage extends BasePage {
     }
 
     public LoginPage clickSignOut() {
-
         WebElement userMenuButton = getDriver().findElement(By.id("root-action-UserAction"));
         Actions actions = new Actions(getDriver());
         actions.moveToElement(userMenuButton).perform();
 
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/logout']"))).click();
-
-        getWait10().until(ExpectedConditions.urlContains("login"));
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/logout']"))).click();
+        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("j_username")));
 
         return new LoginPage(getDriver());
     }
