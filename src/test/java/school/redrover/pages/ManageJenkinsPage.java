@@ -18,4 +18,9 @@ public class ManageJenkinsPage extends BasePage {
         getDriver().findElement(By.cssSelector("a[href='securityRealm/']")).click();
         return new UsersPage(getDriver());
     }
+
+    public SecurityPage openSecurity() {
+        getDriver().findElement(By.cssSelector("a[href='configureSecurity']")).click();
+        return new SecurityPage(getDriver());
+    }
 }
