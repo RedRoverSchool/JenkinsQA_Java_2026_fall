@@ -27,7 +27,7 @@ public class FolderTest extends BaseTest {
         String folderName = new HomePage(getDriver())
                 .clickNewItem()
                 .inputProjectName(FOLDER_NAME)
-                .selectFolderAndClickOk()
+                .selectFolderAndOpenConfiguration()
                 .setDisplayName(FOLDER_NAME)
                 .clickSaveButton()
                 .gotoHomePage()

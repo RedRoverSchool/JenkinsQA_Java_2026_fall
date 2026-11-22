@@ -56,7 +56,7 @@ public class NewItemPage extends BasePage {
         return new OrganizationFolderConfigurationPage(getDriver());
     }
 
-    public FolderConfigurationPage selectFolderAndClickOk() {
+    public FolderConfigurationPage selectFolderAndOpenConfiguration() {
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
         getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
 
