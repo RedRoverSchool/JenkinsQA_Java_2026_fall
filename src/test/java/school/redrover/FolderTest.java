@@ -6,12 +6,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.FolderConfigurationPage;
+import school.redrover.pages.HomePage;
 
 import javax.swing.*;
 import java.time.Duration;
+
+import static org.testng.Assert.assertEquals;
 
 public class FolderTest extends BaseTest {
 
@@ -20,22 +23,16 @@ public class FolderTest extends BaseTest {
 
     @Test
     public void createFolder() {
+        String folderName = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(FOLDER_NAME)
+                .selectFolderAndClickOk()
+                .setDisplayName(FOLDER_NAME)
+                .clickSaveButton()
+                .gotoHomePage()
+                .getFirstProjectName();
 
-        getDriver().findElement(By.cssSelector("a.task-link")).click();
-        getDriver().findElement(By.id("name")).sendKeys(FOLDER_NAME);
-        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
-        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
-
-        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/configure/?$"));
-        getDriver().findElement(By.name("_.displayNameOrNull")).sendKeys(FOLDER_NAME);
-        getDriver().findElement(By.name("Submit")).click();
-
-        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
-        getWait5().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.app-jenkins-logo"))).click();
-
-        Assert.assertTrue(
-                getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.linkText(FOLDER_NAME))).isDisplayed()
-        );
+        Assert.assertEquals(folderName, FOLDER_NAME);
     }
 
     @Test
@@ -77,38 +74,26 @@ public class FolderTest extends BaseTest {
 
         Assert.assertTrue(actualDescriptionElement.isDisplayed(), "Описание не отобразилось на странице!");
     }
-    @Ignore
-    @Test
+
+    @Test(dependsOnMethods = "createFolder")
     public void testApplyChanges() {
-        createFolder();
+        FolderConfigurationPage configPage = new HomePage(getDriver())
+                .goToProject(FOLDER_NAME)
+                .openFolderConfigurationPage()
+                .openHealthMetricsSection()
+                .clickAddMetricButton()
+                .selectChildItemWithWorstHealth()
+                .clickRecursiveCheckbox()
+                .clickApplyButton();
 
-        getDriver().findElement(By.cssSelector("a[href$='" + FOLDER_NAME + "/']")).click();
-        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
-        getDriver().findElement(By.cssSelector("a[href$='configure']")).click();
-        getWait5().until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/configure/?$"));
-
-        getDriver().findElement(By.cssSelector("button.advanced-button")).click();
-        getDriver().findElement(By.cssSelector("button.jenkins-button.hetero-list-add")).click();
-
-        getWait5().until(ExpectedConditions.elementToBeClickable(
-                By.xpath("//button[normalize-space()='Child item with worst health']")
-        )).click();
-        getDriver().findElement(By.cssSelector("label.attach-previous")).click();
-        getDriver().findElement(By.cssSelector("button.jenkins-button.apply-button")).click();
-
-        Assert.assertTrue(
-                getWait5().until(ExpectedConditions.urlMatches(
-                        ".*/job/" + FOLDER_NAME + "/configure/?$")),
-                "User should remain on the folder configuration page"
-        );
-        Assert.assertFalse(
-                getDriver().findElement(By.cssSelector("input[name='_.recursive']")).isSelected(),
-                "Recursive checkbox should not be selected"
-        );
+        Assert.assertTrue(configPage.isConfigurationPageOpened(),
+                "User should remain on the folder configuration page");
+        Assert.assertFalse(configPage.isRecursiveCheckboxSelected(),
+                "Recursive checkbox should not be selected");
     }
 
     @Test
-    public void testCreateNestedFolder () {
+    public void testCreateNestedFolder() {
         final String childFolder = "childFolder";
         WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
 
@@ -127,11 +112,11 @@ public class FolderTest extends BaseTest {
         wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/job/" + childFolder + "/?$"));
         getDriver().findElement(By.cssSelector("a[href$='/job/" + FOLDER_NAME + "/']")).click();
 
-        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(childFolder))).isDisplayed(),"childFolder should be listed inside " + FOLDER_NAME);
+        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(childFolder))).isDisplayed(), "childFolder should be listed inside " + FOLDER_NAME);
     }
 
     @Test
-    public void testCreateFolder(){
+    public void testCreateFolder() {
         getDriver().findElement(By.cssSelector("a.task-link")).click();
         getDriver().findElement(By.id("name")).sendKeys("Test_Folder");
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
@@ -151,7 +136,7 @@ public class FolderTest extends BaseTest {
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
 
         WebElement error = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("error")));
-        Assert.assertEquals(error.getText(),"This field cannot be empty, please enter a valid name");
+        Assert.assertEquals(error.getText(), "This field cannot be empty, please enter a valid name");
     }
 
     @Test
@@ -162,7 +147,7 @@ public class FolderTest extends BaseTest {
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
         getDriver().findElement(By.id("ok-button")).click();
 
-        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"),"Configuration"));
+        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), "Configuration"));
         getDriver().findElement(By.name("Submit")).click();
 
         getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), "PlainFolder"));
