@@ -12,14 +12,14 @@ public class SignOutTest extends BaseTest {
     public void testSignOutRedirectsToLoginPage() {
         LoginPage loginPage = new HomePage(getDriver()).clickSignOut();
 
-        Assert.assertEquals(loginPage.getUsernameValue(), "", "Поле Username не пустое!");
-        Assert.assertEquals(loginPage.getPasswordValue(), "", "Поле Password не пустое!");
+        Assert.assertEquals(loginPage.getUsernameValue(), "", "Username field should be empty after logout");
+        Assert.assertEquals(loginPage.getPasswordValue(), "", "Password field should be empty after logout");
     }
 
     @Test
     public void testSignOutHasNoConfirmationDialog() {
         LoginPage loginPage = new HomePage(getDriver()).clickSignOut();
 
-        Assert.assertTrue(loginPage.getUsernameValue().isEmpty(), "Переход на страницу логина не выполнен!");
+        Assert.assertTrue(loginPage.getUsernameValue().isEmpty(), "Login page is not displayed");
     }
 }
