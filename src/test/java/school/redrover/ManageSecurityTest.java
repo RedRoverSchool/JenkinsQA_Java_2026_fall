@@ -1,5 +1,6 @@
 package school.redrover;
 
+import org.openqa.selenium.WebElement;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
@@ -7,6 +8,7 @@ import school.redrover.pages.ManageJenkinsPage;
 import school.redrover.pages.SecurityPage;
 
 import java.util.List;
+
 
 public class ManageSecurityTest extends BaseTest {
 
@@ -46,5 +48,15 @@ public class ManageSecurityTest extends BaseTest {
 
         Assert.assertEquals(actualDefault, "Jenkins’ own user database");
         Assert.assertEquals(actualOptions, expectedOptions);
+    }
+
+    @Test
+    public void testByDefaultAllowAnonymousReadAccessIsUnchecked() {
+        WebElement authorizationCheckbox = new ManageJenkinsPage(getDriver())
+                .openManage()
+                .openSecurity()
+                .getAuthorizationCheckbox();
+
+        Assert.assertFalse(authorizationCheckbox.isSelected());
     }
 }
