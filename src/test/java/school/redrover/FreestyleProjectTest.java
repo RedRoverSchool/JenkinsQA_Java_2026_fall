@@ -148,7 +148,7 @@ public class FreestyleProjectTest extends BaseTest {
         getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a[href='/view/all/newJob']"))).click();
         getDriver().findElement(By.id("name")).sendKeys("Copied item");
         getDriver().findElement(By.xpath("//*[@id='duplicate-job']/div[2]")).click();
-        getDriver().findElement(By.id("from")).sendKeys(PROJECT_NAME);
+        getDriver().findElement(By.id("from")).sendKeys(ITEM_NAME);
         getDriver().findElement(By.id("ok-button")).click();
         getDriver().findElement(By.name("Submit")).click();
         getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("page-headline")));
