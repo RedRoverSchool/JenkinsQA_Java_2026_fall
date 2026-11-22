@@ -2,6 +2,7 @@ package school.redrover.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class StatusPage extends BasePage {
@@ -102,4 +103,24 @@ public class StatusPage extends BasePage {
                         By.id("jenkins-build-history")));
         return this;
     }
+
+    public NewItemPage clickNewItemFolder() {
+        getDriver().findElement(By.cssSelector("a[href$='/newJob']")).click();
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("name")));
+
+        return new NewItemPage(getDriver());
+    }
+
+    public StatusPage goToParentFolder(String folderName) {
+        WebElement parentLink = getDriver().findElement(By.cssSelector("a[href$='/job/" + folderName + "/']"));
+        parentLink.click();
+        getWait2().until(ExpectedConditions.stalenessOf(parentLink));
+
+        return new StatusPage(getDriver());
+    }
+
+    public boolean isItemDisplayed(String itemName) {
+        return !getDriver().findElements(By.xpath("//a[contains(@class,'jenkins-table__link')]//span[text()='" + itemName + "']")).isEmpty();
+    }
+
 }
