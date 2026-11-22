@@ -16,7 +16,6 @@ public class StatusPage extends BasePage {
 
     public StatusPage(WebDriver driver) {
         super(driver);
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(mainHeading));
     }
 
     public String getMainHeading() {
