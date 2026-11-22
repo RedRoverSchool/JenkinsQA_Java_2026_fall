@@ -1,10 +1,8 @@
 package school.redrover;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
@@ -13,9 +11,6 @@ import school.redrover.pages.FolderPage;
 import school.redrover.pages.HomePage;
 
 import javax.swing.*;
-import java.time.Duration;
-
-import static org.testng.Assert.assertEquals;
 
 public class FolderTest extends BaseTest {
 
@@ -96,24 +91,19 @@ public class FolderTest extends BaseTest {
     @Test
     public void testCreateNestedFolder() {
         final String childFolder = "childFolder";
-        WebDriverWait wait = new WebDriverWait(getDriver(), Duration.ofSeconds(10));
+        boolean isChildFolderDisplayed = new HomePage(getDriver())
+                .clickNewItem()
+                .inputFolderName(FOLDER_NAME)
+                .selectFolderAndOpenConfiguration()
+                .clickSaveButton()
+                .clickNewItemFolder()
+                .inputFolderName(childFolder)
+                .selectFolderAndOpenConfiguration()
+                .clickSaveButton()
+                .goToParentFolder(FOLDER_NAME)
+                .isItemDisplayed(childFolder);
 
-        createFolder();
-
-        wait.until(ExpectedConditions.elementToBeClickable(By.linkText(FOLDER_NAME))).click();
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/?$"));
-        getDriver().findElement(By.cssSelector("a[href$='/job/" + FOLDER_NAME + "/newJob']")).click();
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("name"))).sendKeys(childFolder);
-        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
-        getDriver().findElement(By.id("ok-button")).click();
-
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/job/" + childFolder + "/configure"));
-        wait.until(ExpectedConditions.elementToBeClickable(By.name("Submit"))).click();
-        wait.until(ExpectedConditions.urlMatches(".*/job/" + FOLDER_NAME + "/job/" + childFolder + "/?$"));
-        getDriver().findElement(By.cssSelector("a[href$='/job/" + FOLDER_NAME + "/']")).click();
-
-        Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.linkText(childFolder))).isDisplayed(), "childFolder should be listed inside " + FOLDER_NAME);
+        Assert.assertTrue(isChildFolderDisplayed, "childFolder should be listed inside " + FOLDER_NAME);
     }
 
     @Test
@@ -130,29 +120,26 @@ public class FolderTest extends BaseTest {
 
     @Test
     public void testErrorMessageAfterClearingNameField() {
-        getDriver().findElement(By.cssSelector("a.task-link")).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.id("name")));
-        getDriver().findElement(By.id("name")).sendKeys("abc");
-        getDriver().findElement(By.id("name")).sendKeys(Keys.CONTROL + "a", Keys.DELETE);
-        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+        String errorMessage = new HomePage(getDriver())
+                .clickNewItem()
+                .inputFolderName("abc")
+                .clearItemName()
+                .selectFolder()
+                .getErrorMessageText();
 
-        WebElement error = getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("error")));
-        Assert.assertEquals(error.getText(), "This field cannot be empty, please enter a valid name");
+        Assert.assertEquals(errorMessage, "This field cannot be empty, please enter a valid name");
     }
 
     @Test
     public void testCreateFolderWithoutOptionalFields() {
-        getDriver().findElement(By.cssSelector("a.task-link")).click();
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.id("name")));
-        getDriver().findElement(By.id("name")).sendKeys("PlainFolder");
-        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
-        getDriver().findElement(By.id("ok-button")).click();
+        String folderHeading = new HomePage(getDriver())
+                .clickNewItem()
+                .inputFolderName("PlainFolder")
+                .selectFolderAndOpenConfiguration()
+                .clickSaveButton()
+                .getMainHeading();
 
-        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), "Configuration"));
-        getDriver().findElement(By.name("Submit")).click();
-
-        getWait10().until(ExpectedConditions.textToBePresentInElementLocated(By.tagName("h1"), "PlainFolder"));
-        Assert.assertEquals(getDriver().findElement(By.tagName("h1")).getText(), "PlainFolder");
+        Assert.assertEquals(folderHeading, "PlainFolder");
     }
 
     @Test(dependsOnMethods = {"createFolder", "testApplyChanges"})

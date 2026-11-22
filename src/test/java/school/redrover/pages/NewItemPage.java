@@ -2,6 +2,7 @@ package school.redrover.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
@@ -80,5 +81,15 @@ public class NewItemPage extends BasePage {
         // waiting for the new page
         getWait10().until(ExpectedConditions.presenceOfElementLocated(By.id("side-panel")));
         return new FolderPage(getDriver());
+    }
+
+    public NewItemPage clearItemName() {
+        getDriver().findElement(By.id("name")).sendKeys(Keys.CONTROL + "a", Keys.DELETE);
+        return this;
+    }
+
+    public NewItemPage selectFolder() {
+        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+        return this;
     }
 }
