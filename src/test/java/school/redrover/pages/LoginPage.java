@@ -16,4 +16,8 @@ public class LoginPage extends BasePage {
     public String getPasswordValue() {
         return getDriver().findElement(By.name("j_password")).getAttribute("value");
     }
+
+    public boolean isRememberMeCheckboxDisplayed() {
+        return !getDriver().findElements(By.className("jenkins-checkbox")).isEmpty();
+    }
 }
