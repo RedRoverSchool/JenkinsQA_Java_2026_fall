@@ -2,6 +2,7 @@ package school.redrover.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import static org.openqa.selenium.support.ui.ExpectedConditions.elementToBeClickable;
@@ -27,11 +28,12 @@ public class FolderConfigurationPage extends BasePage {
         return this;
     }
 
-    public StatusPage clickSaveButton() {
-        getWait5().until(elementToBeClickable(saveButton)).click();
-        getWait5().until(ExpectedConditions.not(ExpectedConditions.urlContains("/configure")));
+    public FolderPage clickSaveButton() {
+        WebElement saveBtn = getWait5().until(elementToBeClickable(saveButton));
+        saveBtn.click();
+        getWait5().until(ExpectedConditions.stalenessOf(saveBtn));
 
-        return new StatusPage(getDriver());
+        return new FolderPage(getDriver());
     }
 
     public FolderConfigurationPage openHealthMetricsSection() {
@@ -70,5 +72,9 @@ public class FolderConfigurationPage extends BasePage {
 
     public boolean isRecursiveCheckboxSelected() {
         return getDriver().findElement(recursiveCheckbox).isSelected();
+    }
+
+    public String getHealth() {
+        return getDriver().findElement(By.id("48-65-61-6c-74-68-20-6d-65-74-72-69-63-73")).getText();
     }
 }

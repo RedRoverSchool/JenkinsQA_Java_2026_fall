@@ -7,7 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.pages.FolderConfigurationPage;
-import school.redrover.pages.FolderPage;
 import school.redrover.pages.HomePage;
 
 import javax.swing.*;
@@ -74,8 +73,8 @@ public class FolderTest extends BaseTest {
     @Test(dependsOnMethods = "createFolder")
     public void testApplyChanges() {
         FolderConfigurationPage configPage = new HomePage(getDriver())
-                .goToProject(FOLDER_NAME)
-                .openFolderConfigurationPage()
+                .openFolder(FOLDER_NAME)
+                .openConfigure()
                 .openHealthMetricsSection()
                 .clickAddMetricButton()
                 .selectChildItemWithWorstHealth()
@@ -111,7 +110,7 @@ public class FolderTest extends BaseTest {
         String folderName = new HomePage(getDriver())
                 .clickNewItem()
                 .inputFolderName("Test_Folder")
-                .selectFolderAndClickOk()
+                .selectFolderAndOpenConfiguration()
                 .gotoHomePage()
                 .getFirstProjectName();
 
@@ -163,7 +162,7 @@ public class FolderTest extends BaseTest {
 
     @Test(dependsOnMethods = "testCreateFolder")
     public void testOpenConfiguration() {
-        FolderPage folderName = new HomePage(getDriver())
+        FolderConfigurationPage folderName = new HomePage(getDriver())
                 .openFolder("Test_Folder")
                 .openConfigure();
 
