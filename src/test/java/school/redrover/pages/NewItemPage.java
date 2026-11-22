@@ -68,4 +68,17 @@ public class NewItemPage extends BasePage {
     public String getErrorMessageText() {
         return getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='error']"))).getText();
     }
+
+    public NewItemPage inputFolderName(String folderName) {
+        getDriver().findElement(By.id("name")).sendKeys(folderName);
+        return this;
+    }
+
+    public FolderPage selectFolderAndClickOk() {
+        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
+        getDriver().findElement(By.id("ok-button")).click();
+        // waiting for the new page
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.id("side-panel")));
+        return new FolderPage(getDriver());
+    }
 }

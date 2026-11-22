@@ -96,4 +96,10 @@ public class StatusPage extends BasePage {
         return getWait5().until(
                 ExpectedConditions.visibilityOfElementLocated(configureLink)).isDisplayed();
     }
+    public StatusPage waitForBuildHistory() {
+        getWait10().until(
+                ExpectedConditions.presenceOfElementLocated(
+                        By.id("jenkins-build-history")));
+        return this;
+    }
 }
