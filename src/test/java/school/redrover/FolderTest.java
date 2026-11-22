@@ -155,7 +155,7 @@ public class FolderTest extends BaseTest {
         Assert.assertEquals(getDriver().findElement(By.tagName("h1")).getText(), "PlainFolder");
     }
 
-    @Test(dependsOnMethods = "createFolder")
+    @Test(dependsOnMethods = {"createFolder", "testApplyChanges"})
     public void testRenameFolder() {
         getDriver().findElement(By.id("root-action-SearchAction")).click();
         getDriver().findElement(By.id("command-bar")).sendKeys(FOLDER_NAME);
