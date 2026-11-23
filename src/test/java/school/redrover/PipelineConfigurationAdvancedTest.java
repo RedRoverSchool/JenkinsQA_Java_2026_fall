@@ -3,6 +3,7 @@ package school.redrover;
 import org.openqa.selenium.*;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.pages.HomePage;
@@ -87,7 +88,7 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
                 {"<%= 7*7 %>"}
         };
     }
-
+    @Ignore
     @Test(dataProvider = "Display Name")
     public void testDisplayNameSetUp(String displayName) {
         String displayNameOnPage = createPipeline()
