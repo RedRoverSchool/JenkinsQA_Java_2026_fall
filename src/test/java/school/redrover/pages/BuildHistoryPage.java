@@ -25,7 +25,9 @@ public class BuildHistoryPage extends BasePage {
     }
 
     public DeleteBuildPage deleteBuild() {
-        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@href, 'confirmDelete')]"))).click();
+        getWait10().until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("a.jenkins-dropdown__item[href*='confirmDelete']")
+        )).click();
 
         return new DeleteBuildPage(getDriver());
     }
