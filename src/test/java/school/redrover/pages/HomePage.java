@@ -1,6 +1,7 @@
 package school.redrover.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -60,13 +61,13 @@ public class HomePage extends BasePage {
     }
 
     public HomePage clickSceduleABuild(String projectName){
-        getWait10().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for " + projectName + "']")))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable((By.xpath("//a[@title='Schedule a Build for " + projectName + "']")))).click();
 
         return this;
     }
 
     public BuildHistoryPage clickBuildsHistory(){
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//a[@href='/view/all/builds']"))).click();
 
         return new BuildHistoryPage(getDriver());
     }
@@ -99,7 +100,7 @@ public class HomePage extends BasePage {
         Actions actions = new Actions(getDriver());
         actions.moveToElement(userButton).perform();
 
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.cssSelector("a.jenkins-dropdown__item[href*='/appearance']"))).click();
 
         return new AppearancePage(getDriver());
     }
@@ -108,12 +109,12 @@ public class HomePage extends BasePage {
         WebElement userIcon = getDriver().findElement(By.className("jenkins-avatar"));
         new Actions(getDriver()).moveToElement(userIcon).perform();
 
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector(".tm-account-theme-picker-select"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.cssSelector(".tm-account-theme-picker-select"))).click();
         return this;
     }
 
     public HomePage clickDarkThemeOnHomePage(){
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//*[normalize-space(text())='Dark']"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//*[normalize-space(text())='Dark']"))).click();
 
         return this;
     }
@@ -123,8 +124,12 @@ public class HomePage extends BasePage {
     }
 
     public StatusPage goToProject(String projectName) {
-        getWait5().until(ExpectedConditions.elementToBeClickable(
-                By.linkText(projectName))).click();
+        WebElement projectLink = getWait5().until(ExpectedConditions.presenceOfElementLocated(
+                By.xpath("//span[text()='" + projectName + "']")
+        ));
+
+        JavascriptExecutor js = (JavascriptExecutor) getDriver();
+        js.executeScript("arguments[0].click();", projectLink);
 
         return new StatusPage(getDriver());
     }
@@ -138,4 +143,11 @@ public class HomePage extends BasePage {
         getDriver().findElement(By.linkText("Configure")).click();
         return new FolderPage(getDriver());
     }
+
+    public String getCopiedProjectName() {
+        return getWait10().until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//table[@id='projectstatus']//a[normalize-space()='Copied']")
+        )).getText();
+    }
+
 }
