@@ -59,7 +59,7 @@ public class PipelineConfigurationPage extends BasePage {
         getDriver().findElement(saveButton).click();
 
         //Wait until the Status Page is loaded
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-builds")));
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("description-link")));
 
         return new StatusPage(getDriver());
     }

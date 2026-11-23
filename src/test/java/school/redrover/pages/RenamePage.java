@@ -22,7 +22,7 @@ public class RenamePage extends BasePage {
         getDriver().findElement(renameButton).click();
 
         //Wait until the Status Page is loaded
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("jenkins-builds")));
+        getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.id("description-link")));
 
         return new StatusPage(getDriver());
     }
