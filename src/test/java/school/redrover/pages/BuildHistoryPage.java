@@ -25,6 +25,8 @@ public class BuildHistoryPage extends BasePage {
     }
 
     public DeleteBuildPage deleteBuild() {
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(
+                By.className("jenkins-dropdown")));
         getWait10().until(ExpectedConditions.elementToBeClickable(
                 By.cssSelector("a.jenkins-dropdown__item[href*='confirmDelete']")
         )).click();
