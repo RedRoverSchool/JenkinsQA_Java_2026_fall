@@ -85,7 +85,7 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
     @Test(
             dependsOnMethods = "testDisplayNameSetUp",
             dataProvider = "NegativeAndNonIntegerValues"
-            )
+    )
     public void testQuietPeriodRejectsNegativeAndNonIntegerValues(String value, String expectedError) {
         String error = new HomePage(getDriver())
                 .openJobsDropDownMenu()
@@ -141,7 +141,7 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
 
     @Test(dependsOnMethods = "testDisplayNameShowsTextUnderQuestionMark")
     public void testQuietPeriodAcceptsPositiveValue() {
-       String getQuietPeriodSeconds = new HomePage(getDriver())
+        String getQuietPeriodSeconds = new HomePage(getDriver())
                 .openJobsDropDownMenu()
                 .clickConfigureInDropDownMenu()
                 .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
