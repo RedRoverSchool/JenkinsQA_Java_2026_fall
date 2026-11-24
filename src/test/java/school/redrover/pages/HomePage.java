@@ -130,7 +130,9 @@ public class HomePage extends BasePage {
     }
 
     public FolderPage openFolder(String folderName) {
-        getDriver().findElement(By.cssSelector("a[href='job/" + folderName + "/']")).click();
+        WebElement folderLink = getDriver().findElement(By.cssSelector("a[href='job/" + folderName + "/']"));
+        folderLink.click();
+        getWait10().until(ExpectedConditions.stalenessOf(folderLink));
         return new FolderPage(getDriver());
     }
 }

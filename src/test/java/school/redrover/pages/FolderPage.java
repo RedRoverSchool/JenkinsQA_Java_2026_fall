@@ -9,7 +9,6 @@ public class FolderPage extends BasePage {
 
     public FolderPage(WebDriver driver) {
         super(driver);
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.tagName("h1")));
     }
 
     public String getMainHeading() {
