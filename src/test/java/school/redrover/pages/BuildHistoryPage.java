@@ -20,12 +20,16 @@ public class BuildHistoryPage extends BasePage {
     }
 
     public BuildHistoryPage clickBuildName(String projectName) {
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(@data-href, 'job/" + projectName + "/') and contains(@data-href, '/1/')]"))).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(@data-href, 'job/" + projectName + "/') and contains(@data-href, '/1/')]"))).click();
         return this;
     }
 
     public DeleteBuildPage deleteBuild() {
-        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//a[contains(@href, 'confirmDelete')]"))).click();
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(
+                By.className("jenkins-dropdown")));
+        getWait10().until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("a.jenkins-dropdown__item[href*='confirmDelete']")
+        )).click();
 
         return new DeleteBuildPage(getDriver());
     }

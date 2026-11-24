@@ -8,6 +8,7 @@ import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.ManageJenkinsPage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,6 @@ public class SearchSettingsFieldTest extends BaseTest {
 
     private static final By SEARCH_SETTINGS_FIELD = By.id("settings-search-bar");
     private static final By SEARCH_SUGGESTIONS = By.cssSelector(".jenkins-search__results-container .jenkins-dropdown__item");
-    private static final By MANAGE_JENKINS_BUTTON = By.id("root-action-ManageJenkinsAction");
     private static final By NO_RESULTS_LABEL = By.className("jenkins-search__results__no-results-label");
 
     private boolean isElementClickable(By locator) {
@@ -25,11 +25,6 @@ public class SearchSettingsFieldTest extends BaseTest {
         } catch (TimeoutException e) {
             return false;
         }
-    }
-
-    private void openManageJenkins() {
-        getWait5().until(ExpectedConditions.elementToBeClickable(MANAGE_JENKINS_BUTTON));
-        getDriver().findElement(MANAGE_JENKINS_BUTTON).click();
     }
 
     @DataProvider(name = "positiveSearchScenarios")
@@ -53,17 +48,19 @@ public class SearchSettingsFieldTest extends BaseTest {
 
     @Test(priority = 1)
     public void testVisibilityAndClickability() {
-        openManageJenkins();
+        new ManageJenkinsPage(getDriver())
+                .openManage();
 
         Assert.assertTrue(isElementClickable(SEARCH_SETTINGS_FIELD));
     }
 
     @Test(dataProvider = "positiveSearchScenarios", priority = 2)
     public void testValidInput(String searchText, List<String> expectedSuggestions) {
-        openManageJenkins();
+        new ManageJenkinsPage(getDriver())
+                .openManage()
+                .clickSearchSettings()
+                .searchForSettings(searchText);
 
-        getWait5().until(ExpectedConditions.visibilityOfElementLocated(SEARCH_SETTINGS_FIELD));
-        getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
         getWait5().until(ExpectedConditions.visibilityOfAllElementsLocatedBy(SEARCH_SUGGESTIONS));
 
         List<String> actualSuggestions = new ArrayList<>();
@@ -76,10 +73,11 @@ public class SearchSettingsFieldTest extends BaseTest {
 
     @Test(dataProvider = "negativeSearchScenarios", priority = 3)
     public void testInvalidInput(String searchText) {
-        openManageJenkins();
+        new ManageJenkinsPage(getDriver())
+                .openManage()
+                .clickSearchSettings()
+                .searchForSettings(searchText);
 
-        getWait5().until(ExpectedConditions.visibilityOfElementLocated(SEARCH_SETTINGS_FIELD));
-        getDriver().findElement(SEARCH_SETTINGS_FIELD).sendKeys(searchText);
         getWait5().until(ExpectedConditions.visibilityOfElementLocated(NO_RESULTS_LABEL));
 
         Assert.assertEquals(getDriver().findElement(NO_RESULTS_LABEL).getText(), "No results");

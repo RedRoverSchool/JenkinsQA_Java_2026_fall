@@ -15,7 +15,6 @@ public class StatusPage extends BasePage {
 
     public StatusPage(WebDriver driver) {
         super(driver);
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(mainHeading));
     }
 
     public String getMainHeading() {
@@ -36,6 +35,12 @@ public class StatusPage extends BasePage {
         getDriver().findElement(By.cssSelector("a[href$=configure]")).click();
 
         return new PipelineConfigurationPage(getDriver());
+    }
+
+    public FreestyleConfigurationPage openFreestyleConfigurationPage(){
+        getDriver().findElement(By.xpath("//a[contains(@class, 'task-link') and contains(@href, 'configure')]")).click();
+
+        return new FreestyleConfigurationPage(getDriver());
     }
 
     public String getDescriptionText() {
@@ -89,6 +94,7 @@ public class StatusPage extends BasePage {
         return getWait5().until(
                 ExpectedConditions.visibilityOfElementLocated(configureLink)).isDisplayed();
     }
+  
     public StatusPage waitForBuildHistory() {
         getWait10().until(
                 ExpectedConditions.presenceOfElementLocated(
@@ -96,4 +102,18 @@ public class StatusPage extends BasePage {
         return this;
     }
 
+    public String getWarningText() {
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("permalinks-header")));
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("warning")));
+
+        return getDriver().findElement(By.className("warning")).getAttribute("innerText");
+    }
+
+    public boolean isWarningGone() {
+        try {
+            return getWait5().until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
+        } catch (Exception e) {
+            return true;
+        }
+    }
 }

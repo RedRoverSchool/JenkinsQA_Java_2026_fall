@@ -52,4 +52,10 @@ public class SecurityPage extends BasePage {
         getWait10().until(ExpectedConditions.stalenessOf(saveButton));
         return new ManageJenkinsPage(getDriver());
     }
+
+    public WebElement getAuthorizationCheckbox() {
+        return getWait10()
+                .until(ExpectedConditions.visibilityOfElementLocated(
+                        By.cssSelector("input[name='_.allowAnonymousRead']")));
+    }
 }

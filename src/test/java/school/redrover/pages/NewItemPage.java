@@ -84,4 +84,12 @@ public class NewItemPage extends BasePage {
         getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
         return this;
     }
+
+    public CopiedProjectConfigurationPage selectCopyFromAndInputNameAndClickOK(String projectName){
+        getDriver().findElement(By.xpath("//*[@id='duplicate-job']/div[2]")).click();
+        getDriver().findElement(By.id("from")).sendKeys(projectName);
+        getDriver().findElement(By.id("ok-button")).click();
+
+        return new CopiedProjectConfigurationPage(getDriver());
+    }
 }

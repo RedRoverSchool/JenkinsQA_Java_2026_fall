@@ -23,7 +23,7 @@ public class FreestyleConfigurationPage extends BasePage {
     }
 
     public StatusPage clickSaveButton() {
-        getWait10().until(ExpectedConditions.elementToBeClickable(saveButton)).click();
+        getWait2().until(ExpectedConditions.elementToBeClickable(saveButton)).click();
 
         return new StatusPage(getDriver());
     }
@@ -92,6 +92,13 @@ public class FreestyleConfigurationPage extends BasePage {
 
     public boolean isPreviewPointDisplayed() {
         return getWait5().until(ExpectedConditions.visibilityOfElementLocated(previewPoint)).isDisplayed();
+    }
+
+    public FreestyleConfigurationPage clickEnableAndDisableButton(){
+        getWait5().until(ExpectedConditions.elementToBeClickable(
+                By.cssSelector("label[for='enable-disable-project']")
+        )).click();
+        return this;
     }
 }
 
