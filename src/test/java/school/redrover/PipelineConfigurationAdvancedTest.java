@@ -3,7 +3,6 @@ package school.redrover;
 import org.openqa.selenium.*;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import school.redrover.pages.HomePage;
@@ -27,47 +26,16 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
 
     @Test
     public void testQuietPeriodShowsTextUnderQuestionMark() {
-        String helpText = createPipeline()
+        String helpText = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(PIPELINE_NAME)
+                .selectPipelineAndClickOk()
                 .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
                 .openAdvancedDropdown()
                 .clickOnHelpIcon(QUIET_PERIOD)
                 .getHelpContent(QUIET_PERIOD).text();
 
         Assert.assertEquals(helpText, TEXT_UNDER_QUESTION_MARK);
-    }
-
-    @Test(dependsOnMethods = "testQuietPeriodShowsTextUnderQuestionMark")
-    public void testDisplayNameShowsTextUnderQuestionMark() {
-        PipelineConfigurationPage.HelpContent helpContent = new HomePage(getDriver())
-                .openJobsDropDownMenu()
-                .clickConfigureInDropDownMenu()
-                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
-                .openAdvancedDropdown()
-                .clickOnHelpIcon(DISPLAY_NAME)
-                .getHelpContent(DISPLAY_NAME);
-
-        Assert.assertEquals(helpContent.text(), TEXT_UNDER_DISPLAY_NAME);
-        Assert.assertTrue(helpContent.hasLinkContaining("workflow-job"));
-    }
-
-    @Test(dependsOnMethods = {
-            "testQuietPeriodShowsTextUnderQuestionMark",
-            "testDisplayNameShowsTextUnderQuestionMark",
-    })
-    public void testQuietPeriodAcceptsPositiveValue() {
-       String getQuietPeriodSeconds = new HomePage(getDriver())
-                .openJobsDropDownMenu()
-                .clickConfigureInDropDownMenu()
-                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
-                .openAdvancedDropdown()
-                .setQuietPeriod(QP_POSITIVE)
-                .clickSaveButton()
-                .openConfigurationPage()
-                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
-                .openAdvancedDropdown()
-                .getQuietPeriod();
-
-        Assert.assertEquals(getQuietPeriodSeconds, QP_POSITIVE);
     }
 
     @DataProvider(name = "Display Name")
@@ -88,10 +56,15 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
                 {"<%= 7*7 %>"}
         };
     }
-    @Ignore
-    @Test(dataProvider = "Display Name")
+
+    @Test(
+            dependsOnMethods = "testQuietPeriodShowsTextUnderQuestionMark",
+            dataProvider = "Display Name"
+    )
     public void testDisplayNameSetUp(String displayName) {
-        String displayNameOnPage = createPipeline()
+        String displayNameOnPage = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
                 .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
                 .openAdvancedDropdown()
                 .setDisplayName(displayName)
@@ -109,9 +82,14 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
         };
     }
 
-    @Test(dataProvider = "NegativeAndNonIntegerValues")
+    @Test(
+            dependsOnMethods = "testDisplayNameSetUp",
+            dataProvider = "NegativeAndNonIntegerValues"
+    )
     public void testQuietPeriodRejectsNegativeAndNonIntegerValues(String value, String expectedError) {
-        String error = createPipeline()
+        String error = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
                 .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
                 .openAdvancedDropdown()
                 .setQuietPeriod(value)
@@ -129,9 +107,14 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
         };
     }
 
-    @Test(dataProvider = "InvalidValues")
+    @Test(
+            dependsOnMethods = "testQuietPeriodRejectsNegativeAndNonIntegerValues",
+            dataProvider = "InvalidValues"
+    )
     public void testQuietPeriodLettersAndSymbolsCanNotBeEntered(String invalidValue) {
-        String input = createPipeline()
+        String input = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
                 .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
                 .openAdvancedDropdown()
                 .setQuietPeriod(invalidValue)
@@ -142,10 +125,35 @@ public class PipelineConfigurationAdvancedTest extends BaseTest {
         Assert.assertEquals(input, inputExpected);
     }
 
-    private PipelineConfigurationPage createPipeline() {
-        return new HomePage(getDriver())
-                .clickNewItem()
-                .inputProjectName(PIPELINE_NAME)
-                .selectPipelineAndClickOk();
+    @Test(dependsOnMethods = "testQuietPeriodLettersAndSymbolsCanNotBeEntered")
+    public void testDisplayNameShowsTextUnderQuestionMark() {
+        PipelineConfigurationPage.HelpContent helpContent = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .clickOnHelpIcon(DISPLAY_NAME)
+                .getHelpContent(DISPLAY_NAME);
+
+        Assert.assertEquals(helpContent.text(), TEXT_UNDER_DISPLAY_NAME);
+        Assert.assertTrue(helpContent.hasLinkContaining("workflow-job"));
+    }
+
+    @Test(dependsOnMethods = "testDisplayNameShowsTextUnderQuestionMark")
+    public void testQuietPeriodAcceptsPositiveValue() {
+        String getQuietPeriodSeconds = new HomePage(getDriver())
+                .openJobsDropDownMenu()
+                .clickConfigureInDropDownMenu()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .setQuietPeriod(QP_POSITIVE)
+                .clickSaveButton()
+                .openConfigurationPage()
+                .clickOnLeftSideSection(PipelineConfigurationPage.LeftSideSection.ADVANCED)
+                .openAdvancedDropdown()
+                .getQuietPeriod();
+
+        Assert.assertEquals(getQuietPeriodSeconds, QP_POSITIVE);
     }
 }
+
