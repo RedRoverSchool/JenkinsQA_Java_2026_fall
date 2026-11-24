@@ -134,13 +134,10 @@ public class HomePage extends BasePage {
         return new StatusPage(getDriver());
     }
 
-    public HomePage openFolder(String folderName) {
-        getDriver().findElement(By.cssSelector("a[href='job/" + folderName + "/']")).click();
-        return new HomePage(getDriver());
-    }
-
-    public FolderPage openConfigure() {
-        getDriver().findElement(By.linkText("Configure")).click();
+    public FolderPage openFolder(String folderName) {
+        WebElement folderLink = getDriver().findElement(By.cssSelector("a[href='job/" + folderName + "/']"));
+        folderLink.click();
+        getWait10().until(ExpectedConditions.stalenessOf(folderLink));
         return new FolderPage(getDriver());
     }
 

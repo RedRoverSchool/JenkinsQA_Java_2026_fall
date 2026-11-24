@@ -85,14 +85,6 @@ public class NewItemPage extends BasePage {
         return this;
     }
 
-    public FolderPage selectFolderAndClickOk() {
-        getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder")).click();
-        getDriver().findElement(By.id("ok-button")).click();
-        // waiting for the new page
-        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.id("side-panel")));
-        return new FolderPage(getDriver());
-    }
-
     public NewItemPage clearItemName() {
         getDriver().findElement(By.id("name")).sendKeys(Keys.CONTROL + "a", Keys.DELETE);
         return this;
