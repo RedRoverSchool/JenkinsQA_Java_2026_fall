@@ -121,8 +121,10 @@ public class PipelineConfigurationPage extends BasePage {
     }
 
     public PipelineConfigurationPage setDisplayName(String displayName) {
-        getWait2().until(ExpectedConditions.visibilityOfElementLocated(
-                By.cssSelector("input[checkurl$='checkDisplayNameOrNull']"))).sendKeys(displayName, Keys.TAB);
+        WebElement displayNameField = getWait2().until(ExpectedConditions.visibilityOfElementLocated(
+                By.cssSelector("input[checkurl$='checkDisplayNameOrNull']")));
+        displayNameField.clear();
+        displayNameField.sendKeys(displayName, Keys.TAB);
 
         return this;
     }
