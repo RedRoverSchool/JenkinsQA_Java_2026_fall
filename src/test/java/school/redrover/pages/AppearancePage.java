@@ -13,9 +13,9 @@ public class AppearancePage extends BasePage{
     }
 
     public AppearancePage clickDarkOnAppearance(){
-        getWait10().until(ExpectedConditions.urlContains("/appearance"));
-        getWait10().until(ExpectedConditions.elementToBeClickable(By.cssSelector("label[for='radio-block-1']"))).click();
-        getWait10().until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
+        getWait2().until(ExpectedConditions.urlContains("/appearance"));
+        getWait2().until(ExpectedConditions.elementToBeClickable(By.cssSelector("label[for='radio-block-1']"))).click();
+        getWait2().until(ExpectedConditions.elementToBeSelected(By.id("radio-block-1")));
 
         return this;
     }
@@ -23,8 +23,8 @@ public class AppearancePage extends BasePage{
     public void clickSaveOnAppearance() {
         WebElement submitButton = getWait10().until(ExpectedConditions.elementToBeClickable(By.name("Submit")));
         submitButton.click();
-        getWait10().until(ExpectedConditions.stalenessOf(submitButton));
-        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
+        getWait2().until(ExpectedConditions.stalenessOf(submitButton));
+        getWait2().until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("html[data-theme='dark']")));
 
         new ProfilePage(getDriver());
     }

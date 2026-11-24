@@ -45,6 +45,12 @@ public class StatusPage extends BasePage {
         return new FolderConfigurationPage(getDriver());
     }
 
+    public FreestyleConfigurationPage openFreestyleConfigurationPage(){
+        getDriver().findElement(By.xpath("//a[contains(@class, 'task-link') and contains(@href, 'configure')]")).click();
+
+        return new FreestyleConfigurationPage(getDriver());
+    }
+
     public String getDescriptionText() {
         return getWait5().until(
                 ExpectedConditions.visibilityOfElementLocated(descriptionContent)).getText();
@@ -122,4 +128,18 @@ public class StatusPage extends BasePage {
         return !getDriver().findElements(By.xpath("//a[contains(@class,'jenkins-table__link')]//span[text()='" + itemName + "']")).isEmpty();
     }
 
+    public String getWarningText() {
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("permalinks-header")));
+        getWait10().until(ExpectedConditions.visibilityOfElementLocated(By.className("warning")));
+
+        return getDriver().findElement(By.className("warning")).getAttribute("innerText");
+    }
+
+    public boolean isWarningGone() {
+        try {
+            return getWait5().until(ExpectedConditions.invisibilityOfElementLocated(By.className("warning")));
+        } catch (Exception e) {
+            return true;
+        }
+    }
 }
