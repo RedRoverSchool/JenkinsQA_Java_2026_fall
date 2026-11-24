@@ -44,6 +44,16 @@ public class NewItemPage extends BasePage {
         return new FreestyleConfigurationPage(getDriver());
     }
 
+    public MultibranchPipelineConfigurationPage selectMultibranchePipelineAndClickOk() {
+        getDriver().findElement(By.xpath("//label//span[text()='Multibranch Pipeline']")).click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+
+        // waiting for the new page
+        getWait10().until(ExpectedConditions.presenceOfElementLocated(By.id("side-panel")));
+
+        return new MultibranchPipelineConfigurationPage(getDriver());
+    }
+
     public OrganizationFolderConfigurationPage selectOrganizationFolderAndClickOk() {
         WebDriver driver = getDriver();
         JavascriptExecutor jse = (JavascriptExecutor) driver;
