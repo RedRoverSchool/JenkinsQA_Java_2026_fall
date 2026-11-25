@@ -5,7 +5,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
-
+import school.redrover.pages.HomePage;
 
 
 public class FooterTest extends BaseTest {
@@ -30,7 +30,9 @@ public class FooterTest extends BaseTest {
     }
 
     @Test
-    public void testCheckVersion(){
-        Assert.assertEquals(getDriver().findElement(By.cssSelector("button.jenkins_ver")).getText(), "Jenkins 2.580.1");
+    public void testCheckVersion() {
+        String actualJenkinsVersion = new HomePage(getDriver()).getJenkinsVersion();
+
+        Assert.assertEquals(actualJenkinsVersion, "Jenkins 2.580.1");
     }
 }
