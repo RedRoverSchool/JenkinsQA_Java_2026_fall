@@ -78,7 +78,7 @@ public abstract class BaseTest {
     protected void beforeMethod(Method method) {
         ProjectUtils.log("Run %s.%s", this.getClass().getName(), method.getName());
         try {
-            if (!methodsOrder.isGroupStarted(method) || methodsOrder.isGroupFinished(method)) {
+            if (!methodsOrder.isGroupStarted(method) || getDriver() == null) {
                 clearData();
                 startDriver();
                 getWeb();
@@ -101,7 +101,7 @@ public abstract class BaseTest {
             ProjectUtils.log("Taking screenshot for " + testResult.getName());
             ProjectUtils.takeScreenshot(getDriver(), testResult.getTestClass().getRealClass().getSimpleName(), testResult.getName());
         }
-        if (methodsOrder.isGroupFinished(method)) {
+        if (methodsOrder.isGroupFinished(method) && !testResult.getMethod().hasMoreInvocation()) {
             stopDriver(ProjectUtils.isRunCI() || testResult.isSuccess() || ProjectUtils.closeIfError());
         }
 
