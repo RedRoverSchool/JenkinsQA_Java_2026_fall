@@ -6,20 +6,19 @@ import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.WebElement;
+import school.redrover.pages.ManageJenkinsPage;
+import school.redrover.pages.PluginsPage;
+
 import java.util.List;
 
 public class JenkinsPluginsUpdateTest extends BaseTest {
 
-    private void openPluginsPage() {
-        getDriver().findElement(By.id("root-action-ManageJenkinsAction")).click();
-        getWait2().until(ExpectedConditions.urlContains("/manage/"));
-        getDriver().findElement(By.cssSelector("a[href*='pluginManager']")).click();
-        getWait2().until(ExpectedConditions.urlContains("/manage/pluginManager/"));
-    }
-
     @Test
     public void OpenPluginsSection() {
-        openPluginsPage();
+        new ManageJenkinsPage(getDriver())
+                .openManage();
+        new PluginsPage(getDriver())
+                .openPlugins();
 
         WebElement pluginsHeader = getWait2().until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("h1, h2")));
 
@@ -28,7 +27,10 @@ public class JenkinsPluginsUpdateTest extends BaseTest {
 
     @Test
     public void OpenPluginDoc() {
-        openPluginsPage();
+        new ManageJenkinsPage(getDriver())
+                .openManage();
+        new PluginsPage(getDriver())
+                .openPlugins();
 
         List<WebElement> pluginDocumentationLinks = getWait2().until(
                 ExpectedConditions.visibilityOfAllElementsLocatedBy(
@@ -58,7 +60,11 @@ public class JenkinsPluginsUpdateTest extends BaseTest {
 
     @Test
     public void SearchField() {
-        openPluginsPage();
+        new ManageJenkinsPage(getDriver())
+                .openManage();
+        new PluginsPage(getDriver())
+                .openPlugins();
+
         getDriver().findElement(By.id("filter-box")).sendKeys("Git");
         By pluginLinkLocator = By.cssSelector("a[href='https://plugins.jenkins.io/git-client']");
         WebElement searchField = getWait2().until(ExpectedConditions.visibilityOfElementLocated(pluginLinkLocator));
