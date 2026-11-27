@@ -58,4 +58,26 @@ public class SecurityPage extends BasePage {
                 .until(ExpectedConditions.visibilityOfElementLocated(
                         By.cssSelector("input[name='_.allowAnonymousRead']")));
     }
+
+    public SecurityPage authorizationCheckboxChecked() {
+        WebElement authorizationCheckbox = this.getAuthorizationCheckbox();
+        if (!authorizationCheckbox.isSelected()) {
+            authorizationCheckbox.sendKeys(Keys.SPACE);
+        }
+        return this;
+    }
+
+    public SecurityPage authorizationCheckboxUnchecked() {
+        WebElement authorizationCheckbox = this.getAuthorizationCheckbox();
+        if (authorizationCheckbox.isSelected()) {
+            authorizationCheckbox.sendKeys(Keys.SPACE);
+        }
+        return this;
+    }
+
+    public SecurityPage clickSaveButton() {
+        getDriver().findElement(By.cssSelector(".jenkins-submit-button")).click();
+        return new SecurityPage(getDriver());
+    }
+
 }
