@@ -59,4 +59,23 @@ public class ManageSecurityTest extends BaseTest {
 
         Assert.assertFalse(authorizationCheckbox.isSelected());
     }
+
+    @Test
+    public void testEnableAllowAnonymousReadAccess() {
+        SecurityPage securityPage = new ManageJenkinsPage(getDriver())
+                .openManage()
+                .openSecurity()
+                .authorizationCheckboxChecked()
+                .clickSaveButton();
+
+        Assert.assertTrue(
+                securityPage.getAuthorizationCheckbox().isSelected()
+        );
+
+        SecurityPage securityPageNew = new ManageJenkinsPage(getDriver())
+                .openSecurity()
+                .authorizationCheckboxUnchecked()
+                .clickSaveButton();
+    }
+
 }

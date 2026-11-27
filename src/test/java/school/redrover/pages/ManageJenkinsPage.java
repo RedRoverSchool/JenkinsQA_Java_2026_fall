@@ -2,6 +2,8 @@ package school.redrover.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class ManageJenkinsPage extends BasePage {
@@ -21,7 +23,11 @@ public class ManageJenkinsPage extends BasePage {
     }
 
     public SecurityPage openSecurity() {
-        getDriver().findElement(By.cssSelector("a[href='configureSecurity']")).click();
+        WebElement securitySettings = getDriver().findElement(By.cssSelector("a[href='configureSecurity']"));
+        new Actions(getDriver())
+                .scrollToElement(securitySettings)
+                .perform();
+        securitySettings.click();
         return new SecurityPage(getDriver());
     }
 
