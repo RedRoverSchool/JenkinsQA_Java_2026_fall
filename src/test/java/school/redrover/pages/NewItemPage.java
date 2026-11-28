@@ -1,9 +1,6 @@
 package school.redrover.pages;
 
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class NewItemPage extends BasePage {
@@ -101,5 +98,15 @@ public class NewItemPage extends BasePage {
         getDriver().findElement(By.id("ok-button")).click();
 
         return new CopiedProjectConfigurationPage(getDriver());
+    }
+    public FolderConfigurationPage selectFolderAndClickOk() {
+        WebElement folder = getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder"));
+        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", folder);
+        folder.click();
+        getWait5().until(ExpectedConditions.elementToBeClickable(By.id("ok-button"))).click();
+
+        getWait5().until(ExpectedConditions.urlContains("/configure"));
+
+        return new FolderConfigurationPage(getDriver());
     }
 }

@@ -77,4 +77,10 @@ public class FolderConfigurationPage extends BasePage {
     public String getHealth() {
         return getDriver().findElement(By.id("48-65-61-6c-74-68-20-6d-65-74-72-69-63-73")).getText();
     }
+
+    public FolderConfigurationPage addDescription(String description) {
+        getDriver().findElement(By.name("_.description")).sendKeys(description);
+
+        return this;
+    }
 }
