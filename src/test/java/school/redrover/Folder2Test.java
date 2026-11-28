@@ -1,12 +1,8 @@
 package school.redrover;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
-import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 import school.redrover.common.BaseTest;
+import school.redrover.pages.HomePage;
 
 public class Folder2Test extends BaseTest {
 
@@ -15,43 +11,29 @@ public class Folder2Test extends BaseTest {
         final String folderName = "MyFolder";
         final String description = "My folder description";
 
-        getDriver().findElement(By.className("content-block__link")).click();
-        getDriver().findElement(By.id("name")).sendKeys(folderName);
-
-        WebElement folder = getDriver().findElement(By.className("com_cloudbees_hudson_plugins_folder_Folder"));
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", folder);
-        folder.click();
-
-        getDriver().findElement(By.id("ok-button")).click();
-        getDriver().findElement(By.name("_.description")).sendKeys(description);
-        getDriver().findElement(By.name("Submit")).click();
-
-        Assert.assertEquals(
-                getDriver().findElement(By.id("view-message")).getText(),
-                description
-        );
+        String actualDescription = new HomePage(getDriver())
+                .clickNewItem()
+                .inputFolderName(folderName)
+                .selectFolderAndClickOk()
+                .addDescription(description)
+                .clickSaveButton()
+                .getDescription();
+        Assert.assertEquals(actualDescription, description);
     }
 
-    @Ignore
     @Test
     public void testSavePipelineDescription() {
         final String pipelineName = "MyPipeline";
         final String description = "My pipeline description";
 
-        getDriver().findElement(By.className("content-block__link")).click();
-        getDriver().findElement(By.id("name")).sendKeys(pipelineName);
+        String actualDescription = new HomePage(getDriver())
+                .clickNewItem()
+                .inputProjectName(pipelineName)
+                .selectPipelineAndClickOk()
+                .addDescription(description)
+                .clickSaveButton()
+                .getDescriptionText();
 
-        WebElement pipeline = getDriver().findElement(By.className("org_jenkinsci_plugins_workflow_job_WorkflowJob"));
-        ((JavascriptExecutor) getDriver()).executeScript("arguments[0].scrollIntoView({block: 'center'});", pipeline);
-        pipeline.click();
-
-        getDriver().findElement(By.id("ok-button")).click();
-        getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.name("description"))).sendKeys(description);
-        getDriver().findElement(By.name("Submit")).click();
-
-        Assert.assertTrue(getDriver().getCurrentUrl().endsWith("/job/" + pipelineName + "/"));
-        Assert.assertTrue(
-                getWait5().until(ExpectedConditions.visibilityOfElementLocated(By.id("description"))).getText().contains(description)
-        );
+        Assert.assertEquals(actualDescription, description);
     }
 }

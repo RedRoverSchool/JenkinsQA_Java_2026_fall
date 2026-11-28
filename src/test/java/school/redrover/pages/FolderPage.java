@@ -41,4 +41,8 @@ public class FolderPage extends BasePage {
     public boolean isItemDisplayed(String itemName) {
         return !getDriver().findElements(By.cssSelector("a.jenkins-table__link[href$='job/" + itemName + "/']")).isEmpty();
     }
+
+    public String getDescription() {
+        return getDriver().findElement(By.id("view-message")).getText();
+    }
 }
